@@ -18,3 +18,4 @@ samples, guidance on mobile development, and a full API reference.
 ## Created by...
 * Yusuf Qureshi
 * Nick Palmieri
+* Dominick Ng
