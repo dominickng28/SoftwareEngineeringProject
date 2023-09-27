@@ -19,3 +19,4 @@ samples, guidance on mobile development, and a full API reference.
 * Yusuf Qureshi
 * Nick Palmieri
 * Dominick Ng
+* Daniel Ruiz Valencia 
