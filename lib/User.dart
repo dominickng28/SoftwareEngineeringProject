@@ -6,7 +6,7 @@ class User {
   String username;
   String __email;
   String __password;
-  String profilePicURL = "";
+  String profilePicURL = "Sample Images\\default-user.jpg";
   String userBio = "";
   int streaks = 0;
 
@@ -22,13 +22,13 @@ class User {
   User(this.firstName, this.lastName, this.userID, this.username, this.__email, this.__password);
   
   // constructor for sample cases only
-  User.withDetails(this.firstName, this.lastName, this.userID, this.username, this.__email, this.__password, 
+  User.withDetails(this.firstName, this.lastName, this.userID, this.username, this.__email, this.__password, this.profilePicURL,
   this.followerList, this.followingList, this.postList);
 }
 
 // A sample list of users to play with.
 var SAMPLE_USER = [
   User("John", "Wunder", 123456789, "JohnW2", "JohnW2@gmail.com", "P@ssword"),
-  User("Bob", "Reed", 222222222, "BobR55", "BobR55@gmail.com", "Password1"),
-  User("Claire", "deluna", 186918691, "Cdel", "Cdel@gmail.com", "PASSWORD3"),
+  User.withDetails("Bob", "Reed", 222222222, "BobR55", "BobR55@gmail.com", "Password1", "Sample Images\\pfp1.jpg", [186918691], [186918691], [123]),
+  User.withDetails("Claire", "deluna", 186918691, "Cdel", "Cdel@gmail.com", "PASSWORD3", "Sample Images\\pfp1.jpg", [222222222],[222222222],[321, 231]),
 ];
