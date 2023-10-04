@@ -3,26 +3,30 @@ class User {
 
   String firstName;
   String lastName;
-  String _username;
-  String _email;
+  String username;
+  String __email;
   String __password;
+  String profilePicURL = "";
   String userBio = "";
   int streaks = 0;
 
-  // userID is marked final so it is immutable after instantiation.
   final int userID;
   
-  // followerList will contain the userID of each followers
   List<int> followerList = [];
-
-  // followingList will contain the userID of everyone the user is following
   List<int> followingList = [];
+
+  // list with the ID of each post created by user
+  List<int> postList = [];
   
-  // profile picture variable will be included later on
-  User(this.firstName, this.lastName, this.userID, this._username, this._email, this.__password);
+  // default constructor
+  User(this.firstName, this.lastName, this.userID, this.username, this.__email, this.__password);
+  
+  // constructor for sample cases only
+  User.withDetails(this.firstName, this.lastName, this.userID, this.username, this.__email, this.__password, 
+  this.followerList, this.followingList, this.postList);
 }
 
-// A sample list of employees to play with.
+// A sample list of users to play with.
 var SAMPLE_USER = [
   User("John", "Wunder", 123456789, "JohnW2", "JohnW2@gmail.com", "P@ssword"),
   User("Bob", "Reed", 222222222, "BobR55", "BobR55@gmail.com", "Password1"),
