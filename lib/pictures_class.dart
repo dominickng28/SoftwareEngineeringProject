@@ -11,7 +11,7 @@ class ProfilePicture{
 }
 
 var samplePictures = [
-  PostPicture("Biking.jpeg"),
+  PostPicture("Hiking.jpeg"),
   PostPicture("Running.jpeg"),
   ProfilePicture("Nathan_Profile.jpeg"),
   ProfilePicture("Davis_Profile.jpeg")
