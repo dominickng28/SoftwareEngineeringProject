@@ -8,5 +8,5 @@ var sampleWords = [
   Words("Biking"),
   Words("Park"),
   Words("Pond"),
-  Words("SunSet"),
+  Words("Sunset"),
 ];
