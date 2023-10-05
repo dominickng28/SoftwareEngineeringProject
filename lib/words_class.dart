@@ -1,13 +1,13 @@
 class Words { 
 
-  String mainWord; 
+  String main_word; 
 
-  Words(this.mainWord); 
+  Words(this.main_word); 
 }
 
-var sampleWords = [ 
+var sample_words = [ 
   Words("Biking"), 
   Words("Park"), 
   Words("Pond"), 
-  Words("Sunset"), 
+  Words("SunSet"), 
 ]; 
