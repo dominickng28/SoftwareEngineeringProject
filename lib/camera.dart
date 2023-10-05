@@ -10,7 +10,7 @@ class Camera {
   Camera(this.cameraAccess, this.cameraPosition);
 }
 
-var SAMPLE_CAMERAS = [
+var sampleCameras = [
   Camera(true, CameraPosition.back),
   Camera(false, CameraPosition.front),
 ];
