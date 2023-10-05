@@ -9,7 +9,7 @@ class Post{
   Post(this._postid, this.user, this.caption, this.embed, this.date, this.like_count);
 }
 var sample_post = [
-  Post(123, "Sporticas454", "Took a hike!", "hiketrail.jpg", "10/02/2023", 4),
-  Post(321, "Freddie", "Went for a swim!", "pool.jpg", "10/03/2023", 43),
-  Post(231, "Alex", "Had a nice walk!", "park.jpg", "10/04/2023", 343),
+  Post(123, "John", "Took a hike!", "hiketrail.jpg", "10/02/2023", 4),
+  Post(321, "Bob", "Went for a swim!", "pool.jpg", "10/03/2023", 43),
+  Post(231, "Claire", "Had a nice walk!", "park.jpg", "10/04/2023", 343),
 ];
