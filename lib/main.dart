@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'userprofile.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 10, 231, 139)),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Live4you'),
+      home: MyHomePage(title: 'Live4you'),
     );
   }
 }
@@ -120,6 +121,39 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.search),
+          label: 'Search',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Profile',
+        ),
+      ],
+      onTap: (int index) {
+        // Handle navigation based on the selected tab
+        if (index == 0) {
+          // Navigate to the home screen
+          // Replace with your navigation logic
+        } else if (index == 1) {
+          // Navigate to the search screen
+          // Replace with your navigation logic
+        } else if (index == 2) {
+           Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MyUserProfilePage(title: 'User Profile'),
+                  ),
+           );
+        }
+      },
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

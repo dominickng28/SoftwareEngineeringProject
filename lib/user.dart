@@ -41,15 +41,6 @@ var sampleUser = [
   User("John", "Wunder", 123456789, "JohnW2", "JohnW2@gmail.com", "P@ssword"),
   User.withDetails("Bob", "Reed", 222222222, "BobR55", "BobR55@gmail.com",
       "Password1", "Sample Images\\pfp1.jpg", [186918691], [186918691], [123]),
-  User.withDetails(
-      "Claire",
-      "deluna",
-      186918691,
-      "Cdel",
-      "Cdel@gmail.com",
-      "PASSWORD3",
-      "Sample Images\\pfp1.jpg",
-      [222222222],
-      [222222222],
-      [321, 231]),
+  User.withDetails("Claire", "deluna", 186918691, "Cdel", "Cdel@gmail.com",
+"PASSWORD3", "Sample Images\\pfp1.jpg", [222222222], [222222222], [321, 231]),
 ];
