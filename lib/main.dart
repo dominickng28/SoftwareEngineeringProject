@@ -9,12 +9,13 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key}); //super key
 
-  @override 
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'LIVE4YOU',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 10, 231, 139)),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 10, 231, 139)),
         useMaterial3: true,
       ),
       home: LoginScreen(),
@@ -33,10 +34,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
 
   void _login() {
-  // Implement your login logic here
-  // Assuming login is successful, navigate to the home screen
-  Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyHomePage(title: 'Home')));
-}
+    // Implement your login logic here
+    // Assuming login is successful, navigate to the home screen
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => MyHomePage(title: 'Home')));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +54,9 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               // Logo Image
               Image.asset(
-                '/Users/nickpalmieri/Documents/GitHub/csc450-fa23-project-team-4/assets/Live4youLogo.png', 
+                'lib/assets/Live4youLogo.png',
                 width: 300, // Adjust the width as needed
-                height: 400, // Adjust the height as needed
+                height: 360, // Adjust the height as needed
               ),
               SizedBox(height: 20.0),
               Container(
@@ -126,9 +128,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-
-
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -217,44 +216,44 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.search),
-          label: 'Words',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profile',
-        ),
-      ],
-      onTap: (int index) {
-        // Handle navigation based on the selected tab
-        if (index == 0) {
-          Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MyFeed(title: 'Homefeed'),
-                  ),
-           );
-          // Navigate to the home screen
-          // Replace with your navigation logic
-        } else if (index == 1) {
-          // Navigate to the search screen
-          // Replace with your navigation logic
-        } else if (index == 2) {
-           Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MyUserProfilePage(title: 'User Profile'),
-                  ),
-           );
-        }
-      },
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Words',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        onTap: (int index) {
+          // Handle navigation based on the selected tab
+          if (index == 0) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MyFeed(title: 'Homefeed'),
+              ),
+            );
+            // Navigate to the home screen
+            // Replace with your navigation logic
+          } else if (index == 1) {
+            // Navigate to the search screen
+            // Replace with your navigation logic
+          } else if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    const MyUserProfilePage(title: 'User Profile'),
+              ),
+            );
+          }
+        },
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-} 
-
+}
