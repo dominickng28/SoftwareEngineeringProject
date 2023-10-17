@@ -232,17 +232,15 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: (int index) {
           // Handle navigation based on the selected tab
           if (index == 0) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MyFeed(title: 'Homefeed'),
-              ),
-            );
-            // Navigate to the home screen
+             // Navigate to the word screen
             // Replace with your navigation logic
           } else if (index == 1) {
-            // Navigate to the search screen
-            // Replace with your navigation logic
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MyFeed(title: 'Homefeed'),
+                ),
+              );
           } else if (index == 2) {
             Navigator.push(
               context,
