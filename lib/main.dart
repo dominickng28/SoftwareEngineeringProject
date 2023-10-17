@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:live4you/home_feed.dart';
 import 'userprofile.dart';
 
 void main() {
@@ -232,6 +233,12 @@ class _MyHomePageState extends State<MyHomePage> {
       onTap: (int index) {
         // Handle navigation based on the selected tab
         if (index == 0) {
+          Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MyFeed(title: 'Homefeed'),
+                  ),
+           );
           // Navigate to the home screen
           // Replace with your navigation logic
         } else if (index == 1) {
