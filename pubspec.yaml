@@ -52,11 +52,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-  assets:
-    - SampleImages/fish.jpg
-    - SampleImages/pool.jpg
-    - SampleImages/park.jpg
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -64,7 +59,10 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - /Users/nickpalmieri/Documents/GitHub/csc450-fa23-project-team-4/assets/Live4youLogo.png
+    - lib/assets/Live4youLogo.png
+    - SampleImages/fish.jpg
+    - SampleImages/pool.jpg
+    - SampleImages/park.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
