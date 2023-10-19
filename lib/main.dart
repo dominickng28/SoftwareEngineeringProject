@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:live4you/home_feed.dart';
 import 'userprofile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -33,11 +37,35 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
 
-  void _login() {
-    // Implement your login logic here
-    // Assuming login is successful, navigate to the home screen
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => MyHomePage(title: 'Home')));
+  void _login() async {
+    try {
+      // Get a reference to the auth service
+      final FirebaseAuth _auth = FirebaseAuth.instance;
+
+      // Sign in
+      final UserCredential userCredential =
+          await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      // If the sign in was successful, navigate to the home screen
+      if (userCredential.user != null) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => MyHomePage(title: 'Home')),
+        );
+      } else {
+        // If the user is not signed in, show a message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Unable to sign in. Please try again.')),
+        );
+      }
+    } catch (e) {
+      // If an error occurs, show an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
   }
 
   @override
@@ -232,15 +260,15 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: (int index) {
           // Handle navigation based on the selected tab
           if (index == 0) {
-             // Navigate to the word screen
+            // Navigate to the word screen
             // Replace with your navigation logic
           } else if (index == 1) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const MyFeed(title: 'Homefeed'),
-                ),
-              );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MyFeed(title: 'Homefeed'),
+              ),
+            );
           } else if (index == 2) {
             Navigator.push(
               context,

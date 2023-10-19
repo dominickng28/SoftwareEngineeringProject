@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1059373163425",
+    "project_id": "live-4-you",
+    "storage_bucket": "live-4-you.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1059373163425:android:7b7146a9419c2777e3a1e0",
+        "android_client_info": {
+          "package_name": "com.example.live4you"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOQUGU-ipH5jA1p0HHJr5NoZqkliD2cDk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
