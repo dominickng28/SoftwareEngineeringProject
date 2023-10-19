@@ -63,6 +63,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - lib/assets/Live4youLogo.png
+    - lib/assets/Live4youWhite.png
+    - lib/assets/Live4youLine.png
     - SampleImages/fish.jpg
     - SampleImages/pool.jpg
     - SampleImages/park.jpg

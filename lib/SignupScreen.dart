@@ -1,0 +1,111 @@
+import 'package:flutter/material.dart';
+
+class SignUpScreen extends StatefulWidget {
+  @override
+  _SignUpScreenState createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  void _signUp() {
+    // Implement your sign-up logic here
+    // You can use Firebase or any other authentication service
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Sign Up'),
+        backgroundColor: Color.fromRGBO(0, 45, 107, 0.992),
+      ),
+      backgroundColor: Color.fromRGBO(153, 206, 255, 0.996),
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              // Logo Image
+              Image.asset(
+                'lib/assets/Live4youLine.png',
+                width: 200, // Adjust the width as needed
+                height: 100, // Adjust the height as needed
+              ),
+              SizedBox(height: 20.0),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Color.fromARGB(255, 14, 105, 171)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: TextFormField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    hintText: 'Email',
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.email), // Add an icon as the prefix
+                  ),
+                ),
+              ),
+              SizedBox(height: 20.0),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Color.fromARGB(255, 14, 105, 171)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: TextFormField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    hintText: 'Username',
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.person), // Add an icon as the prefix
+                  ),
+                ),
+              ),
+              SizedBox(height: 20.0),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: TextFormField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.lock), // Add an icon as the prefix
+                  ),
+                ),
+              ),
+              SizedBox(height: 10.0),
+              ElevatedButton(
+                onPressed: _signUp,
+                style: ElevatedButton.styleFrom(
+                  primary: Color.fromARGB(255, 255, 255, 255), // Change button color
+                  padding: EdgeInsets.all(16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  "Sign Up",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color.fromARGB(0, 255, 104, 104),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
