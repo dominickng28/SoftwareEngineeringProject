@@ -1,8 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:live4you/home_feed.dart';
-import 'userprofile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'search.dart';
+import 'userprofile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,8 +53,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // If the sign in was successful, navigate to the home screen
       if (userCredential.user != null) {
+        String userID = userCredential.user!.uid;
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => MyHomePage(title: 'Home')),
+          MaterialPageRoute(builder: (context) => MyHomePage(title: 'Home', userID: userID)),
         );
       } else {
         // If the user is not signed in, show a message
@@ -158,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, required this.userID});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -168,7 +171,7 @@ class MyHomePage extends StatefulWidget {
   // case the title) provided by the parent (in this case the App widget) and
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
-
+  final String userID;
   final String title;
 
   @override
@@ -243,6 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.beach_access),
@@ -253,6 +257,10 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
@@ -260,26 +268,40 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: (int index) {
           // Handle navigation based on the selected tab
           if (index == 0) {
-            // Navigate to the word screen
-            // Replace with your navigation logic
-          } else if (index == 1) {
+            // Replace with your navigation logic to the word page
+            Navigator.push(
+              context,
+                MaterialPageRoute(
+                  builder: (context) => MyHomePage(title: 'Words', userID: widget.userID),
+              ),
+            );
+          } 
+          else if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => const MyFeed(title: 'Homefeed'),
               ),
             );
-          } else if (index == 2) {
+          } 
+          else if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    const MyUserProfilePage(title: 'User Profile'),
+                builder: (context) => MySearch(title: 'Search', userID: widget.userID),
+              ),
+            );
+          }
+          else if (index == 3) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyUserProfilePage(title: 'User Profile', userID: widget.userID, profileUserID: widget.userID),
               ),
             );
           }
         },
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }
