@@ -4,8 +4,9 @@ import 'package:live4you/SignupScreen.dart';
 import 'package:live4you/home_feed.dart';
 import 'package:live4you/loginscreen.dart';
 import 'userprofile.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:live4you/words_screen.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +15,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key}); //super key
+  const MyApp({Key? key}); // Fix constructor definition
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +29,13 @@ class MyApp extends StatelessWidget {
       initialRoute: '/signup_or_login',
       routes: {
         '/signup_or_login': (context) => const SignupORLogin(),
-        '/login':(context) => const LoginScreen(),
-        '/signup':(context) => const SignUpScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/signup': (context) => const SignUpScreen(),
       },
     );
   }
 }
+
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -121,43 +123,52 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.beach_access),
-            label: 'Words',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        onTap: (int index) {
-          // Handle navigation based on the selected tab
-          if (index == 0) {
-            // Navigate to the word screen
-            // Replace with your navigation logic
-          } else if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MyFeed(title: 'Homefeed'),
-              ),
-            );
-          // } else if (index == 2) {
-          //   Navigator.push(
-          //     context,
-              // MaterialPageRoute(
-              //   builder: (context) =>
-              //       // const MyUserpodProfilePage(title: 'User Profile'),
-              // ),
-            // );
-          }
-        },
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+  items: const [
+    BottomNavigationBarItem(
+      icon: Icon(Icons.beach_access),
+      label: 'Tasks',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.beach_access),
+      label: 'Words',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.home),
+      label: 'Home',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.person),
+      label: 'Profile',
+    ),
+  ],
+  onTap: (int index) {
+    // Handle navigation based on the selected tab
+    if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const WordsScreen(title: 'Tasks'),
+        ),
+      );
+    } else if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MyFeed(title: 'Homefeed'),
+        );
+    } else if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MyUserProfilePage(title: 'User Profile'),
+        ),
+      );
+    }
+  },
+), // This trailing comma makes auto-formatting nicer for build methods.
+
+// ... (rest of your code)
+
     );
   }
 }
