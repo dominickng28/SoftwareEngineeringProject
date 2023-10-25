@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
+
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
@@ -19,13 +21,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign Up'),
-        backgroundColor: Color.fromRGBO(0, 45, 107, 0.992),
-      ),
-      backgroundColor: Color.fromRGBO(153, 206, 255, 0.996),
+  title: Text(
+    'Sign Up',
+    style: TextStyle(
+      color: Colors.white, // Set text color to white
+      fontWeight: FontWeight.bold, // Set text to bold
+      fontSize: 24, // Set font size to a larger value
+    ),
+  ),
+  backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+),
+      backgroundColor: const Color.fromRGBO(153, 206, 255, 0.996),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -35,41 +44,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 width: 200, // Adjust the width as needed
                 height: 100, // Adjust the height as needed
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Color.fromARGB(255, 14, 105, 171)),
+                  border: Border.all(color: const Color.fromARGB(255, 14, 105, 171)),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextFormField(
                   controller: _emailController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Email',
                     border: InputBorder.none,
                     prefixIcon: Icon(Icons.email), // Add an icon as the prefix
                   ),
                 ),
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Color.fromARGB(255, 14, 105, 171)),
+                  border: Border.all(color: const Color.fromARGB(255, 14, 105, 171)),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextFormField(
                   controller: _usernameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Username',
                     border: InputBorder.none,
                     prefixIcon: Icon(Icons.person), // Add an icon as the prefix
                   ),
                 ),
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(12),
@@ -77,24 +86,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: TextFormField(
                   controller: _passwordController,
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Password',
                     border: InputBorder.none,
                     prefixIcon: Icon(Icons.lock), // Add an icon as the prefix
                   ),
                 ),
               ),
-              SizedBox(height: 10.0),
+              const SizedBox(height: 10.0),
               ElevatedButton(
                 onPressed: _signUp,
                 style: ElevatedButton.styleFrom(
-                  primary: Color.fromARGB(255, 255, 255, 255), // Change button color
-                  padding: EdgeInsets.all(16),
+                  backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Change button color
+                  padding: const EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   "Sign Up",
                   style: TextStyle(
                     fontSize: 16,

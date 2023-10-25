@@ -1,65 +1,74 @@
 import 'package:flutter/material.dart';
-import 'loginscreen.dart'; // Import the login screen
-import 'SignupScreen.dart'; // Import the sign-up screen
 
 class SignupORLogin extends StatelessWidget {
+  const SignupORLogin({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('LIVE4YOU'),
-        backgroundColor: Color.fromRGBO(0, 45, 107, 0.992),
+        title: const Text('LIVE4YOU'),
+        backgroundColor: Color.fromARGB(251, 6, 46, 101),
       ),
-      backgroundColor: Color.fromRGBO(153, 206, 255, 0.996),
+      backgroundColor: Color.fromARGB(252, 117, 175, 230),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            // Logo Image
             Image.asset(
               'lib/assets/Live4youLine.png',
-              width: 200, // Adjust the width as needed
-              height: 100, // Adjust the height as needed
+              width: 300,
+              height: 200,
             ),
-            SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to the login screen
-                Navigator.pushNamed(context, '/login');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 0, 0, 0),
-                padding: EdgeInsets.all(16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: Text(
-                "Login",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color.fromARGB(0, 255, 104, 104),
-                ),
+            const SizedBox(height: 30.0),
+            Text(
+              "No account? Press here!",
+              style: TextStyle(
+                fontSize: 16,
+                color: Color.fromARGB(255, 0, 0, 0),
               ),
             ),
-            SizedBox(height: 10.0),
+            const SizedBox(height: 20.0), // Adjust the spacing
             ElevatedButton(
               onPressed: () {
                 // Navigate to the sign-up screen
                 Navigator.pushNamed(context, '/signup');
               },
               style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(255, 255, 255, 255),
-                padding: EdgeInsets.all(16),
+                backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                padding: const EdgeInsets.all(16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
+                fixedSize: Size(200, 50),
               ),
-              child: Text(
+              child: const Text(
                 "Sign Up",
                 style: TextStyle(
                   fontSize: 16,
-                  color: Color.fromARGB(0, 255, 104, 104),
+                  color: Color.fromARGB(255, 0, 0, 0),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10.0), // Adjust the spacing
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the login screen
+                Navigator.pushNamed(context, '/login');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+                padding: const EdgeInsets.all(16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                fixedSize: Size(200, 50),
+              ),
+              child: const Text(
+                "Login",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Color.fromARGB(255, 255, 255, 255),
                 ),
               ),
             ),

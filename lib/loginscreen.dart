@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:live4you/home_feed.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -12,53 +14,55 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
 
-  // void _login() async {
-  //   try {
-  //     // Get a reference to the auth service
-  //     final FirebaseAuth _auth = FirebaseAuth.instance;
+  void _login() async {
+    try {
+      // Get a reference to the auth service
+      final FirebaseAuth auth = FirebaseAuth.instance;
 
-  //     // Sign in
-  //     final UserCredential userCredential =
-  //         await _auth.signInWithEmailAndPassword(
-  //       email: _emailController.text,
-  //       password: _passwordController.text,
-  //     );
+      // Sign in
+      final UserCredential userCredential =
+          await auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
 
-  //     // If the sign in was successful, navigate to the home screen
-  //     if (userCredential.user != null) {
-  //       Navigator.of(context).push(
-  //         MaterialPageRoute(builder: (context) => MyFeed(title: 'Home')),
-  //       );
-  //     } else {
-  //       // If the user is not signed in, show a message
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Unable to sign in. Please try again.')),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     // If an error occurs, show an error message
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Error: ${e.toString()}')),
-  //     );
-  //   }
-  // }
+      // If the sign in was successful, navigate to the home screen
+      if (userCredential.user != null) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const MyFeed(title: 'Home')),
+        );
+      } else {
+        // If the user is not signed in, show a message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Unable to sign in. Please try again.')),
+        );
+      }
+    } catch (e) {
+      // If an error occurs, show an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Container(
-          width: 20,
-          height: 40,
-          child: Image.asset('lib/assets/Live4youWhite.png'),
-          ),
-
-        backgroundColor: Color.fromRGBO(0, 45, 107, 0.992),
-      ),
-      backgroundColor: Color.fromRGBO(153, 206, 255, 0.996),
+  title: Text(
+    'Login',
+    style: TextStyle(
+      color: Colors.white, // Set text color to white
+      fontWeight: FontWeight.bold, // Set text to bold
+      fontSize: 24, // Set font size to a larger value
+    ),
+  ),
+  backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+),
+      backgroundColor: const Color.fromRGBO(153, 206, 255, 0.996),
       body: Center(
         child: Padding(
-          padding: EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -66,27 +70,27 @@ class _LoginScreenState extends State<LoginScreen> {
               Image.asset(
                 'lib/assets/Live4youLine.png',
                 width: 200, // Adjust the width as needed
-                height: 100, // Adjust the height as needed
+                height: 200, // Adjust the height as needed
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Color.fromARGB(255, 14, 105, 171)),
+                  border: Border.all(color: const Color.fromARGB(255, 14, 105, 171)),
                   borderRadius: BorderRadius.circular(12),
               ),
               child: TextFormField(
                 controller: _usernameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Username',
                   border: InputBorder.none,
                   prefixIcon: Icon(Icons.person), // Add an icon as the prefix
                   ),
                 ),
               ),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(12),
@@ -94,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: TextFormField(
                   controller: _passwordController,
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Password',
                     border: InputBorder.none,
                     prefixIcon: Icon(Icons.lock), // Add an icon as the prefix
@@ -102,24 +106,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               
-              SizedBox(height: 10.0),
-              // ElevatedButton(
-              //   onPressed: _login,
-              //   style: ElevatedButton.styleFrom(
-              //     primary: Color.fromARGB(255, 255, 255, 255), // Change button color
-              //     padding: EdgeInsets.all(16),
-              //     shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(12),
-              //     ),
-              //   ),
-              //   child: Text(
-              //     "Login",
-              //     style: TextStyle(
-              //       fontSize: 16,
-              //       color: Color.fromARGB(0, 255, 104, 104),
-              //     ),
-              //   ),
-              // ),
+              const SizedBox(height: 10.0),
+              ElevatedButton(
+                onPressed: _login,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromARGB(255, 0, 0, 0), // Change button color
+                  padding: const EdgeInsets.all(16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  "Login",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color.fromARGB(0, 255, 104, 104),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

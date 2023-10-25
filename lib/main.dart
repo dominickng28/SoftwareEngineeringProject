@@ -27,9 +27,9 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/signup_or_login',
       routes: {
-        '/signup_or_login': (context) => SignupORLogin(),
-        '/login':(context) => LoginScreen(),
-        '/signup':(context) => SignUpScreen(),
+        '/signup_or_login': (context) => const SignupORLogin(),
+        '/login':(context) => const LoginScreen(),
+        '/signup':(context) => const SignUpScreen(),
       },
     );
   }
@@ -147,14 +147,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 builder: (context) => const MyFeed(title: 'Homefeed'),
               ),
             );
-          } else if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    const MyUserProfilePage(title: 'User Profile'),
-              ),
-            );
+          // } else if (index == 2) {
+          //   Navigator.push(
+          //     context,
+              // MaterialPageRoute(
+              //   builder: (context) =>
+              //       // const MyUserpodProfilePage(title: 'User Profile'),
+              // ),
+            // );
           }
         },
       ), // This trailing comma makes auto-formatting nicer for build methods.
