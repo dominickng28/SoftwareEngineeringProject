@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:live4you/SignupORLogIn.dart';
+import 'package:live4you/SignupScreen.dart';
 import 'package:live4you/home_feed.dart';
+import 'package:live4you/loginscreen.dart';
 import 'userprofile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -7,12 +10,12 @@ import 'package:live4you/words_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key}); //super key
+  const MyApp({Key? key}); // Fix constructor definition
 
   @override
   Widget build(BuildContext context) {
@@ -23,140 +26,16 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromARGB(255, 10, 231, 139)),
         useMaterial3: true,
       ),
-      home: LoginScreen(),
+      initialRoute: '/signup_or_login',
+      routes: {
+        '/signup_or_login': (context) => const SignupORLogin(),
+        '/login': (context) => const LoginScreen(),
+        '/signup': (context) => const SignUpScreen(),
+      },
     );
   }
 }
 
-class LoginScreen extends StatefulWidget {
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-
-  void _login() async {
-    try {
-      // Get a reference to the auth service
-      final FirebaseAuth _auth = FirebaseAuth.instance;
-
-      // Sign in
-      final UserCredential userCredential =
-          await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-
-      // If the sign in was successful, navigate to the home screen
-      if (userCredential.user != null) {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => MyHomePage(title: 'Home')),
-        );
-      } else {
-        // If the user is not signed in, show a message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Unable to sign in. Please try again.')),
-        );
-      }
-    } catch (e) {
-      // If an error occurs, show an error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Login"),
-      ),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // Logo Image
-              Image.asset(
-                'lib/assets/Live4youLogo.png',
-                width: 300, // Adjust the width as needed
-                height: 360, // Adjust the height as needed
-              ),
-              SizedBox(height: 20.0),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Color.fromARGB(255, 14, 105, 171)),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: TextFormField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    hintText: 'Username',
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-              SizedBox(height: 20.0),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: 'Password',
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-              SizedBox(height: 20.0),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: TextFormField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    hintText: 'Email',
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-              SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: _login,
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.blue, // Change button color
-                  padding: EdgeInsets.all(16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(
-                  "Login",
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -244,53 +123,52 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.beach_access),
-            label: 'Tasks',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.beach_access),
-            label: 'Words',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        onTap: (int index) {
-          // Handle navigation based on the selected tab
-          if (index == 0) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => 
-                    const WordsScreen(title: 'Tasks'))
-              );
-            // Navigate to the word screen
-            // Replace with your navigation logic
-          } else if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MyFeed(title: 'Homefeed'),
-              ),
-            );
-          } else if (index == 3) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    const MyUserProfilePage(title: 'User Profile'),
-              ),
-            );
-          }
-        },
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+  items: const [
+    BottomNavigationBarItem(
+      icon: Icon(Icons.beach_access),
+      label: 'Tasks',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.beach_access),
+      label: 'Words',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.home),
+      label: 'Home',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.person),
+      label: 'Profile',
+    ),
+  ],
+  onTap: (int index) {
+    // Handle navigation based on the selected tab
+    if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const WordsScreen(title: 'Tasks'),
+        ),
+      );
+    } else if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MyFeed(title: 'Homefeed'),
+        );
+    } else if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MyUserProfilePage(title: 'User Profile'),
+        ),
+      );
+    }
+  },
+), // This trailing comma makes auto-formatting nicer for build methods.
+
+// ... (rest of your code)
+
     );
   }
 }
