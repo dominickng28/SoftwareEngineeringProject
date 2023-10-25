@@ -19,7 +19,7 @@ class _MyFeed extends State<MyFeed>{
     Widget build(BuildContext context){
       return Scaffold(
         appBar: AppBar(
-          title: Text('Live4You Homefeed'),
+          title: const Text('Live4You Homefeed'),
         ),
         body: ListView.builder(
           itemCount: posts.length,
@@ -39,7 +39,7 @@ class _MyFeed extends State<MyFeed>{
 }
 class PostCard extends StatelessWidget{
   final Post post;
-  PostCard({required this.post});
+  const PostCard({super.key, required this.post});
 
   @override
   Widget build(BuildContext context){
@@ -53,7 +53,7 @@ class PostCard extends StatelessWidget{
           Image.asset(post.embed),
           Row(
             children: [
-              Icon(Icons.thumbs_up_down),
+              const Icon(Icons.thumbs_up_down),
               Text(post.likeCount.toString())
             ],
           )
