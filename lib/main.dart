@@ -3,6 +3,7 @@ import 'package:live4you/home_feed.dart';
 import 'userprofile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:live4you/words_screen.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -246,6 +247,10 @@ class _MyHomePageState extends State<MyHomePage> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.beach_access),
+            label: 'Tasks',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.beach_access),
             label: 'Words',
           ),
           BottomNavigationBarItem(
@@ -260,6 +265,12 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: (int index) {
           // Handle navigation based on the selected tab
           if (index == 0) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => 
+                    const WordsScreen(title: 'Tasks'))
+              );
             // Navigate to the word screen
             // Replace with your navigation logic
           } else if (index == 1) {
@@ -269,7 +280,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 builder: (context) => const MyFeed(title: 'Homefeed'),
               ),
             );
-          } else if (index == 2) {
+          } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
