@@ -1,16 +1,17 @@
-
 import 'package:flutter/material.dart';
+import 'package:live4you/words_screen.dart';
 import 'package:live4you/home_feed.dart';
+import 'package:live4you/search.dart';
+import 'package:live4you/userprofile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'search.dart';
-import 'userprofile.dart';
+import 'package:firebase_core/firebase_core';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key}); //super key
@@ -161,16 +162,8 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title, required this.userID});
+  const MyHomePage({Key? key, required this.title, required this.userID});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
   final String userID;
   final String title;
 
@@ -183,51 +176,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
@@ -235,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: Theme.of(context).textTheme.headline6,
             ),
           ],
         ),
@@ -248,6 +209,10 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.beach_access),
+            label: 'Tasks',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.beach_access),
             label: 'Words',
@@ -266,33 +231,32 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         onTap: (int index) {
-          // Handle navigation based on the selected tab
           if (index == 0) {
-            // Replace with your navigation logic to the word page
+            // Handle navigation to the 'Words' screen
             Navigator.push(
               context,
-                MaterialPageRoute(
-                  builder: (context) => MyHomePage(title: 'Words', userID: widget.userID),
+              MaterialPageRoute(
+                builder: (context) => const WordsScreen(title: 'Words'),
               ),
             );
-          } 
-          else if (index == 1) {
+          } else if (index == 1) {
+            // Handle navigation to the 'Homefeed' screen
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => const MyFeed(title: 'Homefeed'),
               ),
             );
-          } 
-          else if (index == 2) {
+          } else if (index == 2) {
+            // Handle navigation to the 'Search' screen
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => MySearch(title: 'Search', userID: widget.userID),
               ),
             );
-          }
-          else if (index == 3) {
+          } else if (index == 3) {
+            // Handle navigation to the 'Profile' screen
             Navigator.push(
               context,
               MaterialPageRoute(
