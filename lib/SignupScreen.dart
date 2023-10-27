@@ -1,48 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:live4you/home_feed.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
 
-  void _login() async {
-    try {
-      // Get a reference to the auth service
-      final FirebaseAuth auth = FirebaseAuth.instance;
-
-      // Sign in
-      final UserCredential userCredential =
-          await auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-
-      // If the sign in was successful, navigate to the home screen
-      if (userCredential.user != null) {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const MyFeed(title: 'Home')),
-        );
-      } else {
-        // If the user is not signed in, show a message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Unable to sign in. Please try again.')),
-        );
-      }
-    } catch (e) {
-      // If an error occurs, show an error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
-      );
-    }
+  void _signUp() {
+    // Implement your sign-up logic here
+    // You can use Firebase or any other authentication service
   }
 
   @override
@@ -50,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
   title: Text(
-    'Login',
+    'Sign Up',
     style: TextStyle(
       color: Colors.white, // Set text color to white
       fontWeight: FontWeight.bold, // Set text to bold
@@ -70,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Image.asset(
                 'lib/assets/Live4youLine.png',
                 width: 200, // Adjust the width as needed
-                height: 200, // Adjust the height as needed
+                height: 100, // Adjust the height as needed
               ),
               const SizedBox(height: 20.0),
               Container(
@@ -78,13 +50,29 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: BoxDecoration(
                   border: Border.all(color: const Color.fromARGB(255, 14, 105, 171)),
                   borderRadius: BorderRadius.circular(12),
+                ),
+                child: TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    hintText: 'Email',
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.email), // Add an icon as the prefix
+                  ),
+                ),
               ),
-              child: TextFormField(
-                controller: _usernameController,
-                decoration: const InputDecoration(
-                  hintText: 'Username',
-                  border: InputBorder.none,
-                  prefixIcon: Icon(Icons.person), // Add an icon as the prefix
+              const SizedBox(height: 20.0),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color.fromARGB(255, 14, 105, 171)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: TextFormField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(
+                    hintText: 'Username',
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.person), // Add an icon as the prefix
                   ),
                 ),
               ),
@@ -102,22 +90,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     hintText: 'Password',
                     border: InputBorder.none,
                     prefixIcon: Icon(Icons.lock), // Add an icon as the prefix
-                    ),
                   ),
                 ),
-              
+              ),
               const SizedBox(height: 10.0),
               ElevatedButton(
-                onPressed: _login,
+                onPressed: _signUp,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 0, 0, 0), // Change button color
+                  backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Change button color
                   padding: const EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 child: const Text(
-                  "Login",
+                  "Sign Up",
                   style: TextStyle(
                     fontSize: 16,
                     color: Color.fromARGB(0, 255, 104, 104),
