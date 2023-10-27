@@ -17,15 +17,42 @@ class MyUserProfilePage extends StatefulWidget {
 
 class _MyUserProfilePageState extends State<MyUserProfilePage> {
   User? userProfile;
+  bool isFollowing = false;
 
-  void followButton(User user, int followuserID) {
-    user.addFollowing(followuserID);
-    // database.getUser(followuserID).addFollower(user.getID());
+  void followButton(User userProfile) async {
+    final firestoreInstance = FirebaseFirestore.instance;
+    if (!userProfile.isFollowedBy(widget.userID)) {
+    firestoreInstance.collection('users').doc(widget.profileUserID).update({
+      'followerList': FieldValue.arrayUnion([widget.userID]),
+    });
+    firestoreInstance.collection('users').doc(widget.userID).update({
+      'followingList': FieldValue.arrayUnion([widget.profileUserID]),
+    });
+    setState(() {
+      // Trigger a rebuild with the fetched user data
+      isFollowing = userProfile.isFollowedBy(widget.userID);
+      });
+    }
+    else 
+    {return;}
   }
 
-  void unfollowButton(User user, int followuserID) {
-    user.removeFollowing(followuserID);
-    // database.getUser(followuserID).removeFollower(user.getID());
+  void unfollowButton(User userProfile) async {
+    final firestoreInstance = FirebaseFirestore.instance;
+    if (userProfile.isFollowedBy(widget.userID)) {
+    firestoreInstance.collection('users').doc(widget.profileUserID).update({
+      'followerList': FieldValue.arrayRemove([widget.userID]),
+    });
+    firestoreInstance.collection('users').doc(widget.userID).update({
+      'followingList': FieldValue.arrayRemove([widget.profileUserID]),
+    });
+    setState(() {
+      // Trigger a rebuild with the fetched user data
+      isFollowing = userProfile.isFollowedBy(widget.userID);
+      });
+    }
+    else 
+    {return;}
   }
 
     Future<void> fetchUserData() async {
@@ -38,13 +65,9 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
     if (userDocument.exists) {
       // Create a profile page owner instance from Firestore data
       userProfile = User.fromFirestore(userDocument, widget.profileUserID);
-      if (widget.profileUserID != widget.userID){
-        // get viewer user details and create instance
-        final userViewerDocument = await firestoreInstance.collection('users').doc(widget.userID).get();
-        User user = User.fromFirestore(userViewerDocument, widget.userID);
-      }
       setState(() {
         // Trigger a rebuild with the fetched user data
+        isFollowing = userProfile!.isFollowedBy(widget.userID);
       });
     }
   }
@@ -81,13 +104,29 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                       children: <Widget>[
                         Text(userProfile?.firstName ?? "Loading..."),
                         const SizedBox(height: 20.0),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Code to run when the "Follow" button is pressed
+                        Visibility(
+                          visible: widget.profileUserID != widget.userID,
+                          child: ElevatedButton(
+                            onPressed: () {
+                            if (isFollowing){
+                              unfollowButton(userProfile!);
+                            }
+                            else{
+                              followButton(userProfile!);
+                            }
                           },
-                          child: const Text('Follow'),
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
+                                return isFollowing ? Colors.grey : Colors.green;
+                              },
+                            ),
+                          ),
+                          child: Text(isFollowing ? 'Unfollow' : 'Follow'),
                       ),
-                    ]),
+                    )
+                    ]
+                  ),
                   ],
                 ),
               ),
@@ -97,7 +136,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
             )
           ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: widget.userID != widget.profileUserID? null: FloatingActionButton(
         onPressed: () {
           // Add a create post function
         },

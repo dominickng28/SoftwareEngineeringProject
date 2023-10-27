@@ -69,14 +69,11 @@ class User {
   }
 
   bool isFollowing(String userID){
-    bool following = false;
-    for (String id in followerList){
-      if (id == userID) {
-        following = true;
-        break;
-      }
-    }
-    return following;
+    return followingList.contains(userID);
+  }
+
+  bool isFollowedBy(String userID){
+    return followerList.contains(userID);
   }
 
   factory User.fromFirestore(DocumentSnapshot document, String userID) {
