@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'firestore_service.dart';
+
+
+
 
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
-final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+final FirestoreService _service = FirestoreService();
+final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
 
 
 class SignUpScreen extends StatefulWidget {
@@ -21,21 +27,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   late bool _sucess;
   late String _userEmail;
+  
+
+
+    
+    
 
   void _signUp() async {
+
     final User? user = (
-      await _auth.createUserWithEmailAndPassword(email: _emailController.text, password: _passwordController.text)).user;
-
-
+      
+    await _auth.createUserWithEmailAndPassword(email: _emailController.text, password: _passwordController.text)).user;
     if(user != null){
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account Created Successfully')),
-        );
+      
       setState(() {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Account Created Successfully')),
         );
-
         _sucess = true;
         _userEmail = user.email!;
       });
@@ -48,6 +56,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     // You can use Firebase or any other authentication service
   }
 
+  Future<void> addUser(String username, String email, String password){
+    return usersCollection.add({
+      'username': username,
+      'email': email,
+      'password': password
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +146,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 10.0),
               ElevatedButton(
                 onPressed: () async {
+                  addUser(_usernameController.text, _emailController.text, _passwordController.text);
+                  Future.delayed(Duration(seconds:1));
                   _signUp();},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(
