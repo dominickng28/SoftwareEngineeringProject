@@ -21,16 +21,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-  title: Text(
-    'Sign Up',
-    style: TextStyle(
-      color: Colors.white, // Set text color to white
-      fontWeight: FontWeight.bold, // Set text to bold
-      fontSize: 24, // Set font size to a larger value
-    ),
-  ),
-  backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
-),
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          'Sign Up',
+          style: TextStyle(
+            color: Colors.white, // Set text color to white
+            fontWeight: FontWeight.bold, // Set text to bold
+            fontSize: 24, // Set font size to a larger value
+          ),
+        ),
+        backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+      ),
       backgroundColor: const Color.fromRGBO(153, 206, 255, 0.996),
       body: Center(
         child: Padding(
@@ -48,7 +49,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  border: Border.all(color: const Color.fromARGB(255, 14, 105, 171)),
+                  border: Border.all(
+                      color: const Color.fromARGB(255, 14, 105, 171)),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextFormField(
@@ -64,7 +66,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  border: Border.all(color: const Color.fromARGB(255, 14, 105, 171)),
+                  border: Border.all(
+                      color: const Color.fromARGB(255, 14, 105, 171)),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextFormField(
@@ -97,7 +100,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ElevatedButton(
                 onPressed: _signUp,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Change button color
+                  backgroundColor: const Color.fromARGB(
+                      255, 255, 255, 255), // Change button color
                   padding: const EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -107,7 +111,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   "Sign Up",
                   style: TextStyle(
                     fontSize: 16,
-                    color: Color.fromARGB(0, 255, 104, 104),
+                    color: Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
               ),

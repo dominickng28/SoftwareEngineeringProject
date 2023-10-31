@@ -22,29 +22,22 @@ class User {
   User(this.firstName, this.lastName, this.userID, this.username);
 
   // constructor for sample cases only
-  User.withDetails(
-      this.firstName,
-      this.lastName,
-      this.userID,
-      this.username,
-      this.profilePicURL,
-      this.followerList,
-      this.followingList,
-      this.postList);
-  
-  String getUserID(){
+  User.withDetails(this.firstName, this.lastName, this.userID, this.username,
+      this.profilePicURL, this.followerList, this.followingList, this.postList);
+
+  String getUserID() {
     return userID;
   }
 
-  List<int> getPostlist(){
+  List<int> getPostlist() {
     return postList;
   }
 
-  List<String> getFollowerlist(){
+  List<String> getFollowerlist() {
     return followerList;
   }
 
-  List<String> getFollowinglist(){
+  List<String> getFollowinglist() {
     return followingList;
   }
 
@@ -58,7 +51,7 @@ class User {
     return;
   }
 
-    void addFollowing(userID) {
+  void addFollowing(userID) {
     followingList.add(userID);
     return;
   }
@@ -68,9 +61,9 @@ class User {
     return;
   }
 
-  bool isFollowing(String userID){
+  bool isFollowing(String userID) {
     bool following = false;
-    for (String id in followerList){
+    for (String id in followerList) {
       if (id == userID) {
         following = true;
         break;
@@ -90,7 +83,8 @@ class User {
       data['username'],
     );
 
-    user.profilePicURL = data['profilePicURL'] ?? "SampleImages/default-user.jpg";
+    user.profilePicURL =
+        data['profilePicURL'] ?? "SampleImages/default-user.jpg";
     user.userBio = data['userBio'] ?? "";
     user.streaks = data['streaks'] ?? 0;
 
@@ -109,9 +103,24 @@ class User {
 }
 
 // A sample list of users to play with.
-  var sampleUser = [
+var sampleUser = [
   User("John", "Wunder", "tCBgXhuZ57gJUfOhyS7X6gdF3sE3", "JohnW2"),
-  User.withDetails("Bob", "Reed", "to7UDeMklvPrDDAZqrURwpW6ENf1", "BobR55", "SampleImages/pfp1.jpg", ["CSJTlYeExpS1qMQROeWCnqZEzIF2"], ["CSJTlYeExpS1qMQROeWCnqZEzIF2"], [123]),
-  User.withDetails("Claire", "deluna", "CSJTlYeExpS1qMQROeWCnqZEzIF2", "Cdel", "SampleImages/pfp1.jpg", ["to7UDeMklvPrDDAZqrURwpW6ENf1"], ["to7UDeMklvPrDDAZqrURwpW6ENf1"], [321, 231]),
+  User.withDetails(
+      "Bob",
+      "Reed",
+      "to7UDeMklvPrDDAZqrURwpW6ENf1",
+      "BobR55",
+      "SampleImages/pfp1.jpg",
+      ["CSJTlYeExpS1qMQROeWCnqZEzIF2"],
+      ["CSJTlYeExpS1qMQROeWCnqZEzIF2"],
+      [123]),
+  User.withDetails(
+      "Claire",
+      "deluna",
+      "CSJTlYeExpS1qMQROeWCnqZEzIF2",
+      "Cdel",
+      "SampleImages/pfp1.jpg",
+      ["to7UDeMklvPrDDAZqrURwpW6ENf1"],
+      ["to7UDeMklvPrDDAZqrURwpW6ENf1"],
+      [321, 231]),
 ];
-
