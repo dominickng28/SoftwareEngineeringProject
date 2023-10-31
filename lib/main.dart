@@ -6,10 +6,11 @@ import 'package:live4you/profile_screen.dart'; // Import the profile screen
 import 'package:firebase_core/firebase_core.dart';
 import 'package:live4you/search.dart';
 import 'package:live4you/words_screen.dart';
+import 'package:live4you/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
