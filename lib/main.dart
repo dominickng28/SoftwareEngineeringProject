@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:live4you/login_screen.dart';
 import 'package:live4you/signup_screen.dart';
@@ -7,6 +8,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:live4you/search.dart';
 import 'package:live4you/words_screen.dart';
 import 'package:live4you/firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

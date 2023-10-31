@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -11,11 +19,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  late bool _sucess;
+  late String _userEmail;
 
-  void _signUp() {
+  void _signUp() async {
+    final User? user = (
+      await _auth.createUserWithEmailAndPassword(email: _emailController.text, password: _passwordController.text)).user;
+
+
+    if(user != null){
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Account Created Successfully')),
+        );
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Account Created Successfully')),
+        );
+
+        _sucess = true;
+        _userEmail = user.email!;
+      });
+    } else {
+      setState(() {
+        _sucess = false;
+      });
+    }
     // Implement your sign-up logic here
     // You can use Firebase or any other authentication service
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +130,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 10.0),
               ElevatedButton(
-                onPressed: _signUp,
+                onPressed: () async {
+                  _signUp();},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(
                       255, 255, 255, 255), // Change button color
