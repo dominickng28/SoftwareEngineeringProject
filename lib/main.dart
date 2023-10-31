@@ -72,7 +72,7 @@ class _MainScreenState extends State<MainScreen> {
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor:  const Color.fromRGBO(0, 45, 107, 0.992),
-        selectedItemColor: Colors.lightBlue,
+        selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white,
         onTap: onTabTapped,
         currentIndex: _currentIndex,
@@ -82,6 +82,8 @@ class _MainScreenState extends State<MainScreen> {
             icon: Icon(Icons.home),
             activeIcon: Icon(Icons.home, color: Colors.white),
             label: 'Home',
+            
+            
           ),
           BottomNavigationBarItem(
             backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
