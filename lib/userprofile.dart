@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'main.dart';
-import 'home_feed.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'user.dart';
-import 'search.dart';
+import 'custom_bottom_navigation.dart';
+
+//to remove later
+import 'home_feed_for_testing.dart';
 
 class MyUserProfilePage extends StatefulWidget {
-  const MyUserProfilePage({Key? key, required this.title, required this.userID, required this.profileUserID}) : super(key: key);
-  final String title;
+  const MyUserProfilePage({super.key, required this.userID, required this.profileUserID});
+  final String title = "Profile Page";
   final String userID;
   final String profileUserID;
 
@@ -55,7 +57,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
     {return;}
   }
 
-    Future<void> fetchUserData() async {
+  Future<void> fetchUserData() async {
     // Accessing Firestore instance
     final firestoreInstance = FirebaseFirestore.instance;
 
@@ -91,12 +93,19 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     ClipOval(
-                      child: Image.asset(
-                        userProfile?.profilePicURL ?? "SampleImages/default-user.jpg",
-                        width: 100, // Adjust the width as needed
-                        height: 100,
-                        fit: BoxFit.cover, // Adjust the height as needed
-                      ),
+                      child:  userProfile?.profilePicURL == null || userProfile?.profilePicURL == 'lib/assets/default-user.jpg'
+                        ? Image.asset(
+                            'lib/assets/default-user.jpg',
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.network(
+                            userProfile!.profilePicURL,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
                     ),
                     const SizedBox(width: 20.0),
                     Column(
@@ -139,66 +148,16 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
       floatingActionButton: widget.userID != widget.profileUserID? null: FloatingActionButton(
         onPressed: () {
           // Add a create post function
+          Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyFeedTest(userID: widget.userID),
+        )
+        );
         },
         child: const Icon(Icons.add),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.beach_access),
-            label: 'Words',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        onTap: (int index) {
-          // Handle navigation based on the selected tab
-          if (index == 0) {
-            // Replace with your navigation logic to the word page
-            Navigator.push(
-              context,
-                MaterialPageRoute(
-                  builder: (context) => MyHomePage(title: 'Words', userID: widget.userID),
-              ),
-            );
-          } 
-          else if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MyFeed(title: 'Homefeed'),
-              ),
-            );
-          } 
-          else if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MySearch(title: 'Search', userID: widget.userID),
-              ),
-            );
-          }
-          else if (index == 3) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MyUserProfilePage(title: 'User Profile', userID: widget.userID, profileUserID: widget.userID),
-              ),
-            );
-          }
-        },
-      ),
+      bottomNavigationBar: CustomBottomNavigation(currentIndex: 0, userID: widget.userID),
     );
   }
 }

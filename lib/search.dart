@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'main.dart';
-import 'home_feed.dart';
-import 'user.dart';
 import 'userprofile.dart';
+import 'custom_bottom_navigation.dart';
 
 class MySearch extends StatefulWidget {
   const MySearch({super.key, required this.title, required this.userID});
@@ -43,7 +41,7 @@ class _MySearchState extends State<MySearch> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MyUserProfilePage(title: 'User Profile', userID: widget.userID, profileUserID: "tCBgXhuZ57gJUfOhyS7X6gdF3sE3"),
+                    builder: (context) => MyUserProfilePage(userID: widget.userID, profileUserID: "tCBgXhuZ57gJUfOhyS7X6gdF3sE3"),
                   ),
                 );
               },
@@ -55,7 +53,7 @@ class _MySearchState extends State<MySearch> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MyUserProfilePage(title: 'User Profile', userID: widget.userID, profileUserID: "to7UDeMklvPrDDAZqrURwpW6ENf1"),
+                    builder: (context) => MyUserProfilePage(userID: widget.userID, profileUserID: "to7UDeMklvPrDDAZqrURwpW6ENf1"),
                   ),
                 );
               },
@@ -67,7 +65,7 @@ class _MySearchState extends State<MySearch> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MyUserProfilePage(title: 'User Profile', userID: widget.userID, profileUserID: "CSJTlYeExpS1qMQROeWCnqZEzIF2"),
+                    builder: (context) => MyUserProfilePage(userID: widget.userID, profileUserID: "CSJTlYeExpS1qMQROeWCnqZEzIF2"),
                   ),
                 );
               },
@@ -76,63 +74,7 @@ class _MySearchState extends State<MySearch> {
           ],
         )
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.beach_access),
-            label: 'Words',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        onTap: (int index) {
-          // Handle navigation based on the selected tab
-          if (index == 0) {
-            // Replace with your navigation logic to the word page
-            Navigator.push(
-              context,
-                MaterialPageRoute(
-                  builder: (context) => MyHomePage(title: 'Words', userID: widget.userID),
-              ),
-            );
-          } 
-          else if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MyFeed(title: 'Homefeed'),
-              ),
-            );
-          } 
-          else if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MySearch(title: 'Search', userID: widget.userID),
-              ),
-            );
-          }
-          else if (index == 3) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MyUserProfilePage(title: 'User Profile', userID: widget.userID, profileUserID: widget.userID),
-              ),
-            );
-          }
-        },
-      ),
+      bottomNavigationBar: CustomBottomNavigation(currentIndex: 0, userID: widget.userID)
     );
   }
 }

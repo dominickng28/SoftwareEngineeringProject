@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:live4you/words_screen.dart';
-import 'package:live4you/home_feed.dart';
-import 'package:live4you/search.dart';
-import 'package:live4you/userprofile.dart';
-import 'package:live4you/SignupORLogIn.dart';
-import 'package:live4you/SignupScreen.dart';
-import 'package:live4you/loginscreen.dart';
+import 'SignupORLogIn.dart';
+import 'SignupScreen.dart';
+import 'loginscreen.dart';
+import 'custom_bottom_navigation.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -32,7 +29,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/signup_or_login',
       routes: {
         '/signup_or_login': (context) => const SignupORLogin(),
-        '/login': (context) => const LoginScreen(),
+        '/login': (context) => LoginScreen(),
         '/signup': (context) => const SignUpScreen(),
       },
     );
@@ -215,66 +212,7 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-type: BottomNavigationBarType.fixed,
-items: const [
-  BottomNavigationBarItem(
-    icon: Icon(Icons.beach_access),
-    label: 'Tasks',
-  ),
-  BottomNavigationBarItem(
-    icon: Icon(Icons.beach_access),
-    label: 'Words',
-  ),
-  BottomNavigationBarItem(
-    icon: Icon(Icons.home),
-    label: 'Home',
-  ),
-  BottomNavigationBarItem(
-    icon: Icon(Icons.search),
-    label: 'Search',
-  ),
-  BottomNavigationBarItem(
-    icon: Icon(Icons.person),
-    label: 'Profile',
-  ),
-],
-onTap: (int index) {
-  if (index == 0) {
-    // Handle navigation to the 'Words' screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const WordsScreen(title: 'Words'),
-      ),
-    );
-  } else if (index == 1) {
-    // Handle navigation to the 'Homefeed' screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const MyFeed(title: 'Homefeed'),
-      ),
-    );
-  } else if (index == 2) {
-    // Handle navigation to the 'Search' screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MySearch(title: 'Search', userID: widget.userID),
-      ),
-    );
-  } else if (index == 3) {
-    // Handle navigation to the 'Profile' screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MyUserProfilePage(title: 'User Profile', userID: widget.userID, profileUserID: widget.userID),
-      ),
-    );
-  }
-},
-
+      bottomNavigationBar: CustomBottomNavigation(currentIndex: 0, userID: widget.userID)
     );
   }
 }
