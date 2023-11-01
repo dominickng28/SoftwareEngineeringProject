@@ -6,15 +6,11 @@ import 'package:live4you/main.dart';
 import 'firestore_service.dart';
 import 'package:live4you/home_feed.dart';
 
-
-
-
-
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 final FirestoreService _service = FirestoreService();
-final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
-
+final CollectionReference usersCollection =
+    FirebaseFirestore.instance.collection('users');
 
 class PostSignUpScreen extends StatefulWidget {
   const PostSignUpScreen({super.key});
@@ -30,16 +26,20 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
   final TextEditingController _lastnameController = TextEditingController();
   late bool _sucess;
   late String _userEmail;
-  
 
-  Future<void> _addUser(String firstName, String lastName, String userName, String bio, ){
+  Future<void> _addUser(
+    String firstName,
+    String lastName,
+    String userName,
+    String bio,
+  ) {
     ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account Created Successfully')),
-        );
+      const SnackBar(content: Text('Account Created Successfully')),
+    );
     Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const MainScreen()),
-        );
-    return usersCollection.add({
+      MaterialPageRoute(builder: (context) => const MainScreen()),
+    );
+    return usersCollection.doc(userName).set({
       'firstName': firstName,
       'lastName': lastName,
       'userName': userName,
@@ -135,15 +135,17 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
                   decoration: const InputDecoration(
                     hintText: 'Bio',
                     border: InputBorder.none,
-                    prefixIcon: Icon(Icons.badge_outlined), // Add an icon as the prefix
+                    prefixIcon:
+                        Icon(Icons.badge_outlined), // Add an icon as the prefix
                   ),
                 ),
               ),
               const SizedBox(height: 10.0),
               ElevatedButton(
                 onPressed: () async {
-                  _addUser(_firstnameController.text, _lastnameController.text, _usernameController.text, _bioController.text);
-                  },
+                  _addUser(_firstnameController.text, _lastnameController.text,
+                      _usernameController.text, _bioController.text);
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(
                       255, 255, 255, 255), // Change button color

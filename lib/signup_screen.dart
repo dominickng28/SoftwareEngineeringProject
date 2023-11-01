@@ -6,15 +6,11 @@ import 'package:live4you/main.dart';
 import 'package:live4you/post_signup_screen.dart';
 import 'firestore_service.dart';
 
-
-
-
-
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 final FirestoreService _service = FirestoreService();
-final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
-
+final CollectionReference usersCollection =
+    FirebaseFirestore.instance.collection('users');
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -28,19 +24,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   late bool _sucess;
   late String _userEmail;
-  
-
-
-    
-    
 
   void _signUp() async {
-
-    final User? user = (
-      
-    await _auth.createUserWithEmailAndPassword(email: _emailController.text, password: _passwordController.text)).user;
-    if(user != null){
-      
+    final User? user = (await _auth.createUserWithEmailAndPassword(
+            email: _emailController.text, password: _passwordController.text))
+        .user;
+    if (user != null) {
       setState(() {
         _sucess = true;
         _userEmail = user.email!;
@@ -51,18 +40,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
     }
     Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const PostSignUpScreen()),
-        );
+      MaterialPageRoute(builder: (context) => const PostSignUpScreen()),
+    );
     // Implement your sign-up logic here
     // You can use Firebase or any other authentication service
-  }
-
-  Future<void> addUser(String username, String email, String password){
-    return usersCollection.add({
-      'username': username,
-      'email': email,
-      'password': password
-    });
   }
 
   @override
@@ -130,7 +111,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 10.0),
               ElevatedButton(
                 onPressed: () async {
-                  _signUp();},
+                  _signUp();
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(
                       255, 255, 255, 255), // Change button color
