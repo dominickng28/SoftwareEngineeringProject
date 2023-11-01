@@ -11,22 +11,15 @@ class Post {
   String embed;
   String pfp;
   String userID;
-  Post(this.username, this.pfp, this._postid, this.userID, this.caption, this.embed, this.date,
-      this.likeCount);
- 
+  Post(this.username, this.pfp, this._postid, this.userID, this.caption,
+      this.embed, this.date, this.likeCount);
+
   factory Post.fromFirestore(DocumentSnapshot document, String postid) {
     final data = document.data() as Map<String, dynamic>;
 
     // Assign other properties from Firestore data
-    final post = Post(
-      data['username'],
-      postid,
-      data['userID'],
-      data['caption'],
-      data['embed'],
-      data['date'],
-      data['likeCount']
-    );
+    final post = Post(data['username'], data['pfp'], postid, data['userID'],
+        data['caption'], data['embed'], data['date'], data['likeCount']);
 
     return post;
   }
