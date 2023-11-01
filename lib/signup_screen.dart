@@ -1,16 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:live4you/main.dart';
-import 'package:live4you/post_signup_screen.dart';
-import 'firestore_service.dart';
-
-final FirebaseAuth _auth = FirebaseAuth.instance;
-final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-final FirestoreService _service = FirestoreService();
-final CollectionReference usersCollection =
-    FirebaseFirestore.instance.collection('users');
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -21,27 +9,10 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  late bool _sucess;
-  late String _userEmail;
 
-  void _signUp() async {
-    final User? user = (await _auth.createUserWithEmailAndPassword(
-            email: _emailController.text, password: _passwordController.text))
-        .user;
-    if (user != null) {
-      setState(() {
-        _sucess = true;
-        _userEmail = user.email!;
-      });
-    } else {
-      setState(() {
-        _sucess = false;
-      });
-    }
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const PostSignUpScreen()),
-    );
+  void _signUp() {
     // Implement your sign-up logic here
     // You can use Firebase or any other authentication service
   }
@@ -95,6 +66,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
+                  border: Border.all(
+                      color: const Color.fromARGB(255, 14, 105, 171)),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: TextFormField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(
+                    hintText: 'Username',
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.person), // Add an icon as the prefix
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20.0),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -110,9 +98,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 10.0),
               ElevatedButton(
-                onPressed: () async {
-                  _signUp();
-                },
+                onPressed: _signUp,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(
                       255, 255, 255, 255), // Change button color
