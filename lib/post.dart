@@ -1,17 +1,32 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 class Post {
   String caption;
   String date;
   String username;
   int likeCount;
-  final int _postid;
+  final String _postid;
   String embed;
   var userID;
   Post(this.username, this._postid, this.userID, this.caption, this.embed, this.date,
       this.likeCount);
+  
+  factory Post.fromFirestore(DocumentSnapshot document, String postid) {
+    final data = document.data() as Map<String, dynamic>;
+
+    // Assign other properties from Firestore data
+    final post = Post(
+      data['username'],
+      postid,
+      data['userID'],
+      data['caption'],
+      data['embed'],
+      data['date'],
+      data['likeCount']
+    );
+
+    return post;
+  }
 }
 
-var samplePost = [
-  Post('John', 123, 222222222, "Took a hike!", "hiketrail.jpg", "10/02/2023", 4),
-  Post('Bob', 321, 186918691, "Went for a swim!", "pool.jpg", "10/03/2023", 43),
-  Post('Clair', 231, 186918691, "Had a nice walk!", "park.jpg", "10/04/2023", 343),
-];

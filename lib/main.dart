@@ -30,16 +30,14 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignUpScreen(),
-        '/home': (context) => const MyFeed(
-              title: 'Home Feed',
-            ), // Add a route for the home screen
       },
     );
   }
 }
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+  MainScreen({Key? key, required this.userID}) : super(key: key);
+  final String userID;
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -48,17 +46,29 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _children = [
-    const MyFeed(title: 'Home Feed'),
-    const WordsScreen(title: 'Words'),
-    const MySearch(
-        title: 'Search', userID: 'userID'), // replace with actual userID
-    const MyUserProfilePage(
+  late List<Widget> _children; // Define _children here
+
+  @override
+  void initState() {
+    super.initState();
+
+    _children = [
+      MyFeed(
+        title: 'Home Feed',
+        userID: widget.userID,
+      ),
+      const WordsScreen(title: 'Words'),
+      MySearch(
+        title: 'Search',
+        userID: widget.userID,
+      ),
+      MyUserProfilePage(
         title: 'User Profile',
-        userID: 'userID',
-        profileUserID:
-            'profileUserID'), // replace with actual userID and profileUserID
-  ];
+        userID: widget.userID,
+        profileUserID: widget.userID,
+      ),
+    ];
+  }
 
   void onTabTapped(int index) {
     setState(() {
@@ -94,7 +104,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            activeIcon: Icon(Icons.percent, color: Colors.blue),
+            activeIcon: Icon(Icons.person, color: Colors.blue),
             label: 'Profile',
           ),
         ],
@@ -102,3 +112,4 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+

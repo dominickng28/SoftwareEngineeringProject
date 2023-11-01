@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'user.dart';
-import 'custom_bottom_navigation.dart';
-
 
 class Post2 {
   String caption;
@@ -112,7 +110,6 @@ Future<void> fetchAllPostData() async {
         tooltip: 'Back',
         child: const Icon(Icons.arrow_back),
       ),
-      bottomNavigationBar: CustomBottomNavigation(currentIndex: 0, userID: widget.userID),
       );
     }
 }

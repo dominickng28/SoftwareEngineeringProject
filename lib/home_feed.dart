@@ -1,77 +1,112 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'post.dart';
+import 'user.dart';
 
 class MyFeed extends StatefulWidget {
-  const MyFeed({Key? key, required this.title}) : super(key: key);
+  const MyFeed({super.key, required this.title, required this.userID});
   final String title;
+  final String userID;
 
   @override
-  State<MyFeed> createState() => _MyFeed();
+  State<MyFeed> createState() => _MyFeedTest();
 }
 
-class _MyFeed extends State<MyFeed> {
-  int _currentIndex = 0;
+class _MyFeedTest extends State<MyFeed>{
+  List<Post> posts = [];
 
-  final List<Post> posts = [
-    Post('Kenny', 123, 222222222, "Caught a lot of fish!",
-        "SampleImages/fish.jpg", "10/15/2023", 4),
-    Post('Bob', 321, 186918691, "Went for a swim!", "SampleImages/pool.jpg",
-        "10/03/2023", 43),
-    Post('Clair', 231, 186918691, "Had a nice walk!", "SampleImages/park.jpg",
-        "10/04/2023", 343),
-  ];
+Future<Post?> fetchPostData(String postId) async {
+  try {
+    // Accessing Firestore instance
+    final firestoreInstance = FirebaseFirestore.instance;
 
-  void onTabSwapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    // Get the post document
+    final postDocument = await firestoreInstance.collection('post').doc(postId).get();
+
+    if (postDocument.exists) {
+      // Create a Post instance from Firestore data
+      Post post = Post.fromFirestore(postDocument, postId);
+      return post;
+    } else {
+      // Handle the case where the document doesn't exist (return a default or error value)
+      return null; 
+    }
+  } catch (e) {
+    // Handle any errors, e.g., log the error
+    print('Error fetching post data: $e');
+    return null; 
   }
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Live4You Homefeed'),
-      ),
-      body: ListView.builder(
-        itemCount: posts.length,
-        itemBuilder: (BuildContext context, int index) {
-          return PostCard(post: posts[index]);
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
+Future<List<Post>> getFollowingPosts(List<String> followingList) async {
+  List<Post> followingPosts = [];
+
+  for (String userID in followingList) {
+    List<String> postList = await User.fetchPostList(userID);
+    for (String postID in postList) {
+      Post? post = await fetchPostData(postID);
+      if (post != null) {
+        followingPosts.add(post);
+      }
+    }
+  }
+  return followingPosts;
+}
+
+Future<void> fetchAllPostData() async {
+  List<String> followingList = await User.fetchFollowingList(widget.userID);
+  List<Post> allPostData = await getFollowingPosts(followingList);
+    setState(() {
+      posts = allPostData;
+    });
+    }
+  
+    @override
+    Widget build(BuildContext context){
+      fetchAllPostData();
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Live4You Homefeed'),
+        ),
+        body: ListView.builder(
+          itemCount: posts.length,
+          itemBuilder: (BuildContext context, int index){
+           return PostCard(post: posts[index]); 
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pop(
-              context); // Navigate back to the previous screen (the homepage)
+          Navigator.pop(context); // Navigate back to the previous screen (the homepage)
         },
         tooltip: 'Back',
-        child: const Icon(Icons.arrow_back),
+        child: const Icon(Icons.add),
       ),
-    );
-  }
+      );
+    }
 }
-
-class PostCard extends StatelessWidget {
+class PostCard extends StatelessWidget{
   final Post post;
   const PostCard({super.key, required this.post});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return Card(
-        child: Column(
-      children: [
-        ListTile(
-          title: Text(post.username),
-          subtitle: Text(post.caption),
-        ),
-        Image.asset(post.embed),
-        Row(
-          children: [
-            const Icon(Icons.thumbs_up_down),
-            Text(post.likeCount.toString())
-          ],
-        )
-      ],
-    ));
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(post.username),
+            subtitle: Text(post.caption),
+          ),
+          Image.network(post.embed),
+          Row(
+            children: [
+              const Icon(Icons.thumbs_up_down),
+              Text(post.likeCount.toString())
+            ],
+          )
+        ],
+      )
+    );
   }
 }
