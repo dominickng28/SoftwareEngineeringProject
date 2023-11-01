@@ -13,10 +13,18 @@ class _WordsScreen extends State<WordsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+    
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
+  backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+  title: Text(
+    'WORDS',
+    style: TextStyle(
+      color: Colors.white, // Set the text color to white
+      fontWeight: FontWeight.bold, // Set the text to bold
+    ),
+  ),
+),
+backgroundColor: const Color.fromRGBO(153, 206, 255, 0.996),
       body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
