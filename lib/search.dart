@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'main.dart';
-import 'home_feed.dart';
 import 'user.dart';
-import 'user_profile.dart';
+import 'profile_screen.dart';
+import 'main.dart';
 
 class MySearch extends StatefulWidget {
   const MySearch({super.key, required this.title, required this.userID});
@@ -32,57 +31,58 @@ class _MySearchState extends State<MySearch> {
         title: Text(widget.title),
       ),
       body: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text('Test'),
-          SizedBox(height: 20.0),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MyUserProfilePage(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('Test'),
+            SizedBox(height: 20.0),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => MyUserProfilePage(
                       title: 'User Profile',
                       userID: widget.userID,
-                      profileUserID: "tCBgXhuZ57gJUfOhyS7X6gdF3sE3"),
-                ),
-              );
-            },
-            child: Text('John'),
-          ),
-          SizedBox(height: 20.0),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MyUserProfilePage(
+                      profileUserID: "tCBgXhuZ57gJUfOhyS7X6gdF3sE3",
+                    ),
+                  ),
+                );
+              },
+              child: Text('John'),
+            ),
+            SizedBox(height: 20.0),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => MyUserProfilePage(
                       title: 'User Profile',
                       userID: widget.userID,
-                      profileUserID: "to7UDeMklvPrDDAZqrURwpW6ENf1"),
-                ),
-              );
-            },
-            child: Text('Bob'),
-          ),
-          SizedBox(height: 20.0),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MyUserProfilePage(
+                      profileUserID: "to7UDeMklvPrDDAZqrURwpW6ENf1",
+                    ),
+                  ),
+                );
+              },
+              child: Text('Bob'),
+            ),
+            SizedBox(height: 20.0),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => MyUserProfilePage(
                       title: 'User Profile',
                       userID: widget.userID,
-                      profileUserID: "CSJTlYeExpS1qMQROeWCnqZEzIF2"),
-                ),
-              );
-            },
-            child: Text('Claire'),
-          ),
-        ],
-      )),
+                      profileUserID: "CSJTlYeExpS1qMQROeWCnqZEzIF2",
+                    ),
+                  ),
+                );
+              },
+              child: Text('Claire'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

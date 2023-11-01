@@ -6,7 +6,7 @@ class User {
   String firstName;
   String lastName;
   String username;
-  String profilePicURL = "SampleImages/default-user.jpg";
+  String profilePicURL = "lib/assets/default-user.jpg";
   String userBio = "";
   int streaks = 0;
 
@@ -16,28 +16,35 @@ class User {
   List<String> followingList = [];
 
   // list with the ID of each post created by user
-  List<int> postList = [];
+  List<String> postList = [];
 
   // default constructor
   User(this.firstName, this.lastName, this.userID, this.username);
 
   // constructor for sample cases only
-  User.withDetails(this.firstName, this.lastName, this.userID, this.username,
-      this.profilePicURL, this.followerList, this.followingList, this.postList);
-
-  String getUserID() {
+  User.withDetails(
+      this.firstName,
+      this.lastName,
+      this.userID,
+      this.username,
+      this.profilePicURL,
+      this.followerList,
+      this.followingList,
+      this.postList);
+  
+  String getUserID(){
     return userID;
   }
 
-  List<int> getPostlist() {
+  List<String> getPostlist(){
     return postList;
   }
 
-  List<String> getFollowerlist() {
+  List<String> getFollowerlist(){
     return followerList;
   }
 
-  List<String> getFollowinglist() {
+  List<String> getFollowinglist(){
     return followingList;
   }
 
@@ -51,7 +58,7 @@ class User {
     return;
   }
 
-  void addFollowing(userID) {
+    void addFollowing(userID) {
     followingList.add(userID);
     return;
   }
@@ -61,15 +68,12 @@ class User {
     return;
   }
 
-  bool isFollowing(String userID) {
-    bool following = false;
-    for (String id in followerList) {
-      if (id == userID) {
-        following = true;
-        break;
-      }
-    }
-    return following;
+  bool isFollowing(String userID){
+    return followingList.contains(userID);
+  }
+
+  bool isFollowedBy(String userID){
+    return followerList.contains(userID);
   }
 
   factory User.fromFirestore(DocumentSnapshot document, String userID) {
@@ -83,8 +87,7 @@ class User {
       data['username'],
     );
 
-    user.profilePicURL =
-        data['profilePicURL'] ?? "SampleImages/default-user.jpg";
+    user.profilePicURL = data['profilePicURL'] ?? "lib/assets/default-user.jpg";
     user.userBio = data['userBio'] ?? "";
     user.streaks = data['streaks'] ?? 0;
 
@@ -95,32 +98,61 @@ class User {
       user.followingList = List<String>.from(data['followingList']);
     }
     if (data['postList'] != null) {
-      user.postList = List<int>.from(data['postList']);
+      user.postList = List<String>.from(data['postList']);
     }
 
     return user;
   }
+
+  static Future<List<String>> fetchFollowingList(String userID) async {
+    List<String> followingList = [];
+    try {
+      final firestoreInstance = FirebaseFirestore.instance;
+      final userDocument = await firestoreInstance.collection('users').doc(userID).get();
+
+      if (userDocument.exists) {
+        final userData = userDocument.data() as Map<String, dynamic>;
+        final followingListData = userData['followingList'];
+
+        if (followingListData != null && followingListData is List) {
+          followingList = List<String>.from(followingListData);
+        }
+      }
+    } catch (e) {
+      // Handle any errors, e.g., print or log the error
+      print('Error fetching followingList: $e');
+    }
+
+    return followingList;
+  }
+
+    static Future<List<String>> fetchPostList(String userID) async {
+    List<String> postList = [];
+    try {
+      final firestoreInstance = FirebaseFirestore.instance;
+      final userDocument = await firestoreInstance.collection('users').doc(userID).get();
+
+      if (userDocument.exists) {
+        final userData = userDocument.data() as Map<String, dynamic>;
+        final postListData = userData['postList'];
+
+        if (postListData != null && postListData is List) {
+          postList = List<String>.from(postListData);
+        }
+      }
+    } catch (e) {
+      // Handle any errors, e.g., print or log the error
+      print('Error fetching followingList: $e');
+    }
+
+    return postList;
+  }
 }
 
 // A sample list of users to play with.
-var sampleUser = [
+  var sampleUser = [
   User("John", "Wunder", "tCBgXhuZ57gJUfOhyS7X6gdF3sE3", "JohnW2"),
-  User.withDetails(
-      "Bob",
-      "Reed",
-      "to7UDeMklvPrDDAZqrURwpW6ENf1",
-      "BobR55",
-      "SampleImages/pfp1.jpg",
-      ["CSJTlYeExpS1qMQROeWCnqZEzIF2"],
-      ["CSJTlYeExpS1qMQROeWCnqZEzIF2"],
-      [123]),
-  User.withDetails(
-      "Claire",
-      "deluna",
-      "CSJTlYeExpS1qMQROeWCnqZEzIF2",
-      "Cdel",
-      "SampleImages/pfp1.jpg",
-      ["to7UDeMklvPrDDAZqrURwpW6ENf1"],
-      ["to7UDeMklvPrDDAZqrURwpW6ENf1"],
-      [321, 231]),
+  User.withDetails("Bob", "Reed", "to7UDeMklvPrDDAZqrURwpW6ENf1", "BobR55", "SampleImages/pfp1.jpg", ["CSJTlYeExpS1qMQROeWCnqZEzIF2"], ["CSJTlYeExpS1qMQROeWCnqZEzIF2"], ['123']),
+  User.withDetails("Claire", "deluna", "CSJTlYeExpS1qMQROeWCnqZEzIF2", "Cdel", "SampleImages/pfp1.jpg", ["to7UDeMklvPrDDAZqrURwpW6ENf1"], ["to7UDeMklvPrDDAZqrURwpW6ENf1"], ['321', '231']),
 ];
+

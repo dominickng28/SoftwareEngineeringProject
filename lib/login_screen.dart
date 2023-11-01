@@ -30,8 +30,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // If the sign in was successful, navigate to the home screen
       if (userCredential.user != null) {
+        String userID = userCredential.user!.uid;
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const MainScreen()),
+          MaterialPageRoute(builder: (context) => MainScreen(userID: userID)),
         );
       } else {
         // If the user is not signed in, show a message
