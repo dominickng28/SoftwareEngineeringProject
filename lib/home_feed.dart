@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -15,7 +16,7 @@ class MyFeed extends StatefulWidget {
 
 class _MyFeedTest extends State<MyFeed>{
   List<Post> posts = [];
-
+  
 Future<Post?> fetchPostData(String postId) async {
   try {
     // Accessing Firestore instance
@@ -38,7 +39,6 @@ Future<Post?> fetchPostData(String postId) async {
     return null; 
   }
 }
-
 Future<List<Post>> getFollowingPosts(List<String> followingList) async {
   List<Post> followingPosts = [];
 
@@ -87,26 +87,71 @@ Future<void> fetchAllPostData() async {
 }
 class PostCard extends StatelessWidget{
   final Post post;
-  const PostCard({super.key, required this.post});
+
+  PostCard({required this.post});
+
+  @override
+  _PostCardState createState() => _PostCardState();
+}
+
+class _PostCardState extends State<PostCard> {
+  bool isLiked = false; // Track whether the post is liked
+  bool isExpanded = false; // Track whether the post embed is expanded
+  double imageHeight = 200.0; // Initial height
 
   @override
   Widget build(BuildContext context){
     return Card(
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(post.username),
-            subtitle: Text(post.caption),
-          ),
-          Image.network(post.embed),
-          Row(
-            children: [
-              const Icon(Icons.thumbs_up_down),
-              Text(post.likeCount.toString())
-            ],
-          )
-        ],
-      )
-    );
+color: const Color.fromARGB(255, 55, 190, 253),
+shape: RoundedRectangleBorder(
+  side: BorderSide(color: Color.fromARGB(255, 2, 23, 117), width: 6.0), // Set the border color and width here
+  borderRadius: BorderRadius.circular(8.0), 
+),
+child: Column(
+  children: [
+    ListTile(
+      leading: CircleAvatar(
+        backgroundImage: AssetImage(widget.post.pfp),
+      ),
+      title: Text(widget.post.username),
+      subtitle: Text(widget.post.caption),
+    ),
+    GestureDetector(
+      onTap: () {
+        setState(() {
+          isExpanded = !isExpanded;
+          imageHeight = isExpanded ? 400.0 : 200.0; // Set your desired expanded and small sizes here
+        });
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300), // Animation duration
+        height: imageHeight,
+        child: Image.asset(widget.post.embed),
+      ),
+    ),
+    Row(
+      children: [
+        IconButton(
+          icon: Icon(isLiked ? Icons.thumb_up : Icons.thumb_up_alt, color: isLiked ? Color.fromARGB(255, 2, 23, 117) : null),
+          onPressed: () {
+            setState(() {
+              isLiked = !isLiked;
+              if (isLiked) {
+                widget.post.likeCount++;
+              } else {
+                widget.post.likeCount--;
+              }
+            });
+          },
+        ),
+        Text(widget.post.likeCount.toString()),
+        Spacer(),
+        Padding(padding: EdgeInsets.only(right: 16.0),
+        child: Text(widget.post.date),)
+      ],
+    )
+  ],
+);
+
   }
 }

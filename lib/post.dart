@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -8,10 +9,11 @@ class Post {
   int likeCount;
   final String _postid;
   String embed;
-  var userID;
-  Post(this.username, this._postid, this.userID, this.caption, this.embed, this.date,
+  String pfp;
+  String userID;
+  Post(this.username, this.pfp, this._postid, this.userID, this.caption, this.embed, this.date,
       this.likeCount);
-  
+ 
   factory Post.fromFirestore(DocumentSnapshot document, String postid) {
     final data = document.data() as Map<String, dynamic>;
 
@@ -29,4 +31,3 @@ class Post {
     return post;
   }
 }
-
