@@ -72,8 +72,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Logo Image
                   Image.asset(
                     'lib/assets/Live4youLine.png',
-                    width: 300, // Adjust the width as needed
-                    height: 300, // Adjust the height as needed
+                    width: 200, // Adjust the width as needed
+                    height: 200, // Adjust the height as needed
                   ),
                   const SizedBox(height: 20.0),
                   Container(

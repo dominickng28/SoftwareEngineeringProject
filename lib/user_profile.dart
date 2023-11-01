@@ -65,16 +65,9 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
     fetchUserData();
     return Scaffold(
       appBar: AppBar(
-  backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
-  title: Text(
-    'PROFILE',
-    style: TextStyle(
-      color: Colors.white, // Set the text color to white
-      fontWeight: FontWeight.bold, // Set the text to bold
-    ),
-  ),
-),
-backgroundColor: const Color.fromRGBO(153, 206, 255, 0.996),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+      ),
       body: Column(
         children: <Widget>[
           Container(

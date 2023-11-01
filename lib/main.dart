@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:live4you/firebase_options.dart';
 import 'package:live4you/login_screen.dart';
 import 'package:live4you/signup_screen.dart';
 import 'package:live4you/home_feed.dart'; // Import the home screen
@@ -72,36 +71,30 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor:  const Color.fromRGBO(0, 45, 107, 0.992),
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white,
+        backgroundColor: Colors.white,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
         onTap: onTabTapped,
         currentIndex: _currentIndex,
         items: const [
           BottomNavigationBarItem(
-            backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
             icon: Icon(Icons.home),
-            activeIcon: Icon(Icons.home, color: Colors.white),
+            activeIcon: Icon(Icons.home, color: Colors.blue),
             label: 'Home',
-            
-            
           ),
           BottomNavigationBarItem(
-            backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
             icon: Icon(Icons.beach_access),
-            activeIcon: Icon(Icons.beach_access, color: Colors.white),
+            activeIcon: Icon(Icons.beach_access, color: Colors.blue),
             label: 'Words',
           ),
           BottomNavigationBarItem(
-            backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
             icon: Icon(Icons.search),
-            activeIcon: Icon(Icons.search, color: Colors.white),
+            activeIcon: Icon(Icons.search, color: Colors.blue),
             label: 'Search',
           ),
           BottomNavigationBarItem(
-            backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
             icon: Icon(Icons.person),
-            activeIcon: Icon(Icons.percent, color: Colors.white),
+            activeIcon: Icon(Icons.percent, color: Colors.blue),
             label: 'Profile',
           ),
         ],
