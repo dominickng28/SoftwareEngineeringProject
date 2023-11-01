@@ -13,31 +13,28 @@ class _WordsScreenState extends State<WordsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    
       appBar: AppBar(
-  backgroundColor: Theme.of(context).colorScheme.primary,
-  title: Text(
-    'WORDS', // Choose one title or merge the titles
-    style: TextStyle(
-      color: Colors.white,
-      fontWeight: FontWeight.bold,
+      backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+      title: Text(
+          'WORDS',
+      style: TextStyle(
+      color: Colors.white, // Set the text color to white
+      fontWeight: FontWeight.bold, // Set the text to bold
     ),
   ),
 ),
-
-        backgroundColor: const Color.fromRGBO(153, 206, 255, 0.996),
-        body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: List.generate(4, (index) {
-            final randomWord = Activities[index % Activities.length]; // Fetch a random word
+            final randomWord = Activities[index % Activities.length]; // Ensure Activities are properly initialized
             return Container(
               margin: EdgeInsets.all(8.0),
-              width: MediaQuery.of(context).size.width / 1, // Adjust width as needed
-              height: MediaQuery.of(context).size.height / 7, // Adjust height as needed
+              width: MediaQuery.of(context).size.width / 1,
+              height: MediaQuery.of(context).size.height / 7,
               decoration: BoxDecoration(
-                color: const Color.fromRGBO(0, 45, 107, 0.992), // Example color for the box
-                borderRadius: BorderRadius.circular(12.0), // Optional: rounded corners
+                color: const Color.fromRGBO(0, 45, 107, 0.992),
+                borderRadius: BorderRadius.circular(12.0),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,8 +45,8 @@ class _WordsScreenState extends State<WordsScreen> {
                       randomWord,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 84, // Triple the font size
-                        fontWeight: FontWeight.bold, // Make the text bold
+                        fontSize: 84,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -68,6 +65,7 @@ class _WordsScreenState extends State<WordsScreen> {
           }),
         ),
       ),
+      backgroundColor: const Color.fromRGBO(153, 206, 255, 0.996), // Placed within the Scaffold widget
     );
   }
 }
