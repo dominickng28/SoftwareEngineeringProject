@@ -31,26 +31,8 @@ class _MyFeed extends State<MyFeed> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-  backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
-  title: Row(
-    children: [
-      Expanded(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: 100, // Adjust the width as needed
-              height: 100, // Adjust the height as needed
-              child: Image.asset('lib/assets/Live4youWhite.png'),
-            ),
-          ),
-        ),
+        title: const Text('Live4You Homefeed'),
       ),
-    ],
-  ),
-),
-
-
       body: ListView.builder(
         itemCount: posts.length,
         itemBuilder: (BuildContext context, int index) {
