@@ -13,11 +13,20 @@ class _WordsScreenState extends State<WordsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+    
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary, // Use appropriate color
-        title: Text(widget.title),
-      ),
-      body: Center(
+  backgroundColor: Theme.of(context).colorScheme.primary,
+  title: Text(
+    'WORDS', // Choose one title or merge the titles
+    style: TextStyle(
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+),
+
+        backgroundColor: const Color.fromRGBO(153, 206, 255, 0.996),
+        body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: List.generate(4, (index) {
