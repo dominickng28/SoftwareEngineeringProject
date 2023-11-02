@@ -76,33 +76,37 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: Color.fromARGB(249, 253, 208, 149), 
+        unselectedItemColor: const Color.fromARGB(255, 255, 255, 255),
         onTap: onTabTapped,
         currentIndex: _currentIndex,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            activeIcon: Icon(Icons.home, color: Colors.blue),
+            activeIcon: Icon(Icons.home, color: Color.fromARGB(249, 253, 208, 149), ),
+            backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.beach_access),
-            activeIcon: Icon(Icons.beach_access, color: Colors.blue),
+            activeIcon: Icon(Icons.beach_access, color: const Color.fromARGB(249, 253, 208, 149)),
+            backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
             label: 'Words',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
-            activeIcon: Icon(Icons.search, color: Colors.blue),
+            activeIcon: Icon(Icons.search, color: const Color.fromARGB(249, 253, 208, 149)),
+            backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
             label: 'Search',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            activeIcon: Icon(Icons.person, color: Colors.blue),
+            activeIcon: Icon(Icons.person, color: const Color.fromARGB(249, 253, 208, 149)),
+            backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
             label: 'Profile',
           ),
         ],
+
       ),
     );
   }

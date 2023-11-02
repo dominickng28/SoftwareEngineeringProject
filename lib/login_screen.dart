@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
         ),
-        backgroundColor: const Color.fromRGBO(153, 206, 255, 0.996),
+        backgroundColor: Color.fromARGB(249, 255, 215, 139),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -77,8 +77,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Logo Image
                   Image.asset(
                     'lib/assets/Live4youLine.png',
-                    width: 200, // Adjust the width as needed
-                    height: 200, // Adjust the height as needed
+                    width: 300, // Adjust the width as needed
+                    height: 300, // Adjust the height as needed
                   ),
                   const SizedBox(height: 20.0),
                   Container(
@@ -150,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         color:
-                            Colors.blue, // Change this to your preferred color
+                            Color.fromARGB(248, 1, 31, 57),  // Change this to your preferred color
                       ),
                     ),
                   ),

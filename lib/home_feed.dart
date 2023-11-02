@@ -93,8 +93,19 @@ class _MyFeedTest extends State<MyFeed> {
     fetchAllPostData();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Live4You Homefeed'),
+      backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+      flexibleSpace: Padding(
+        padding: EdgeInsets.only(top: 60.0), // Adjust the top padding value to lower the image
+        child: Center(
+          child: Image.asset(
+            'lib/assets/Live4youWhite.png', // Replace 'lib/assets/Live4youWhite.png' with your image path
+            height: 120, // Adjust the height of the image
+            width: 130, // Adjust the width of the image
+          ),
+        ),
       ),
+    ),
+
       body: ListView.builder(
         itemCount: posts.length,
         itemBuilder: (BuildContext context, int index) {
@@ -153,7 +164,7 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color.fromARGB(255, 55, 190, 253),
+      color: const Color.fromARGB(249, 253, 208, 149),
       shape: RoundedRectangleBorder(
         side: BorderSide(
             color: Color.fromARGB(255, 2, 23, 117),
