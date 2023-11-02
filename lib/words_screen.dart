@@ -10,63 +10,72 @@ class WordsScreen extends StatefulWidget {
 }
 
 class _WordsScreenState extends State<WordsScreen> {
+  bool isChecked = false; 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-      backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
-      title: Text( 
-          'WORDS',
-      style: TextStyle(
-      color: Colors.white, // Set the text color to white
-      fontWeight: FontWeight.bold, // Set the text to bold
-    ),
-  ),
-),
-      body: Center(
+        backgroundColor: Theme.of(context).colorScheme.primary, // Use appropriate color
+        title: Text(widget.title),
+      ),
+
+      body: SingleChildScrollView(
+
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: List.generate(4, (index) {
-            final randomWord = Activities[index % Activities.length]; // Ensure Activities are properly initialized
+          mainAxisAlignment: MainAxisAlignment.center,
+
+          children: List.generate(8, (index) {
+            final randomWord = Activities[index % Activities.length]; // Fetch a random word
+
             return Container(
-              margin: EdgeInsets.all(8.0),
-              width: MediaQuery.of(context).size.width / 1,
-              height: MediaQuery.of(context).size.height / 7,
+              margin: const EdgeInsets.all(8.0),
+              alignment: Alignment.center,
+              width: MediaQuery.of(context).size.width / 1, // Adjust width as needed
+              height: MediaQuery.of(context).size.height / 10, // Adjust height as needed
               decoration: BoxDecoration(
-                color: const Color.fromRGBO(0, 45, 107, 0.992),
-                borderRadius: BorderRadius.circular(12.0),
+                color: const Color.fromRGBO(0, 45, 107, 0.992), // Example color for the box
+                borderRadius: BorderRadius.circular(12.0), // Optional: rounded corners
               ),
+              
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
-                      randomWord,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 84,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+
+                children: <Widget> [
+
+                  Checkbox(
+                    value: isChecked,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isChecked = value ?? false; 
+                      });
+                      print('Task Completed'); 
+                    }, 
+                    // child: Text('+'),
+
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextButton(
-                      onPressed: () {
-                        // Dialog functionality
-                      },
-                      child: Icon(Icons.add_photo_alternate_outlined, color: Colors.white),
-                    ),
+
+                  Text(randomWord, 
+                  style: TextStyle( 
+                    fontSize: 16, 
+                    fontWeight: FontWeight.bold, 
+                    color: Colors.white, 
                   ),
+                  ), 
+
+                  ElevatedButton(
+                    onPressed: () {
+                      print('Button Pressed'); 
+                    }, 
+                    child: Text('+'),
+
+                  ), 
                 ],
               ),
             );
           }),
         ),
       ),
-      backgroundColor: const Color.fromARGB(249, 253, 208, 149), // Placed within the Scaffold widget
     );
   }
-} 
-
+}
