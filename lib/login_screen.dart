@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:live4you/firestore_service.dart';
 import 'package:live4you/home_feed.dart';
 import 'package:live4you/signup_screen.dart';
+import 'package:live4you/user_data.dart';
 import 'main.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final FirestoreService firestoreService = FirestoreService();
 
   void _login() async {
     try {
@@ -30,9 +33,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // If the sign in was successful, navigate to the home screen
       if (userCredential.user != null) {
-        String userID = userCredential.user!.uid;
+        UserData.userName = (await firestoreService
+            .getUsernameFromEmail(_emailController.text))!;
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => MainScreen(userID: userID)),
+          MaterialPageRoute(builder: (context) => MainScreen()),
         );
       } else {
         // If the user is not signed in, show a message

@@ -36,8 +36,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MainScreen extends StatefulWidget {
-  MainScreen({Key? key, required this.userID}) : super(key: key);
-  final String userID;
+  MainScreen({Key? key}) : super(key: key);
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -55,17 +54,13 @@ class _MainScreenState extends State<MainScreen> {
     _children = [
       MyFeed(
         title: 'Home Feed',
-        userID: widget.userID,
       ),
       const WordsScreen(title: 'Words'),
       MySearch(
         title: 'Search',
-        userID: widget.userID,
       ),
       MyUserProfilePage(
         title: 'User Profile',
-        userID: widget.userID,
-        profileUserID: widget.userID,
       ),
     ];
   }
@@ -73,7 +68,6 @@ class _MainScreenState extends State<MainScreen> {
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
-      
     });
   }
 
@@ -113,4 +107,3 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
-

@@ -1,14 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'post.dart';
 import 'user.dart';
+import 'user_data.dart';
 
 class MyFeed extends StatefulWidget {
-  const MyFeed({super.key, required this.title, required this.userID});
+  const MyFeed({super.key, required this.title});
   final String title;
-  final String userID;
 
   @override
   State<MyFeed> createState() => _MyFeedTest();
@@ -41,24 +40,24 @@ class _MyFeedTest extends State<MyFeed> {
     }
   }
 
-  Future<List<Post>> getFollowingPosts(List<String> followingList) async {
-    List<Post> followingPosts = [];
+  Future<List<Post>> getFriendsPosts(List<String> friendsList) async {
+    List<Post> friendsPosts = [];
 
-    for (String userID in followingList) {
+    for (String userID in friendsList) {
       List<String> postList = await User.fetchPostList(userID);
       for (String postID in postList) {
         Post? post = await fetchPostData(postID);
         if (post != null) {
-          followingPosts.add(post);
+          friendsPosts.add(post);
         }
       }
     }
-    return followingPosts;
+    return friendsPosts;
   }
 
   Future<void> fetchAllPostData() async {
-    List<String> followingList = await User.fetchFollowingList(widget.userID);
-    List<Post> allPostData = await getFollowingPosts(followingList);
+    List<String> friendList = await User.fetchFriendsList(UserData.userName);
+    List<Post> allPostData = await getFriendsPosts(friendList);
     setState(() {
       posts = allPostData;
     });
