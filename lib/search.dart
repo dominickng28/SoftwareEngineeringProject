@@ -23,9 +23,17 @@ class _MySearchState extends State<MySearch> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
+          title: Text(
+            'Search',
+            style: TextStyle(
+              color: Color.fromARGB(249, 253, 208, 149), // Set text color to white
+              fontWeight: FontWeight.bold, // Set text to bold
+              fontSize: 24, // Set font size to a larger value
+            ),
+          ),
+          backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+        ),
+        backgroundColor: const Color.fromARGB(249, 253, 208, 149),
       body: Column(
         children: <Widget>[
           Padding(

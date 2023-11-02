@@ -104,7 +104,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
         backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
       ),
-      backgroundColor: const Color.fromRGBO(153, 206, 255, 0.996),
+      backgroundColor: const Color.fromARGB(249, 253, 208, 149),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -114,7 +114,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Image.asset(
                 'lib/assets/Live4youLine.png',
                 width: 200, // Adjust the width as needed
-                height: 100, // Adjust the height as needed
+                height: 150, // Adjust the height as needed
               ),
               const SizedBox(height: 20.0),
               Container(
