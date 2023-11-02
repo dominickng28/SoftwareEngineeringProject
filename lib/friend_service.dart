@@ -116,44 +116,4 @@ class FriendService {
       return friends;
     });
   }
-
-  // Additional method to handle posts, assuming posts are a list of strings (IDs or URLs)
-  Stream<List<Map<String, dynamic>>> postsStream(String username) {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(username)
-        .snapshots()
-        .map((snapshot) {
-      var userData = snapshot.data() as Map<String, dynamic>;
-      var postsRaw = userData['posts'] as List? ?? [];
-      return postsRaw.map((p) => p as Map<String, dynamic>).toList();
-    });
-  }
-
-  Future<void> removePost(String username, int postIndex) async {
-    DocumentReference userDoc =
-        FirebaseFirestore.instance.collection('users').doc(username);
-
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot userSnapshot = await transaction.get(userDoc);
-      if (userSnapshot.exists) {
-        var userData = userSnapshot.data() as Map<String, dynamic>;
-        if (userData != null) {
-          List<dynamic> posts = userData['posts'] as List<dynamic>? ?? [];
-
-          if (posts.length > postIndex) {
-            posts.removeAt(postIndex);
-            transaction.update(userDoc, {'posts': posts});
-          } else {
-            print("Error: postIndex is out of range.");
-          }
-        } else {
-          print("Error: No data found in the user document.");
-        }
-      } else {
-        print("Error: User document does not exist.");
-      }
-    });
-  }
-  // If posts are complex objects, you might need to adjust the data type and mapping logic
 }

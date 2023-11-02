@@ -1,9 +1,11 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'post.dart';
 import 'user.dart';
 import 'user_data.dart';
+import 'camera_screen.dart';
 
 class MyFeed extends StatefulWidget {
   const MyFeed({super.key, required this.title});
@@ -14,6 +16,7 @@ class MyFeed extends StatefulWidget {
 }
 
 class _MyFeedTest extends State<MyFeed> {
+  final UserData userData = UserData(FirebaseFirestore.instance);
   List<Post> posts = [];
 
   Future<Post?> fetchPostData(String postId) async {
@@ -55,9 +58,31 @@ class _MyFeedTest extends State<MyFeed> {
     return friendsPosts;
   }
 
-  Future<void> fetchAllPostData() async {
-    List<String> friendList = await User.fetchFriendsList(UserData.userName);
-    List<Post> allPostData = await getFriendsPosts(friendList);
+  void fetchAllPostData() async {
+    // Fetch friends list
+    await userData.populateFriendsList();
+    List<String>? friendList = UserData.friends;
+
+    // Add the current user's username to the list
+    friendList?.add(UserData.userName);
+
+    // Access Firestore instance
+    final firestoreInstance = FirebaseFirestore.instance;
+
+    // Fetch all posts
+    QuerySnapshot querySnapshot = await firestoreInstance
+        .collection('posts')
+        .where('username', whereIn: friendList)
+        .get();
+
+    // Convert each document to a Post object and add it to the posts list
+    List<Post> allPostData = querySnapshot.docs
+        .map((doc) => Post.fromFirestore(doc, doc.id))
+        .toList();
+
+    // Sort posts by timestamp
+    allPostData.sort((a, b) => b.date.compareTo(a.date));
+
     setState(() {
       posts = allPostData;
     });
@@ -77,12 +102,23 @@ class _MyFeedTest extends State<MyFeed> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pop(
-              context); // Navigate back to the previous screen (the homepage)
+        onPressed: () async {
+          final cameras = await availableCameras();
+          final firstCamera = cameras.first;
+
+          final didCreatePost = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CameraScreen(camera: firstCamera),
+            ),
+          );
+
+          if (didCreatePost == true) {
+            fetchAllPostData(); // Refresh the feed if a new post was created
+          }
         },
-        tooltip: 'Back',
-        child: const Icon(Icons.add),
+        tooltip: 'Camera',
+        child: const Icon(Icons.camera_alt),
       ),
     );
   }
@@ -101,6 +137,18 @@ class _PostCardState extends State<PostCard> {
   bool isLiked = false; // Track whether the post is liked
   bool isExpanded = false; // Track whether the post embed is expanded
   double imageHeight = 200.0; // Initial height
+  String timeAgo(DateTime date) {
+    Duration diff = DateTime.now().difference(date);
+    if (diff.inDays > 0) {
+      return '${diff.inDays} day(s) ago';
+    } else if (diff.inHours > 0) {
+      return '${diff.inHours} hour(s) ago';
+    } else if (diff.inMinutes > 0) {
+      return '${diff.inMinutes} minute(s) ago';
+    } else {
+      return 'Just now';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +181,7 @@ class _PostCardState extends State<PostCard> {
             child: AnimatedContainer(
               duration: Duration(milliseconds: 300), // Animation duration
               height: imageHeight,
-              child: Image.asset(widget.post.embed),
+              child: Image.network(widget.post.imageUrl),
             ),
           ),
           Row(
@@ -156,7 +204,7 @@ class _PostCardState extends State<PostCard> {
               Spacer(),
               Padding(
                 padding: EdgeInsets.only(right: 16.0),
-                child: Text(widget.post.date),
+                child: Text(timeAgo(widget.post.date)),
               )
             ],
           )
