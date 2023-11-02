@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:live4you/user_data.dart';
+import 'post_signup_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -11,10 +15,78 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
-  void _signUp() {
-    // Implement your sign-up logic here
-    // You can use Firebase or any other authentication service
+  Future<void> _signUp() async {
+    final email = _emailController.text;
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    if (password == confirmPassword) {
+      try {
+        // Check if the username is already in use
+        final usernameSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(username)
+            .get();
+
+        if (!usernameSnapshot.exists) {
+          // Check if the email is already in use
+          final emailSnapshot = await FirebaseFirestore.instance
+              .collection('users')
+              .where('email', isEqualTo: email)
+              .get();
+
+          if (emailSnapshot.docs.isEmpty) {
+            UserCredential userCredential =
+                await FirebaseAuth.instance.createUserWithEmailAndPassword(
+              email: email,
+              password: password,
+            );
+
+            User? user = userCredential.user;
+
+            // Updating display name in Firebase Authentication
+            user!.updateDisplayName(username).then((_) {
+              user.reload(); // Ensure the user’s displayName is refreshed
+            });
+            UserData.userName = username;
+            // Add the user to Firestore
+            await usersCollection.doc(username).set({
+              'username': username,
+              'useremail': email,
+              'uid': user.uid,
+              'joinedTimestamp': Timestamp.now(), // Store the current timestamp
+            });
+            // Navigate to the PostSignUpScreen to set the bio etc.
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PostSignUpScreen(),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Email is already in use.')),
+            );
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Username is already in use.')),
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? 'An error occurred.')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Passwords do not match.')),
+      );
+    }
   }
 
   @override
@@ -39,7 +111,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // Logo Image
               Image.asset(
                 'lib/assets/Live4youLine.png',
                 width: 200, // Adjust the width as needed
@@ -81,11 +152,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 20.0),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16), // Add an icon as the prefix
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey)),
                 child: TextFormField(
                   controller: _passwordController,
                   obscureText: true,
@@ -96,9 +167,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10.0),
+              const SizedBox(height: 20.0),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16), // Add an icon as the prefix
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey)),
+                child: TextFormField(
+                  controller: _confirmPasswordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    hintText: 'Confirm Password',
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.lock), // Add an icon as the prefix
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: _signUp,
+                onPressed: () => _signUp(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(
                       255, 255, 255, 255), // Change button color

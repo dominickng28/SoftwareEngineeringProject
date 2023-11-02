@@ -3,19 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'user.dart';
 import 'profile_screen.dart';
 import 'main.dart';
+import 'friend_service.dart';
+import 'user_data.dart';
 
 class MySearch extends StatefulWidget {
-  const MySearch({super.key, required this.title, required this.userID});
+  const MySearch({super.key, required this.title});
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-  final String userID;
   final String title;
 
   @override
@@ -23,6 +16,9 @@ class MySearch extends StatefulWidget {
 }
 
 class _MySearchState extends State<MySearch> {
+  final TextEditingController _searchController = TextEditingController();
+  final FriendService _friendService = FriendService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,58 +26,74 @@ class _MySearchState extends State<MySearch> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Test'),
-            SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => MyUserProfilePage(
-                      title: 'User Profile',
-                      userID: widget.userID,
-                      profileUserID: "tCBgXhuZ57gJUfOhyS7X6gdF3sE3",
-                    ),
-                  ),
-                );
-              },
-              child: Text('John'),
+      body: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                labelText: "Search for a username",
+                suffixIcon: IconButton(
+                  onPressed: () async {
+                    String username = _searchController.text;
+                    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(username)
+                        .get();
+                    if (userDoc.exists) {
+                      // If the user exists, send a friend request
+                      _friendService.sendFriendRequest(
+                          UserData.userName, username);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Friend request sent to $username')),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(
+                                'No user found with the username $username')),
+                      );
+                    }
+                  },
+                  icon: Icon(Icons.search),
+                ),
+              ),
             ),
-            SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => MyUserProfilePage(
-                      title: 'User Profile',
-                      userID: widget.userID,
-                      profileUserID: "to7UDeMklvPrDDAZqrURwpW6ENf1",
-                    ),
-                  ),
-                );
+          ),
+          Expanded(
+            child: StreamBuilder<List<String>>(
+              stream: _friendService
+                  .receivedFriendRequestsStream(UserData.userName),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<String> friendRequests = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: friendRequests.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(friendRequests[index]),
+                        trailing: ElevatedButton(
+                          onPressed: () {
+                            // Accept the friend request
+                            _friendService.acceptFriendRequest(
+                                UserData.userName, friendRequests[index]);
+                          },
+                          child: Text('Accept'),
+                        ),
+                      );
+                    },
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error loading friend requests'));
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
               },
-              child: Text('Bob'),
             ),
-            SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => MyUserProfilePage(
-                      title: 'User Profile',
-                      userID: widget.userID,
-                      profileUserID: "CSJTlYeExpS1qMQROeWCnqZEzIF2",
-                    ),
-                  ),
-                );
-              },
-              child: Text('Claire'),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

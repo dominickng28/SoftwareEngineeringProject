@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'user_data.dart';
 
 class User {
   /// A class representing a user. userID is immutable.
@@ -12,8 +13,7 @@ class User {
 
   final String userID;
 
-  List<String> followerList = [];
-  List<String> followingList = [];
+  List<String> friendsList = [];
 
   // list with the ID of each post created by user
   List<String> postList = [];
@@ -22,58 +22,33 @@ class User {
   User(this.firstName, this.lastName, this.userID, this.username);
 
   // constructor for sample cases only
-  User.withDetails(
-      this.firstName,
-      this.lastName,
-      this.userID,
-      this.username,
-      this.profilePicURL,
-      this.followerList,
-      this.followingList,
-      this.postList);
-  
-  String getUserID(){
+  User.withDetails(this.firstName, this.lastName, this.userID, this.username,
+      this.profilePicURL, this.friendsList, this.postList);
+
+  String getUserID() {
     return userID;
   }
 
-  List<String> getPostlist(){
+  List<String> getPostlist() {
     return postList;
   }
 
-  List<String> getFollowerlist(){
-    return followerList;
+  List<String> getFriendslist() {
+    return friendsList;
   }
 
-  List<String> getFollowinglist(){
-    return followingList;
-  }
-
-  void addFollower(followerID) {
-    followerList.add(followerID);
+  void addFriend(friendID) {
+    friendsList.add(friendID);
     return;
   }
 
-  void removeFollower(followerID) {
-    followerList.remove(followerID);
+  void removeFriend(friendID) {
+    friendsList.remove(friendID);
     return;
   }
 
-    void addFollowing(userID) {
-    followingList.add(userID);
-    return;
-  }
-
-  void removeFollowing(userID) {
-    followingList.remove(userID);
-    return;
-  }
-
-  bool isFollowing(String userID){
-    return followingList.contains(userID);
-  }
-
-  bool isFollowedBy(String userID){
-    return followerList.contains(userID);
+  bool isFriend() {
+    return friendsList.contains(UserData.userName);
   }
 
   factory User.fromFirestore(DocumentSnapshot document, String userID) {
@@ -91,11 +66,8 @@ class User {
     user.userBio = data['userBio'] ?? "";
     user.streaks = data['streaks'] ?? 0;
 
-    if (data['followerList'] != null) {
-      user.followerList = List<String>.from(data['followerList']);
-    }
-    if (data['followingList'] != null) {
-      user.followingList = List<String>.from(data['followingList']);
+    if (data['friendsList'] != null) {
+      user.friendsList = List<String>.from(data['friendsList']);
     }
     if (data['postList'] != null) {
       user.postList = List<String>.from(data['postList']);
@@ -104,33 +76,35 @@ class User {
     return user;
   }
 
-  static Future<List<String>> fetchFollowingList(String userID) async {
-    List<String> followingList = [];
+  static Future<List<String>> fetchFriendsList(String userID) async {
+    List<String> friendsList = [];
     try {
       final firestoreInstance = FirebaseFirestore.instance;
-      final userDocument = await firestoreInstance.collection('users').doc(userID).get();
+      final userDocument =
+          await firestoreInstance.collection('users').doc(userID).get();
 
       if (userDocument.exists) {
         final userData = userDocument.data() as Map<String, dynamic>;
-        final followingListData = userData['followingList'];
+        final friendsListData = userData['friendsList'];
 
-        if (followingListData != null && followingListData is List) {
-          followingList = List<String>.from(followingListData);
+        if (friendsListData != null && friendsListData is List) {
+          friendsList = List<String>.from(friendsListData);
         }
       }
     } catch (e) {
       // Handle any errors, e.g., print or log the error
-      print('Error fetching followingList: $e');
+      print('Error fetching friends list: $e');
     }
 
-    return followingList;
+    return friendsList;
   }
 
-    static Future<List<String>> fetchPostList(String userID) async {
+  static Future<List<String>> fetchPostList(String userID) async {
     List<String> postList = [];
     try {
       final firestoreInstance = FirebaseFirestore.instance;
-      final userDocument = await firestoreInstance.collection('users').doc(userID).get();
+      final userDocument =
+          await firestoreInstance.collection('users').doc(userID).get();
 
       if (userDocument.exists) {
         final userData = userDocument.data() as Map<String, dynamic>;
@@ -142,17 +116,9 @@ class User {
       }
     } catch (e) {
       // Handle any errors, e.g., print or log the error
-      print('Error fetching followingList: $e');
+      print('Error fetching post list: $e');
     }
 
     return postList;
   }
 }
-
-// A sample list of users to play with.
-  var sampleUser = [
-  User("John", "Wunder", "tCBgXhuZ57gJUfOhyS7X6gdF3sE3", "JohnW2"),
-  User.withDetails("Bob", "Reed", "to7UDeMklvPrDDAZqrURwpW6ENf1", "BobR55", "SampleImages/pfp1.jpg", ["CSJTlYeExpS1qMQROeWCnqZEzIF2"], ["CSJTlYeExpS1qMQROeWCnqZEzIF2"], ['123']),
-  User.withDetails("Claire", "deluna", "CSJTlYeExpS1qMQROeWCnqZEzIF2", "Cdel", "SampleImages/pfp1.jpg", ["to7UDeMklvPrDDAZqrURwpW6ENf1"], ["to7UDeMklvPrDDAZqrURwpW6ENf1"], ['321', '231']),
-];
-
