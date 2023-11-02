@@ -121,7 +121,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(userProfile?.firstName ?? "Loading..."),
+                        Text(UserData.userName),
                         const SizedBox(height: 20.0),
                         Visibility(
                           visible: true,
@@ -158,11 +158,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Add a create post function
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MyFeed(title: "Home"),
-              ));
+          
         },
         child: const Icon(Icons.add),
       ),

@@ -51,19 +51,19 @@ class User {
     return friendsList.contains(UserData.userName);
   }
 
-  factory User.fromFirestore(DocumentSnapshot document, String userID) {
+  factory User.fromFirestore(DocumentSnapshot document, String userName) {
     final data = document.data() as Map<String, dynamic>;
 
     // Assign other properties from Firestore data
     final user = User(
       data['firstName'],
       data['lastName'],
-      userID,
-      data['username'],
+      data['uid'],
+      userName,
     );
 
     user.profilePicURL = data['profilePicURL'] ?? "lib/assets/default-user.jpg";
-    user.userBio = data['userBio'] ?? "";
+    user.userBio = data['userbio'] ?? "";
     user.streaks = data['streaks'] ?? 0;
 
     if (data['friendsList'] != null) {
