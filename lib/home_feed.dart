@@ -19,6 +19,7 @@ class _MyFeedTest extends State<MyFeed> {
   final UserData userData = UserData(FirebaseFirestore.instance);
   List<Post> posts = [];
 
+  /* UNUSED/OUTDATED CODE
   Future<Post?> fetchPostData(String postId) async {
     try {
       // Accessing Firestore instance
@@ -57,6 +58,7 @@ class _MyFeedTest extends State<MyFeed> {
     }
     return friendsPosts;
   }
+ */
 
   void fetchAllPostData() async {
     // Fetch friends list

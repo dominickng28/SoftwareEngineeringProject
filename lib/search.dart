@@ -51,11 +51,17 @@ class _MySearchState extends State<MySearch> {
                         .get();
                     if (userDoc.exists) {
                       // If the user exists, send a friend request
-                      _friendService.sendFriendRequest(
+                     /* _friendService.sendFriendRequest(
                           UserData.userName, username);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                             content: Text('Friend request sent to $username')),
+                      ); */
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MyUserProfilePage(title: 'User Profile', profileUserName: username),
+                        ),
                       );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -82,14 +88,28 @@ class _MySearchState extends State<MySearch> {
                     itemBuilder: (context, index) {
                       return ListTile(
                         title: Text(friendRequests[index]),
-                        trailing: ElevatedButton(
-                          onPressed: () {
-                            // Accept the friend request
-                            _friendService.acceptFriendRequest(
-                                UserData.userName, friendRequests[index]);
-                          },
-                          child: Text('Accept'),
-                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Accept the friend request
+                                  _friendService.acceptFriendRequest(
+                                  UserData.userName, friendRequests[index]);
+                                  },
+                                child: Text('Accept'),
+                              ),
+                              const SizedBox(width: 10.0),
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Accept the friend request
+                                  _friendService.cancelFriendRequest(
+                                  friendRequests[index], UserData.userName);
+                                    },
+                                  child: Text('Decline'),
+                              ),
+                              ],
+                          ),
                       );
                     },
                   );
