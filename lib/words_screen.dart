@@ -1,81 +1,149 @@
 import 'package:flutter/material.dart';
-import 'activities.dart'; // Import the activities file
+import 'package:camera/camera.dart';
 
-class WordsScreen extends StatefulWidget {
-  const WordsScreen({Key? key, required this.title}) : super(key: key);
-  final String title;
-
-  @override
-  State<WordsScreen> createState() => _WordsScreenState();
+void main() {
+  runApp(MyApp());
 }
 
-class _WordsScreenState extends State<WordsScreen> {
-  bool isChecked = false; 
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: WordsScreen(),
+    );
+  }
+}
+
+class WordsScreen extends StatefulWidget {
+  @override
+  _MyScreenState createState() => _MyScreenState();
+}
+
+class _MyScreenState extends State<WordsScreen> {
+  late List<CameraDescription> cameras;
+  bool cameraInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeCamera();
+  }
+
+  _initializeCamera() async {
+    cameras = await availableCameras();
+    if (cameras.isNotEmpty) {
+      cameraInitialized = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary, // Use appropriate color
-        title: Text(widget.title),
+        title: Text('Tasks'),
       ),
-
-      body: SingleChildScrollView(
-
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-
-          children: List.generate(4, (index) {
-            final randomWord = Activities[index % Activities.length]; // Fetch a random word
-
-            return Container(
-              margin: const EdgeInsets.all(8.0),
-              alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width / 1, // Adjust width as needed
-              height: MediaQuery.of(context).size.height / 10, // Adjust height as needed
+      body: ListView(
+        children: <Widget>[
+          for (int i = 0; i < 4; i++)
+            Container(
+              margin: EdgeInsets.all(8.0), // Add margin for spacing
               decoration: BoxDecoration(
-                color: const Color.fromRGBO(0, 45, 107, 0.992), // Example color for the box
-                borderRadius: BorderRadius.circular(12.0), // Optional: rounded corners
+                border: Border.all(
+                  color: Colors.grey,
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.circular(8.0),
               ),
-              
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
-
-                children: <Widget> [
-
-                  Checkbox(
-                    value: isChecked,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        isChecked = value ?? false; 
-                      });
-                      print('Task Completed'); 
-                    }, 
-                    // child: Text('+'),
-
-                  ),
-
-                  Text(randomWord, 
-                  style: TextStyle( 
-                    fontSize: 16, 
-                    fontWeight: FontWeight.bold, 
-                    color: Colors.white, 
-                  ),
-                  ), 
-
-                  ElevatedButton(
-                    onPressed: () {
-                      print('Button Pressed'); 
-                    }, 
-                    child: Text('+'),
-
-                  ), 
-                ],
+              child: ListTile(
+                leading: Checkbox(
+                  value: false,
+                  onChanged: (value) {},
+                ),
+                title: Text('Random Word $i'),
+                trailing: cameraInitialized
+                    ? IconButton(
+                        icon: Icon(Icons.camera),
+                        onPressed: () {
+                          _openCamera(i);
+                        },
+                      )
+                    : CircularProgressIndicator(),
               ),
-            );
-          }),
+            ),
+        ],
+      ),
+    );
+  }
+
+  _openCamera(int rowNumber) async {
+    final camera = cameras.first;
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CameraScreen(
+          camera: camera,
+          rowNumber: rowNumber,
         ),
       ),
+    );
+
+    if (result != null) {
+      print('Image captured for Row $rowNumber: $result');
+    }
+  }
+}
+
+class CameraScreen extends StatefulWidget {
+  final CameraDescription camera;
+  final int rowNumber;
+
+  CameraScreen({required this.camera, required this.rowNumber});
+
+  @override
+  _CameraScreenState createState() => _CameraScreenState();
+}
+
+class _CameraScreenState extends State<CameraScreen> {
+  late CameraController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = CameraController(widget.camera, ResolutionPreset.high);
+    _controller.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_controller.value.isInitialized) {
+      return Container();
+    }
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Camera'),
+      ),
+      body: Center(
+        child: CameraPreview(_controller),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final image = await _controller.takePicture();
+          Navigator.pop(context, image);
+        },
+        child: Icon(Icons.camera),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

@@ -55,7 +55,7 @@ class _MainScreenState extends State<MainScreen> {
       MyFeed(
         title: 'Home Feed',
       ),
-      const WordsScreen(title: 'Words'),
+      WordsScreen(),
       MySearch(
         title: 'Search',
       ),
