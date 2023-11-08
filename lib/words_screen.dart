@@ -25,7 +25,7 @@ class _WordsScreenState extends State<WordsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
 
-          children: List.generate(8, (index) {
+          children: List.generate(4, (index) {
             final randomWord = Activities[index % Activities.length]; // Fetch a random word
 
             return Container(
