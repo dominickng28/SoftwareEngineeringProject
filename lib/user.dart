@@ -4,8 +4,6 @@ import 'user_data.dart';
 class User {
   /// A class representing a user. userID is immutable.
 
-  String firstName;
-  String lastName;
   String username;
   String profilePicURL = "lib/assets/default-user.jpg";
   String userBio = "";
@@ -14,15 +12,16 @@ class User {
   final String userID;
 
   List<String> friendsList = [];
-
+  List<String> receivedRequests = [];
+  List<String> sentRequests = [];
   // list with the ID of each post created by user
   List<String> postList = [];
 
   // default constructor
-  User(this.firstName, this.lastName, this.userID, this.username);
+  User(this.userID, this.username);
 
   // constructor for sample cases only
-  User.withDetails(this.firstName, this.lastName, this.userID, this.username,
+  User.withDetails(this.userID, this.username,
       this.profilePicURL, this.friendsList, this.postList);
 
   String getUserID() {
@@ -56,8 +55,6 @@ class User {
 
     // Assign other properties from Firestore data
     final user = User(
-      data['firstName'],
-      data['lastName'],
       data['uid'],
       userName,
     );
@@ -65,17 +62,19 @@ class User {
     user.profilePicURL = data['profilePicURL'] ?? "lib/assets/default-user.jpg";
     user.userBio = data['userbio'] ?? "";
     user.streaks = data['streaks'] ?? 0;
-
-    if (data['friendsList'] != null) {
-      user.friendsList = List<String>.from(data['friendsList']);
+    if (data['received_requests'] != null) {
+      user.receivedRequests = data['received_requests'].cast<String>() ?? [];
     }
-    if (data['postList'] != null) {
-      user.postList = List<String>.from(data['postList']);
+    if (data['sent_requests'] != null) {
+      user.sentRequests = data['sent_requests'].cast<String>() ?? [];
     }
-
+    if (data['friends'] != null) {
+      user.friendsList = List<String>.from(data['friends']);
+    }
     return user;
   }
 
+  /* UNUSED/OUTDATED CODE
   static Future<List<String>> fetchFriendsList(String userID) async {
     List<String> friendsList = [];
     try {
@@ -85,7 +84,7 @@ class User {
 
       if (userDocument.exists) {
         final userData = userDocument.data() as Map<String, dynamic>;
-        final friendsListData = userData['friendsList'];
+        final friendsListData = userData['friends'];
 
         if (friendsListData != null && friendsListData is List) {
           friendsList = List<String>.from(friendsListData);
@@ -121,4 +120,5 @@ class User {
 
     return postList;
   }
+  */
 }
