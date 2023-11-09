@@ -8,12 +8,13 @@ class Post {
   DateTime date;
   String username;
   int likeCount;
+  List likes; 
   final String _postid;
   String embed;
   String pfp;
   String userID;
   Post(this.username, this.pfp, this._postid, this.userID, this.caption,
-      this.embed, this.date, this.likeCount, this.imageUrl);
+      this.embed, this.date, this.likeCount, this.likes, this.imageUrl);
 
   String getPostID(){
     return _postid;
@@ -35,6 +36,7 @@ class Post {
         data['embed'],
         date,
         data['likecount'],
+        data['likes'],
         data['imageUrl']);
 
     return post;

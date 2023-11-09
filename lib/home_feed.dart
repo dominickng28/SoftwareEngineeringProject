@@ -199,12 +199,13 @@ class _PostCardState extends State<PostCard> {
               setState(() {
                 isExpanded = !isExpanded;
                 imageHeight = isExpanded
-                    ? 400.0
+                    ? imageHeight
                     : 200.0; // Set your desired expanded and small sizes here
               });
             },
             child: AnimatedContainer(
               duration: Duration(milliseconds: 300), // Animation duration
+              width: double.infinity,
               height: imageHeight,
               child: Image.network(widget.post.imageUrl),
             ),
@@ -214,18 +215,9 @@ class _PostCardState extends State<PostCard> {
               IconButton(
                 icon: Icon(isLiked ? Icons.thumb_up : Icons.thumb_up_alt,
                     color: isLiked ? Color.fromARGB(255, 2, 23, 117) : null),
-                onPressed: () {
-                  setState(() {
-                    isLiked = !isLiked;
-                    if (isLiked) {
-                      widget.post.likeCount++;
-                    } else {
-                      widget.post.likeCount--;
-                    }
-                  });
-                },
+                onPressed: () => likePost(context),
               ),
-              Text(widget.post.likeCount.toString()),
+              Text(widget.post.likes.length.toString()),
               Spacer(),
               Padding(
                 padding: EdgeInsets.only(right: 16.0),
@@ -246,6 +238,7 @@ class _PostCardState extends State<PostCard> {
         children: <Widget>[
           SimpleDialogOption(
             onPressed: () async{
+              //removes post from Firebase
               Navigator.pop(conext);
               await FirebaseFirestore.instance
               .collection('posts')
@@ -255,7 +248,6 @@ class _PostCardState extends State<PostCard> {
               content: Text('Post has been deleted'),
               ));
             },
-            
             child: Text('Delete',
             style: TextStyle(color: Colors.red),
             ),
@@ -271,4 +263,24 @@ class _PostCardState extends State<PostCard> {
       }
     );
   }
+  Future<void> likePost(BuildContext parentContext) async {
+  final user = UserData.userName;
+
+  if (widget.post.likes.contains(user)) {
+    //If the user already liked the post, unlike it
+    widget.post.likes.remove(user);
+  } else {
+    //If the user hasn't liked the post, like it
+    widget.post.likes.add(user);
+  }
+  //Updates Firestore to new likes
+  await FirebaseFirestore.instance
+      .collection('posts')
+      .doc(widget.post.getPostID())
+      .update({'likes': widget.post.likes});
+  //Set state to the change in likes
+  setState(() {
+    isLiked = widget.post.likes.contains(user);
+  });
+}
 }
