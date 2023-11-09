@@ -1,3 +1,5 @@
+import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
@@ -40,36 +42,74 @@ class _MyScreenState extends State<WordsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tasks'),
+        title: Text(
+          'Tasks',
+          style: TextStyle(
+            fontFamily: 'YourFont',
+            fontSize: 20.0,
+            color: Colors.white,
+          ),
+        ),
+            backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
       ),
-      body: ListView(
+      body: Column(
         children: <Widget>[
+          // Existing Rows
           for (int i = 0; i < 4; i++)
             Container(
-              margin: EdgeInsets.all(8.0), // Add margin for spacing
+              margin: EdgeInsets.all(12.0),
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.grey,
                   width: 1.0,
                 ),
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(20.0),
               ),
               child: ListTile(
-                leading: Checkbox(
-                  value: false,
-                  onChanged: (value) {},
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(18.0),
+                  child: Image.network(
+                    'https://source.unsplash.com/100x100/?random=$i',
+                    width: 40.0,
+                    height: 40.0,
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 title: Text('Random Word $i'),
                 trailing: cameraInitialized
                     ? IconButton(
-                        icon: Icon(Icons.camera),
+                        icon: Icon(Icons.camera_alt),
                         onPressed: () {
                           _openCamera(i);
                         },
                       )
-                    : CircularProgressIndicator(),
+                    : SizedBox(),
               ),
             ),
+
+          // Scrollable Row of Rectangular Photos
+          SizedBox(
+            height: 150.0, // Adjust the height as needed
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 10,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: EdgeInsets.only(
+                    left: index == 0 ? 0.0 : 8.0,
+                  ),
+                  width: 200.0,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20.0),
+                    child: Image.network(
+                      'https://source.unsplash.com/200x150/?random=${index + 4}',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -131,7 +171,15 @@ class _CameraScreenState extends State<CameraScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Camera'),
+        title: Text(
+          'Camera',
+          style: TextStyle(
+            fontFamily: 'YourFont',
+            fontSize: 20.0,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.blue,
       ),
       body: Center(
         child: CameraPreview(_controller),
