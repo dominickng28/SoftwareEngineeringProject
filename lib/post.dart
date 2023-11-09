@@ -15,6 +15,10 @@ class Post {
   Post(this.username, this.pfp, this._postid, this.userID, this.caption,
       this.embed, this.date, this.likeCount, this.imageUrl);
 
+  String getPostID(){
+    return _postid;
+  }
+
   factory Post.fromFirestore(DocumentSnapshot document, String postid) {
     final data = document.data() as Map<String, dynamic>;
 

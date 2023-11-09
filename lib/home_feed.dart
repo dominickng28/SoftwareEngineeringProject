@@ -108,7 +108,9 @@ class _MyFeedTest extends State<MyFeed> {
       ),
     ),
 
-      body: ListView.builder(
+      body: posts.isEmpty ? Center( 
+        child: Text("No posts..."),):
+      ListView.builder(
         itemCount: posts.length,
         itemBuilder: (BuildContext context, int index) {
           return PostCard(post: posts[index]);
@@ -149,6 +151,7 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   bool isLiked = false; // Track whether the post is liked
   bool isExpanded = false; // Track whether the post embed is expanded
+  
   double imageHeight = 200.0; // Initial height
   String timeAgo(DateTime date) {
     Duration diff = DateTime.now().difference(date);
@@ -175,6 +178,15 @@ class _PostCardState extends State<PostCard> {
       ),
       child: Column(
         children: [
+          Row(
+            children: [
+              Spacer(),
+              IconButton(
+                icon: Icon(Icons.delete_forever),
+                onPressed: () => deletePost(context),
+              ),
+            ],
+          ),
           ListTile(
             leading: CircleAvatar(
               backgroundImage: AssetImage(widget.post.pfp),
@@ -218,11 +230,45 @@ class _PostCardState extends State<PostCard> {
               Padding(
                 padding: EdgeInsets.only(right: 16.0),
                 child: Text(timeAgo(widget.post.date)),
-              )
+              ),
+              
             ],
           )
         ],
       ),
+    );
+  }
+  Future<void> deletePost(BuildContext parentContext) async{
+    return showDialog(
+      context: parentContext,
+      builder: (conext){
+        return SimpleDialog(title: Text("Delete post?"),
+        children: <Widget>[
+          SimpleDialogOption(
+            onPressed: () async{
+              Navigator.pop(conext);
+              await FirebaseFirestore.instance
+              .collection('posts')
+              .doc(widget.post.getPostID())
+              .delete();
+              ScaffoldMessenger.of(parentContext).showSnackBar(SnackBar(
+              content: Text('Post has been deleted'),
+              ));
+            },
+            
+            child: Text('Delete',
+            style: TextStyle(color: Colors.red),
+            ),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          )
+
+        ],
+        
+        );
+      }
     );
   }
 }
