@@ -85,6 +85,25 @@ class _CameraScreenState extends State<CameraScreen> {
         'postid': docRef.id,
       });
 
+      DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(UserData.userName);
+      DocumentSnapshot userSnapshot = await userDoc.get();
+
+      if (userSnapshot.exists) {
+        var data = userSnapshot.data() as Map<String, dynamic>;
+        if (!data.containsKey('post_list')) {
+          userDoc.set({
+            'post_list' : [docRef.id],
+          }, SetOptions(merge: true));
+        }
+        else {
+          List<String> currentList = List.from(data['post_list']);
+          currentList.add(docRef.id);
+          userDoc.update({
+            'post_list' : currentList
+          });
+        }
+      }
+
       Navigator.pop(context, true);
     } catch (e) {
       print(e);
