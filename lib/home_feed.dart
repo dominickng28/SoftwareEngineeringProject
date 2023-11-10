@@ -84,10 +84,11 @@ class _MyFeedTest extends State<MyFeed> {
 
     // Sort posts by timestamp
     allPostData.sort((a, b) => b.date.compareTo(a.date));
-
+    if(mounted){
     setState(() {
       posts = allPostData;
     });
+  }
   }
 
   @override

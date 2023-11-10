@@ -22,8 +22,10 @@ class Post {
 
   factory Post.fromFirestore(DocumentSnapshot document, String postid) {
     final data = document.data() as Map<String, dynamic>;
+    final timestamp = data['timestamp'];
+    final date = timestamp != null ? (timestamp as Timestamp).toDate() : DateTime.now();
 
-    final date = (data['timestamp'] as Timestamp).toDate();
+    
 
     // Assign other properties from Firestore data
     final post = Post(
