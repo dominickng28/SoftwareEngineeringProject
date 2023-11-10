@@ -152,6 +152,7 @@ class _PostCardState extends State<PostCard> {
   bool isLiked = false; // Track whether the post is liked
   bool isExpanded = false; // Track whether the post embed is expanded
   
+  
   double imageHeight = 200.0; // Initial height
   String timeAgo(DateTime date) {
     Duration diff = DateTime.now().difference(date);
@@ -168,6 +169,8 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
+    //checking which post is made by the user
+    bool isPoster = widget.post.username == UserData.userName;
     return Card(
       color: const Color.fromARGB(249, 253, 208, 149),
       shape: RoundedRectangleBorder(
@@ -181,6 +184,8 @@ class _PostCardState extends State<PostCard> {
           Row(
             children: [
               Spacer(),
+              //Only the poster can see delete button
+              if(isPoster) 
               IconButton(
                 icon: Icon(Icons.delete_forever),
                 onPressed: () => deletePost(context),
@@ -217,7 +222,7 @@ class _PostCardState extends State<PostCard> {
                     color: isLiked ? Color.fromARGB(255, 2, 23, 117) : null),
                 onPressed: () => likePost(context),
               ),
-              Text(widget.post.likes.length.toString()),
+              Text((widget.post.likes?.length ?? 0).toString()),
               Spacer(),
               Padding(
                 padding: EdgeInsets.only(right: 16.0),
@@ -265,22 +270,23 @@ class _PostCardState extends State<PostCard> {
   }
   Future<void> likePost(BuildContext parentContext) async {
   final user = UserData.userName;
+  widget.post.likes ??= [];
 
-  if (widget.post.likes.contains(user)) {
+  if (widget.post.likes!.contains(user)) {
     //If the user already liked the post, unlike it
-    widget.post.likes.remove(user);
+    widget.post.likes!.remove(user);
   } else {
     //If the user hasn't liked the post, like it
-    widget.post.likes.add(user);
+    widget.post.likes!.add(user);
   }
   //Updates Firestore to new likes
   await FirebaseFirestore.instance
       .collection('posts')
       .doc(widget.post.getPostID())
-      .update({'likes': widget.post.likes});
+      .update({'likes': widget.post.likes ??= []});
   //Set state to the change in likes
   setState(() {
-    isLiked = widget.post.likes.contains(user);
+    isLiked = widget.post.likes!.contains(user);
   });
 }
 }

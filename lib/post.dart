@@ -8,7 +8,7 @@ class Post {
   DateTime date;
   String username;
   int likeCount;
-  List likes; 
+  List ? likes; 
   final String _postid;
   String embed;
   String pfp;
