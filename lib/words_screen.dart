@@ -190,7 +190,7 @@ class _CameraScreenState extends State<CameraScreen> {
           final image = _controller.takePicture(); //await 
           Navigator.pop(context, image);
         },
-        child: Icon(Icons.camera),
+        child: const Icon(Icons.camera),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
