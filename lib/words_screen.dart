@@ -171,7 +171,7 @@ class _CameraScreenState extends State<CameraScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Camera',
           style: TextStyle(
             fontFamily: 'YourFont',
@@ -184,9 +184,10 @@ class _CameraScreenState extends State<CameraScreen> {
       body: Center(
         child: CameraPreview(_controller),
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final image = await _controller.takePicture();
+          final image = _controller.takePicture(); //await 
           Navigator.pop(context, image);
         },
         child: Icon(Icons.camera),
