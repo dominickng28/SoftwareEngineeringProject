@@ -28,6 +28,8 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
   User? userProfile;
   bool isFriend = false;
   bool requestSent = false;
+  int loadCount = 1;
+
   List<Post> posts = [];
   final FriendService _friendService = FriendService();
 
@@ -62,9 +64,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
         // Trigger a rebuild with the fetched user data
         isFriend = userProfile.isFriend();
       });
-    } else {
-      return;
-    }
+    } else {return;}
   }
 
   Future<void> fetchUserData({String? username}) async {
@@ -83,40 +83,52 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
       // Create a profile page owner instance from Firestore data
       userProfile = User.fromFirestore(userDocument, profile);
 
-      setState(() {
-        // Trigger a rebuild with the fetched user data
-        isFriend = userProfile!.isFriend();
-        requestSent = userProfile!.receivedRequests.contains(UserData.userName);
-      });
+    setState(() {
+      // Trigger a rebuild with the fetched user data
+      isFriend = userProfile!.isFriend();
+      requestSent = userProfile!.receivedRequests.contains(UserData.userName);
+    });
     }
   }
 
-  void fetchUserPostData({String? username}) async {
-    final firestoreInstance = FirebaseFirestore.instance;
+  void fetchUserRecentPostData({String? username}) async {
     String profile = UserData.userName;
     if (username != null){
       profile = username;
     }
-    QuerySnapshot querySnapshot = await firestoreInstance
-        .collection('posts')
-        .where('username', isEqualTo: profile)
-        .get();
+    final firestoreInstance = FirebaseFirestore.instance;
+    DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(profile);
+    DocumentSnapshot userSnapshot = await userDoc.get();
+    if (userSnapshot.exists) {
+        var data = userSnapshot.data() as Map<String, dynamic>;
+        if (!data.containsKey('post_list') || (data['post_list'] as List).isEmpty) {
+          return;
+        }
 
-    List<Post> allPostData = querySnapshot.docs
-        .map((doc) => Post.fromFirestore(doc, doc.id))
-        .toList();
-    
-    allPostData.sort((a, b) => b.date.compareTo(a.date));
+      List<String> postList = List.from(data['post_list']);
+        postList = postList.reversed.toList();
+        postList = postList.take(10 * loadCount).toList();
+        Query query = firestoreInstance
+          .collection('posts')
+          .where(FieldPath.documentId, whereIn: postList);
 
-    setState(() {
-      posts = allPostData;
-    });
-  }
+        QuerySnapshot querySnapshot = await query.get();
+
+        List<Post> allPostData = querySnapshot.docs
+            .map((doc) => Post.fromFirestore(doc, doc.id))
+            .toList();
+        allPostData.sort((a, b) => b.date.compareTo(a.date));
+
+        setState(() {
+          posts = allPostData;
+        });
+      }
+    }
 
   @override
   Widget build(BuildContext context) {
     fetchUserData(username: widget.profileUserName);
-    fetchUserPostData(username: widget.profileUserName);
+    fetchUserRecentPostData(username: widget.profileUserName);
     return Scaffold(
       appBar: AppBar(
       backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
@@ -202,28 +214,48 @@ Container(
                     width: 100,
                     child: Center(
                       child: Text(requestSent ? 'Cancel Request' : isFriend ? 'Remove Friend' : 'Add Friend')
-                    ),
+                            ),
                   )
-              ),
-            )
-          ],
+                ),
+              )
+            ],
         ),
-      ],
-    ),
-  ),
-),
+        ],
+        ),
+        ),
+        ),
 
           // Code for the Posts
           Expanded(
               child: ListView.builder(
-                itemCount: posts.length,
+                itemCount: posts.length + 1,
                 itemBuilder: (BuildContext context, int index) {
-                  return PostCard(post: posts[index]);
+                  if (posts.isEmpty){
+                    return const Padding(
+                      padding: EdgeInsets.all(100.0),
+                      child: Text("User has not made a post", textAlign: TextAlign.center),);
+                  }
+                  if(index == posts.length){
+                    return Visibility(
+                      visible: posts.length == 10 * loadCount,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          loadCount += 1;
+                          fetchUserRecentPostData(username: widget.profileUserName);
+                        }, 
+                        child: const Text("Load Older Posts"),
+                      ),
+                    );
+                  } 
+                  else {
+                    return PostCard(post: posts[index]);
+                  }
                 },
               ),
           ),
         ],
       ),
+
       // Code for the create post button
       floatingActionButton: userProfile?.username != UserData.userName? null: FloatingActionButton(
         onPressed: () async {
@@ -236,9 +268,10 @@ Container(
               builder: (context) => CameraScreen(camera: firstCamera),
             ),
           );
-
           if (didCreatePost == true) {
-            fetchUserPostData(); // Refresh the feed if a new post was created
+            loadCount = 1;
+            fetchUserData();
+            fetchUserRecentPostData();
           }
         },
         tooltip: 'Camera',

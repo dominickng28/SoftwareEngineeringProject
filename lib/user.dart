@@ -71,6 +71,9 @@ class User {
     if (data['friends'] != null) {
       user.friendsList = List<String>.from(data['friends']);
     }
+    if (data['post_list'] != null) {
+      user.postList = data['post_list'].cast<String>() ?? [];
+    }
     return user;
   }
 
