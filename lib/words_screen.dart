@@ -105,6 +105,9 @@ class _MyScreenState extends State<WordsScreen> {
         ],
       ),
 
+      // SCREEN BACKGROUND, BEHIND BOXES 
+      backgroundColor: const Color.fromARGB(249, 253, 208, 149),
+
       // WORD BOXES 
 
       body: Column(
@@ -204,7 +207,7 @@ class CameraScreen extends StatefulWidget {
   final CameraDescription camera;
   final int rowNumber;
 
-  CameraScreen({required this.camera, required this.rowNumber});
+  const CameraScreen({required this.camera, required this.rowNumber});
 
   @override
   _CameraScreenState createState() => _CameraScreenState();
