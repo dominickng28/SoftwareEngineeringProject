@@ -84,10 +84,11 @@ class _MyFeedTest extends State<MyFeed> {
 
     // Sort posts by timestamp
     allPostData.sort((a, b) => b.date.compareTo(a.date));
-
+    if(mounted){
     setState(() {
       posts = allPostData;
     });
+  }
   }
 
   @override
@@ -107,8 +108,11 @@ class _MyFeedTest extends State<MyFeed> {
         ),
       ),
     ),
+    backgroundColor: const Color.fromARGB(249, 253, 208, 149),
 
-      body: ListView.builder(
+      body: posts.isEmpty ? Center( 
+        child: Text("No posts..."),):
+      ListView.builder(
         itemCount: posts.length,
         itemBuilder: (BuildContext context, int index) {
           return PostCard(post: posts[index]);
@@ -149,6 +153,8 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   bool isLiked = false; // Track whether the post is liked
   bool isExpanded = false; // Track whether the post embed is expanded
+  
+  
   double imageHeight = 200.0; // Initial height
   String timeAgo(DateTime date) {
     Duration diff = DateTime.now().difference(date);
@@ -165,34 +171,37 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
+    //checking which post is made by the user
+    bool isPoster = widget.post.username == UserData.userName;
     return Card(
       color: const Color.fromARGB(249, 253, 208, 149),
-      shape: RoundedRectangleBorder(
-        side: BorderSide(
-            color: Color.fromARGB(255, 2, 23, 117),
-            width: 6.0), // Set the border color and width here
-        borderRadius: BorderRadius.circular(8.0),
-      ),
       child: Column(
         children: [
+          
           ListTile(
             leading: CircleAvatar(
               backgroundImage: AssetImage(widget.post.pfp),
             ),
             title: Text(widget.post.username),
             subtitle: Text(widget.post.caption),
+            trailing: isPoster
+            ? IconButton(
+              icon: Icon(Icons.delete_forever),
+              onPressed: () => deletePost(context),
+            ): null
           ),
           GestureDetector(
             onTap: () {
               setState(() {
                 isExpanded = !isExpanded;
                 imageHeight = isExpanded
-                    ? 400.0
+                    ? imageHeight
                     : 200.0; // Set your desired expanded and small sizes here
               });
             },
             child: AnimatedContainer(
               duration: Duration(milliseconds: 300), // Animation duration
+              width: double.infinity,
               height: imageHeight,
               child: Image.network(widget.post.imageUrl),
             ),
@@ -202,27 +211,73 @@ class _PostCardState extends State<PostCard> {
               IconButton(
                 icon: Icon(isLiked ? Icons.thumb_up : Icons.thumb_up_alt,
                     color: isLiked ? Color.fromARGB(255, 2, 23, 117) : null),
-                onPressed: () {
-                  setState(() {
-                    isLiked = !isLiked;
-                    if (isLiked) {
-                      widget.post.likeCount++;
-                    } else {
-                      widget.post.likeCount--;
-                    }
-                  });
-                },
+                onPressed: () => likePost(context),
               ),
-              Text(widget.post.likeCount.toString()),
+              Text((widget.post.likes?.length ?? 0).toString()),
               Spacer(),
               Padding(
                 padding: EdgeInsets.only(right: 16.0),
                 child: Text(timeAgo(widget.post.date)),
-              )
+              ),
+              
             ],
           )
         ],
       ),
     );
   }
+  Future<void> deletePost(BuildContext parentContext) async{
+    return showDialog(
+      context: parentContext,
+      builder: (conext){
+        return SimpleDialog(title: Text("Delete post?"),
+        children: <Widget>[
+          SimpleDialogOption(
+            onPressed: () async{
+              //removes post from Firebase
+              Navigator.pop(conext);
+              await FirebaseFirestore.instance
+              .collection('posts')
+              .doc(widget.post.getPostID())
+              .delete();
+              ScaffoldMessenger.of(parentContext).showSnackBar(SnackBar(
+              content: Text('Post has been deleted'),
+              ));
+            },
+            child: Text('Delete',
+            style: TextStyle(color: Colors.red),
+            ),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          )
+
+        ],
+        
+        );
+      }
+    );
+  }
+  Future<void> likePost(BuildContext parentContext) async {
+  final user = UserData.userName;
+  widget.post.likes ??= [];
+
+  if (widget.post.likes!.contains(user)) {
+    //If the user already liked the post, unlike it
+    widget.post.likes!.remove(user);
+  } else {
+    //If the user hasn't liked the post, like it
+    widget.post.likes!.add(user);
+  }
+  //Updates Firestore to new likes
+  await FirebaseFirestore.instance
+      .collection('posts')
+      .doc(widget.post.getPostID())
+      .update({'likes': widget.post.likes ??= []});
+  //Set state to the change in likes
+  setState(() {
+    isLiked = widget.post.likes!.contains(user);
+  });
+}
 }
