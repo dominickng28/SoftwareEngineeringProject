@@ -2,6 +2,8 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'search.dart'; 
+import 'dart:async'; 
 
 void main() {
   runApp(MyApp());
@@ -24,11 +26,14 @@ class WordsScreen extends StatefulWidget {
 class _MyScreenState extends State<WordsScreen> {
   late List<CameraDescription> cameras;
   bool cameraInitialized = false;
+  late Timer _timer;
+  late DateTime _nextRefreshTime;
 
   @override
   void initState() {
     super.initState();
     _initializeCamera();
+    _setupTimer();
   }
 
   _initializeCamera() async {
@@ -36,6 +41,43 @@ class _MyScreenState extends State<WordsScreen> {
     if (cameras.isNotEmpty) {
       cameraInitialized = true;
     }
+  }
+
+  void _setupTimer() {
+  // Find the next Sunday from the current date
+  DateTime now = DateTime.now();
+  DateTime nextSunday = DateTime(now.year, now.month, now.day + (DateTime.sunday - now.weekday + 7) % 7);
+
+  // Set the time to 8 PM
+  _nextRefreshTime = DateTime(nextSunday.year, nextSunday.month, nextSunday.day, 20, 0, 0);
+
+  // If the next refresh time has already passed for this week, set it for the next week
+  if (_nextRefreshTime.isBefore(now)) {
+    _nextRefreshTime = _nextRefreshTime.add(Duration(days: 7));
+  }
+
+  // Calculate the duration until the next refresh time
+  Duration durationUntilNextRefresh = _nextRefreshTime.difference(now);
+
+  // Create a timer that refreshes every Sunday at 8 PM
+  _timer = Timer.periodic(durationUntilNextRefresh, (timer) {
+    print("Refreshed at: ${DateTime.now()}");
+  });
+}
+
+  @override
+  void dispose() {
+    _timer.cancel(); // Cancel the timer to avoid memory leaks
+    super.dispose();
+  }
+
+  void _navigateToMySearch() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MySearch(title: 'Search',),
+      ),
+    );
   }
 
   @override
@@ -50,7 +92,13 @@ class _MyScreenState extends State<WordsScreen> {
             color: Colors.white,
           ),
         ),
-            backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+        backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search, color: Colors.white,),
+            onPressed: _navigateToMySearch,
+          ),
+        ],
       ),
       body: Column(
         children: <Widget>[
@@ -108,6 +156,15 @@ class _MyScreenState extends State<WordsScreen> {
                   ),
                 );
               },
+            ),
+          ),
+          
+          // Live Time Timer
+          Container(
+            margin: EdgeInsets.all(12.0),
+            child: Text(
+              'Next Refresh: $_nextRefreshTime',
+              style: TextStyle(fontSize: 16.0),
             ),
           ),
         ],
@@ -184,7 +241,6 @@ class _CameraScreenState extends State<CameraScreen> {
       body: Center(
         child: CameraPreview(_controller),
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final image = _controller.takePicture(); //await 
