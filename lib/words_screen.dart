@@ -43,6 +43,8 @@ class _MyScreenState extends State<WordsScreen> {
     }
   }
 
+  // TIMER CODE 
+
   void _setupTimer() {
   // Find the next Sunday from the current date
   DateTime now = DateTime.now();
@@ -80,6 +82,8 @@ class _MyScreenState extends State<WordsScreen> {
     );
   }
 
+  // MAGNIFYIGN GLASS 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,6 +104,9 @@ class _MyScreenState extends State<WordsScreen> {
           ),
         ],
       ),
+
+      // WORD BOXES 
+
       body: Column(
         children: <Widget>[
           // Existing Rows
@@ -171,6 +178,9 @@ class _MyScreenState extends State<WordsScreen> {
       ),
     );
   }
+
+
+// CAMERA CODE 
 
   _openCamera(int rowNumber) async {
     final camera = cameras.first;
