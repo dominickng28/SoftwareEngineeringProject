@@ -108,6 +108,7 @@ class _MyFeedTest extends State<MyFeed> {
         ),
       ),
     ),
+    backgroundColor: const Color.fromARGB(249, 253, 208, 149),
 
       body: posts.isEmpty ? Center( 
         child: Text("No posts..."),):
@@ -174,31 +175,20 @@ class _PostCardState extends State<PostCard> {
     bool isPoster = widget.post.username == UserData.userName;
     return Card(
       color: const Color.fromARGB(249, 253, 208, 149),
-      shape: RoundedRectangleBorder(
-        side: BorderSide(
-            color: Color.fromARGB(255, 2, 23, 117),
-            width: 6.0), // Set the border color and width here
-        borderRadius: BorderRadius.circular(8.0),
-      ),
       child: Column(
         children: [
-          Row(
-            children: [
-              Spacer(),
-              //Only the poster can see delete button
-              if(isPoster) 
-              IconButton(
-                icon: Icon(Icons.delete_forever),
-                onPressed: () => deletePost(context),
-              ),
-            ],
-          ),
+          
           ListTile(
             leading: CircleAvatar(
               backgroundImage: AssetImage(widget.post.pfp),
             ),
             title: Text(widget.post.username),
             subtitle: Text(widget.post.caption),
+            trailing: isPoster
+            ? IconButton(
+              icon: Icon(Icons.delete_forever),
+              onPressed: () => deletePost(context),
+            ): null
           ),
           GestureDetector(
             onTap: () {
