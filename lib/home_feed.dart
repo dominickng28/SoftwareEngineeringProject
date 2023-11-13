@@ -109,7 +109,6 @@ class _MyFeedTest extends State<MyFeed> {
       ),
     ),
     backgroundColor: const Color.fromARGB(249, 253, 208, 149),
-
       body: posts.isEmpty ? Center( 
         child: Text("No posts..."),):
       ListView.builder(
@@ -152,10 +151,14 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   bool isLiked = false; // Track whether the post is liked
-  bool isExpanded = false; // Track whether the post embed is expanded
   
-  
-  double imageHeight = 200.0; // Initial height
+  //Check to properly initialize the isLiked variable
+  @override
+  void initState(){
+    super.initState();
+    isLiked = widget.post.likes?.contains(UserData.userName) ?? false;
+  }
+
   String timeAgo(DateTime date) {
     Duration diff = DateTime.now().difference(date);
     if (diff.inDays > 0) {
@@ -173,11 +176,12 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     //checking which post is made by the user
     bool isPoster = widget.post.username == UserData.userName;
-    return Card(
+    double screenWidth = MediaQuery.of(context).size.width;
+    double cutOffValue = 0.95;
+    return Container(
       color: const Color.fromARGB(249, 253, 208, 149),
       child: Column(
-        children: [
-          
+        children: [ 
           ListTile(
             leading: CircleAvatar(
               backgroundImage: AssetImage(widget.post.pfp),
@@ -190,20 +194,10 @@ class _PostCardState extends State<PostCard> {
               onPressed: () => deletePost(context),
             ): null
           ),
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                isExpanded = !isExpanded;
-                imageHeight = isExpanded
-                    ? imageHeight
-                    : 200.0; // Set your desired expanded and small sizes here
-              });
-            },
-            child: AnimatedContainer(
-              duration: Duration(milliseconds: 300), // Animation duration
-              width: double.infinity,
-              height: imageHeight,
-              child: Image.network(widget.post.imageUrl),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: Image.network(widget.post.imageUrl, 
+            fit: BoxFit.fill,
             ),
           ),
           Row(
@@ -213,19 +207,24 @@ class _PostCardState extends State<PostCard> {
                     color: isLiked ? Color.fromARGB(255, 2, 23, 117) : null),
                 onPressed: () => likePost(context),
               ),
-              Text((widget.post.likes?.length ?? 0).toString()),
+              Text((widget.post.likeCount).toString()),
               Spacer(),
               Padding(
                 padding: EdgeInsets.only(right: 16.0),
                 child: Text(timeAgo(widget.post.date)),
               ),
-              
             ],
-          )
+          ),
+          Container(
+            height: 2.0,
+            width: screenWidth * cutOffValue,
+            color: Color.fromARGB(248, 172, 113, 36)
+          ),
         ],
       ),
     );
   }
+
   Future<void> deletePost(BuildContext parentContext) async{
     return showDialog(
       context: parentContext,
@@ -234,12 +233,14 @@ class _PostCardState extends State<PostCard> {
         children: <Widget>[
           SimpleDialogOption(
             onPressed: () async{
-              //removes post from Firebase
+              //removes post from Firebase and user postList
               Navigator.pop(conext);
               await FirebaseFirestore.instance
               .collection('posts')
               .doc(widget.post.getPostID())
               .delete();
+              await removeFromPostList();
+
               ScaffoldMessenger.of(parentContext).showSnackBar(SnackBar(
               content: Text('Post has been deleted'),
               ));
@@ -252,32 +253,50 @@ class _PostCardState extends State<PostCard> {
             onPressed: () => Navigator.pop(context),
             child: Text('Cancel'),
           )
-
         ],
-        
         );
       }
     );
   }
-  Future<void> likePost(BuildContext parentContext) async {
-  final user = UserData.userName;
-  widget.post.likes ??= [];
 
-  if (widget.post.likes!.contains(user)) {
-    //If the user already liked the post, unlike it
-    widget.post.likes!.remove(user);
-  } else {
-    //If the user hasn't liked the post, like it
-    widget.post.likes!.add(user);
+  Future<void> removeFromPostList() async{
+    final firestoreInstance = FirebaseFirestore.instance;
+    await firestoreInstance
+    .collection('users')
+    .doc(UserData.userName)
+    .update({'postList' : FieldValue.arrayRemove([widget.post.getPostID()])
+    });
   }
-  //Updates Firestore to new likes
-  await FirebaseFirestore.instance
-      .collection('posts')
-      .doc(widget.post.getPostID())
-      .update({'likes': widget.post.likes ??= []});
-  //Set state to the change in likes
-  setState(() {
-    isLiked = widget.post.likes!.contains(user);
-  });
-}
+
+  Future<void> likePost(BuildContext parentContext) async {
+    final user = UserData.userName;
+    widget.post.likes ??= [];
+
+    //Use a transaction to handle concurrent updates safely
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot postSnapshot =
+        await transaction.get(FirebaseFirestore.instance.collection('posts').doc(widget.post.getPostID()));
+
+      //Update likes, increment or decrement if necessary
+      List<String> updatedLikes = List<String>.from(postSnapshot['likes'] ?? []);
+      if (updatedLikes.contains(user)) {
+        updatedLikes.remove(user);
+        widget.post.likeCount--; 
+      } else {
+        updatedLikes.add(user);
+        widget.post.likeCount++; 
+      }
+
+      // Update the document with the new data
+      transaction.update(FirebaseFirestore.instance.collection('posts').doc(widget.post.getPostID()), {
+        'likes': updatedLikes,
+        'likeCount': widget.post.likeCount,
+      });
+    });
+
+    // Set state to the change in likes
+    setState(() {
+      isLiked = widget.post.likes!.contains(user);
+    });
+  }
 }
