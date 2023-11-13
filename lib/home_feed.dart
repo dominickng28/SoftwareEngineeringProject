@@ -196,9 +196,10 @@ class _PostCardState extends State<PostCard> {
           ),
           ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
-            child: Image.network(widget.post.imageUrl, fit: BoxFit.cover,
+            child: Image.network(widget.post.imageUrl, 
+            fit: BoxFit.fill,
             ),
-          ),         
+          ),
           Row(
             children: [
               IconButton(
