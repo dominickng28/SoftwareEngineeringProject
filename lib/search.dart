@@ -50,13 +50,6 @@ class _MySearchState extends State<MySearch> {
                         .doc(username)
                         .get();
                     if (userDoc.exists) {
-                      // If the user exists, send a friend request
-                     /* _friendService.sendFriendRequest(
-                          UserData.userName, username);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('Friend request sent to $username')),
-                      ); */
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -76,51 +69,86 @@ class _MySearchState extends State<MySearch> {
               ),
             ),
           ),
-          Expanded(
-            child: StreamBuilder<List<String>>(
-              stream: _friendService
-                  .receivedFriendRequestsStream(UserData.userName),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<String> friendRequests = snapshot.data!;
-                  return ListView.builder(
-                    itemCount: friendRequests.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(friendRequests[index]),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Accept the friend request
-                                  _friendService.acceptFriendRequest(
-                                  UserData.userName, friendRequests[index]);
+                      Expanded(
+              child: StreamBuilder<List<String>>(
+                stream: _friendService.receivedFriendRequestsStream(UserData.userName),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<String> friendRequests = snapshot.data!;
+
+                    return ListView.builder(
+                      itemCount: friendRequests.length,
+                      itemBuilder: (context, index) {
+                        // Retrieve user document for the friend request
+                        DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(friendRequests[index]);
+                        ImageProvider imageProvider;
+                        return StreamBuilder<DocumentSnapshot>(
+                          stream: userDoc.snapshots(),
+                          builder: (context, userSnapshot) {
+                            if (userSnapshot.hasData) {
+                              var userFriend = userSnapshot.data!.data() as Map<String, dynamic>;
+                              var profilePicUrl = userFriend['profilePicURL'] ?? 'lib/assets/default-user.jpg';
+                              if (profilePicUrl == 'lib/assets/default-user.jpg') {
+                              imageProvider = AssetImage(profilePicUrl);
+                            } else {
+                              imageProvider = NetworkImage(profilePicUrl);
+                            }
+                              return ListTile(
+                                leading: GestureDetector(
+                                  onTap: (){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MyUserProfilePage(title: 'User Profile', profileUserName: friendRequests[index]),
+                                      ),
+                                    );
                                   },
-                                child: Text('Accept'),
-                              ),
-                              const SizedBox(width: 10.0),
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Accept the friend request
-                                  _friendService.cancelFriendRequest(
-                                  friendRequests[index], UserData.userName);
-                                    },
-                                  child: Text('Decline'),
-                              ),
-                              ],
-                          ),
-                      );
-                    },
-                  );
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error loading friend requests'));
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
+                                  child: CircleAvatar(
+                                    backgroundImage: imageProvider,
+                                    radius: 25.0,
+                                  ),
+                                ),
+                                title: Text(friendRequests[index]),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        // Accept the friend request
+                                        _friendService.acceptFriendRequest(UserData.userName, friendRequests[index]);
+                                      },
+                                      child: const Text('Accept'),
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        // Decline the friend request
+                                        _friendService.cancelFriendRequest(friendRequests[index], UserData.userName);
+                                      },
+                                      child: const Text('Decline'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            } else {
+                              // Handle loading or error state for the user document
+                              return ListTile(
+                                title: Text(friendRequests[index]),
+                                subtitle: CircularProgressIndicator(),
+                              );
+                            }
+                          },
+                        );
+                      },
+                    );
+                  } else if (snapshot.hasError) {
+                    return const Center(child: Text('Error loading friend requests'));
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                },
+              ),
             ),
-          ),
         ],
       ),
     );
