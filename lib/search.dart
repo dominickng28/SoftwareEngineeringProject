@@ -94,9 +94,19 @@ class _MySearchState extends State<MySearch> {
                               imageProvider = NetworkImage(profilePicUrl);
                             }
                               return ListTile(
-                                leading: CircleAvatar(
-                                  backgroundImage: imageProvider,
-                                  radius: 25.0,
+                                leading: GestureDetector(
+                                  onTap: (){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => MyUserProfilePage(title: 'User Profile', profileUserName: friendRequests[index]),
+                                      ),
+                                    );
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundImage: imageProvider,
+                                    radius: 25.0,
+                                  ),
                                 ),
                                 title: Text(friendRequests[index]),
                                 trailing: Row(
