@@ -235,11 +235,17 @@ class _PostCardState extends State<PostCard> {
             onPressed: () async{
               //removes post from Firebase and user postList
               Navigator.pop(conext);
-              await FirebaseFirestore.instance
+              await removeFromPostList();
+              FirebaseFirestore.instance
               .collection('posts')
               .doc(widget.post.getPostID())
               .delete();
-              await removeFromPostList();
+              if(mounted){
+                setState(() {
+                  
+                });
+              }
+
 
               ScaffoldMessenger.of(parentContext).showSnackBar(SnackBar(
               content: Text('Post has been deleted'),
@@ -264,7 +270,7 @@ class _PostCardState extends State<PostCard> {
     await firestoreInstance
     .collection('users')
     .doc(UserData.userName)
-    .update({'postList' : FieldValue.arrayRemove([widget.post.getPostID()])
+    .update({'post_list' : FieldValue.arrayRemove([widget.post.getPostID()])
     });
   }
 
