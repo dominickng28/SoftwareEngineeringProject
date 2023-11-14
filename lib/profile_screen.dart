@@ -91,7 +91,7 @@ late Future<int> followerCount;
     if (userDocument.exists) {
       // Create a profile page owner instance from Firestore data
       userProfile = User.fromFirestore(userDocument, profile);
-
+    if (mounted) {
       setState(() {
         // Trigger a rebuild with the fetched user data
         isFriend = userProfile!.isFriend();
@@ -99,6 +99,7 @@ late Future<int> followerCount;
       });
     }
   }
+}
 
   void fetchUserPostData({String? username}) async {
     final firestoreInstance = FirebaseFirestore.instance;
@@ -116,11 +117,12 @@ late Future<int> followerCount;
         .toList();
     
     allPostData.sort((a, b) => b.date.compareTo(a.date));
-
+  if (mounted) {
     setState(() {
       posts = allPostData;
     });
   }
+}
 
   @override
   Widget build(BuildContext context) {
