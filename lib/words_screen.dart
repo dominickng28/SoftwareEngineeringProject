@@ -106,7 +106,7 @@ class _MyScreenState extends State<WordsScreen> {
         title: Text(
           'Tasks',
           style: TextStyle(
-            fontFamily: 'YourFont',
+            fontFamily: 'DMSans',
             fontWeight: FontWeight.bold,
             fontSize: 24.0,
             color: Colors.white,
@@ -159,6 +159,7 @@ class _MyScreenState extends State<WordsScreen> {
                 // ACTUAL WORD
                 title: Text(getRandomElement(Activities),
                     style: TextStyle(
+                      fontFamily: 'DMSans',
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
                       color: Colors.white)),

@@ -26,14 +26,15 @@ class _MySearchState extends State<MySearch> {
           title: Text(
             'Search',
             style: TextStyle(
-              color: Color.fromARGB(249, 253, 208, 149), // Set text color to white
+              color: Colors.white, // Set text color to white
               fontWeight: FontWeight.bold, // Set text to bold
               fontSize: 24, // Set font size to a larger value
+              fontFamily: 'DMSans',
             ),
           ),
-          backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+          backgroundColor: Color.fromARGB(251, 0, 0, 0),
         ),
-        backgroundColor: const Color.fromARGB(249, 253, 208, 149),
+        backgroundColor: Color.fromARGB(248, 0, 0, 0),
 
         
       body: Column(

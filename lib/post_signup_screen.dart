@@ -114,6 +114,7 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
             color: Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 24,
+            fontFamily: 'DMSans',
           ),
         ),
         backgroundColor: const Color.fromARGB(251, 17, 18, 18),
@@ -156,6 +157,7 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 60,
+                          fontFamily: 'DMSans'
                         ),
                       ),
                     ],
@@ -173,7 +175,8 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
                   ),
                   child: TextFormField(
                     controller: _bioController,
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(
+                      color: Colors.white),
                     maxLines: null,
                     decoration: const InputDecoration(
                       hintText: 'Bio',
