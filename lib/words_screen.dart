@@ -115,14 +115,17 @@ class _MyScreenState extends State<WordsScreen> {
           // Existing Rows
           for (int i = 0; i < 4; i++)
             Container(
-              margin: EdgeInsets.all(12.0),
+              margin: EdgeInsets.all(25.0),
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.grey,
                   width: 1.0,
                 ),
-                borderRadius: BorderRadius.circular(20.0),
+                borderRadius: BorderRadius.circular(1000.0),
               ),
+
+              // WORD PICTURE 
+
               child: ListTile(
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(18.0),
@@ -133,6 +136,8 @@ class _MyScreenState extends State<WordsScreen> {
                     fit: BoxFit.cover,
                   ),
                 ),
+
+                // ACTUAL WORD 
                 title: Text('Random Word $i'),
                 trailing: cameraInitialized
                     ? IconButton(
