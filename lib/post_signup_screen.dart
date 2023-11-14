@@ -37,6 +37,7 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
       // Update the user document in Firestore
       await usersCollection.doc(UserData.userName).update({
         'userbio': bio,
+        'friends': []
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
