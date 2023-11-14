@@ -34,6 +34,8 @@ class _MySearchState extends State<MySearch> {
           backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
         ),
         backgroundColor: const Color.fromARGB(249, 253, 208, 149),
+
+        
       body: Column(
         children: <Widget>[
           Padding(

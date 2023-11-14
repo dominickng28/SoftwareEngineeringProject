@@ -1,10 +1,12 @@
-import 'dart:math';
-import 'dart:ui';
-import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
-import 'search.dart';
 import 'dart:async';
+import 'dart:ui';
+
+import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
+import 'package:live4you/Activities.dart';
+
 import 'home_feed.dart';
+import 'search.dart';
 
 void main() {
   runApp(MyApp());
@@ -38,10 +40,17 @@ class _MyScreenState extends State<WordsScreen> {
   }
 
   _initializeCamera() async {
-    cameras = await availableCameras();
-    if (cameras.isNotEmpty) {
-      cameraInitialized = true;
+    try { 
+      cameras = await availableCameras();
+      if (cameras.isNotEmpty) {
+        setState(() {
+          cameraInitialized = true;
+        });
     }
+    } catch(e) { 
+      print("Error getting camera: $e"); 
+    }
+    
   }
 
   // TIMER CODE
@@ -64,9 +73,10 @@ class _MyScreenState extends State<WordsScreen> {
     // Calculate the duration until the next refresh time
     Duration durationUntilNextRefresh = _nextRefreshTime.difference(now);
 
-    // Create a timer that refreshes every Sunday at 8 PM
-    _timer = Timer.periodic(durationUntilNextRefresh, (timer) {
+    // Create a timer that refreshes once, counting down to the next Sunday at 8 PM
+    _timer = Timer(durationUntilNextRefresh, () {
       print("Refreshed at: ${DateTime.now()}");
+      // You can add any other logic that needs to be executed when the timer completes
     });
   }
 
@@ -102,7 +112,7 @@ class _MyScreenState extends State<WordsScreen> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+        backgroundColor: Color.fromARGB(251, 0, 0, 0),
         actions: [
           IconButton(
             icon: Icon(Icons.search, color: Colors.white),
@@ -112,7 +122,7 @@ class _MyScreenState extends State<WordsScreen> {
       ),
 
       // SCREEN BACKGROUND, BEHIND BOXES
-      backgroundColor: const Color.fromARGB(249, 253, 208, 149),
+      backgroundColor: Color.fromARGB(248, 0, 0, 0),
 
       // WORD BOXES
 
@@ -122,11 +132,11 @@ class _MyScreenState extends State<WordsScreen> {
           for (int i = 0; i < 4; i++)
             Container(
               constraints: BoxConstraints(minWidth: 500, maxWidth: 5000),
-              margin: EdgeInsets.all(10.0), // SPACE BETWEEN EACH ROW
+              margin: EdgeInsets.all(5), // SPACE BETWEEN EACH ROW
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.white,
-                  width: 2.0,
+                  width: 4.0,
                 ),
                 borderRadius: BorderRadius.circular(100.0),
               ),
@@ -147,14 +157,17 @@ class _MyScreenState extends State<WordsScreen> {
                 ),
 
                 // ACTUAL WORD
-                title: Text('Random Word $i',
+                title: Text(getRandomElement(Activities2),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
                       color: Colors.white)),
                 trailing: cameraInitialized
                     ? IconButton(
-                        icon: Icon(Icons.camera_alt, color: Colors.white),
+                        icon: Icon(
+                          Icons.camera_alt, 
+                          color: Colors.white, 
+                          size: 30,),
                         onPressed: () {
                           _openCamera(i);
                         },
@@ -200,7 +213,7 @@ class _MyScreenState extends State<WordsScreen> {
     );
   }
 
-// CAMERA CODE
+  // CAMERA CODE
 
   _openCamera(int rowNumber) async {
     final camera = cameras.first;

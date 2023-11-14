@@ -47,7 +47,13 @@ List<String> Activities = [
   'Trade',
 ];
 
-// GRABS RANDOM ELEMENT FROM LIST 
+List<String> Activities2 = [
+  'DIY',
+  'Biking',
+  'Smile',
+  'Run',
+];
+// GRABS RANDOM ELEMENT FROM LIST
 
 T getRandomElement<T>(List<T> list) {
     final random = new Random();
@@ -56,7 +62,8 @@ T getRandomElement<T>(List<T> list) {
 }
 
 void main() {
-    var list = Activities;
+    // var list = Activities;
+    var list = Activities2;
     var element = getRandomElement(list);
     print(element);  
 }
