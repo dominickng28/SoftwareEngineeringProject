@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'search.dart';
 import 'dart:async';
+import 'home_feed.dart';
 
 void main() {
   runApp(MyApp());
@@ -158,7 +159,7 @@ class _MyScreenState extends State<WordsScreen> {
                           _openCamera(i);
                         },
                       )
-                    : SizedBox(),
+                    : CircularProgressIndicator.adaptive(),
               ),
             ),
 
