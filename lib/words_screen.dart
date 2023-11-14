@@ -1,9 +1,12 @@
-import 'dart:math';
+import 'dart:async';
 import 'dart:ui';
-import 'package:flutter/material.dart';
+
 import 'package:camera/camera.dart';
-import 'search.dart'; 
-import 'dart:async'; 
+import 'package:flutter/material.dart';
+import 'package:live4you/Activities.dart';
+
+import 'home_feed.dart';
+import 'search.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,35 +40,45 @@ class _MyScreenState extends State<WordsScreen> {
   }
 
   _initializeCamera() async {
-    cameras = await availableCameras();
-    if (cameras.isNotEmpty) {
-      cameraInitialized = true;
+    try { 
+      cameras = await availableCameras();
+      if (cameras.isNotEmpty) {
+        setState(() {
+          cameraInitialized = true;
+        });
     }
+    } catch(e) { 
+      print("Error getting camera: $e"); 
+    }
+    
   }
 
-  // TIMER CODE 
+  // TIMER CODE
 
   void _setupTimer() {
-  // Find the next Sunday from the current date
-  DateTime now = DateTime.now();
-  DateTime nextSunday = DateTime(now.year, now.month, now.day + (DateTime.sunday - now.weekday + 7) % 7);
+    // Find the next Sunday from the current date
+    DateTime now = DateTime.now();
+    DateTime nextSunday = DateTime(
+        now.year, now.month, now.day + (DateTime.sunday - now.weekday + 7) % 7);
 
-  // Set the time to 8 PM
-  _nextRefreshTime = DateTime(nextSunday.year, nextSunday.month, nextSunday.day, 20, 0, 0);
+    // Set the time to 8 PM
+    _nextRefreshTime =
+        DateTime(nextSunday.year, nextSunday.month, nextSunday.day, 20, 0, 0);
 
-  // If the next refresh time has already passed for this week, set it for the next week
-  if (_nextRefreshTime.isBefore(now)) {
-    _nextRefreshTime = _nextRefreshTime.add(Duration(days: 7));
+    // If the next refresh time has already passed for this week, set it for the next week
+    if (_nextRefreshTime.isBefore(now)) {
+      _nextRefreshTime = _nextRefreshTime.add(Duration(days: 7));
+    }
+
+    // Calculate the duration until the next refresh time
+    Duration durationUntilNextRefresh = _nextRefreshTime.difference(now);
+
+    // Create a timer that refreshes once, counting down to the next Sunday at 8 PM
+    _timer = Timer(durationUntilNextRefresh, () {
+      print("Refreshed at: ${DateTime.now()}");
+      // You can add any other logic that needs to be executed when the timer completes
+    });
   }
-
-  // Calculate the duration until the next refresh time
-  Duration durationUntilNextRefresh = _nextRefreshTime.difference(now);
-
-  // Create a timer that refreshes every Sunday at 8 PM
-  _timer = Timer.periodic(durationUntilNextRefresh, (timer) {
-    print("Refreshed at: ${DateTime.now()}");
-  });
-}
 
   @override
   void dispose() {
@@ -77,12 +90,14 @@ class _MyScreenState extends State<WordsScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MySearch(title: 'Search',),
+        builder: (context) => MySearch(
+          title: 'Search',
+        ),
       ),
     );
   }
 
-  // MAGNIFYIGN GLASS 
+  // MAGNIFYING GLASS
 
   @override
   Widget build(BuildContext context) {
@@ -92,61 +107,72 @@ class _MyScreenState extends State<WordsScreen> {
           'Tasks',
           style: TextStyle(
             fontFamily: 'YourFont',
-            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+            fontSize: 24.0,
             color: Colors.white,
           ),
         ),
-        backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+        backgroundColor: Color.fromARGB(251, 0, 0, 0),
         actions: [
           IconButton(
-            icon: Icon(Icons.search, color: Colors.white,),
+            icon: Icon(Icons.search, color: Colors.white),
             onPressed: _navigateToMySearch,
           ),
         ],
       ),
 
-      // SCREEN BACKGROUND, BEHIND BOXES 
-      backgroundColor: const Color.fromARGB(249, 253, 208, 149),
+      // SCREEN BACKGROUND, BEHIND BOXES
+      backgroundColor: Color.fromARGB(248, 0, 0, 0),
 
-      // WORD BOXES 
+      // WORD BOXES
 
       body: Column(
         children: <Widget>[
           // Existing Rows
           for (int i = 0; i < 4; i++)
             Container(
-              margin: EdgeInsets.all(25.0),
+              constraints: BoxConstraints(minWidth: 500, maxWidth: 5000),
+              margin: EdgeInsets.all(5), // SPACE BETWEEN EACH ROW
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.grey,
-                  width: 1.0,
+                  color: Colors.white,
+                  width: 4.0,
                 ),
-                borderRadius: BorderRadius.circular(1000.0),
+                borderRadius: BorderRadius.circular(100.0),
               ),
 
-              // WORD PICTURE 
+              // WORD PICTURE
 
               child: ListTile(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(18.0),
                   child: Image.network(
                     'https://source.unsplash.com/100x100/?random=$i',
-                    width: 40.0,
-                    height: 40.0,
+                    width: 60.0,
+                    height: 60.0,
                     fit: BoxFit.cover,
                   ),
                 ),
 
-                // ACTUAL WORD 
-                title: Text('Random Word $i'),
+                // ACTUAL WORD
+                title: Text(getRandomElement(Activities),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                      color: Colors.white)),
                 trailing: cameraInitialized
                     ? IconButton(
-                        icon: Icon(Icons.camera_alt),
+                        icon: Icon(
+                          Icons.camera_alt, 
+                          color: Colors.white, 
+                          size: 30,),
                         onPressed: () {
                           _openCamera(i);
                         },
                       )
-                    : SizedBox(),
+                    : CircularProgressIndicator.adaptive(),
               ),
             ),
 
@@ -163,7 +189,7 @@ class _MyScreenState extends State<WordsScreen> {
                   ),
                   width: 200.0,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
+                    borderRadius: BorderRadius.circular(10.0),
                     child: Image.network(
                       'https://source.unsplash.com/200x150/?random=${index + 4}',
                       fit: BoxFit.cover,
@@ -173,13 +199,13 @@ class _MyScreenState extends State<WordsScreen> {
               },
             ),
           ),
-          
+
           // Live Time Timer
           Container(
             margin: EdgeInsets.all(12.0),
             child: Text(
               'Next Refresh: $_nextRefreshTime',
-              style: TextStyle(fontSize: 16.0),
+              style: TextStyle(fontSize: 16.0, color: Colors.white),
             ),
           ),
         ],
@@ -187,8 +213,7 @@ class _MyScreenState extends State<WordsScreen> {
     );
   }
 
-
-// CAMERA CODE 
+  // CAMERA CODE
 
   _openCamera(int rowNumber) async {
     final camera = cameras.first;
@@ -261,7 +286,7 @@ class _CameraScreenState extends State<CameraScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final image = _controller.takePicture(); //await 
+          final image = _controller.takePicture(); //await
           Navigator.pop(context, image);
         },
         child: const Icon(Icons.camera),
