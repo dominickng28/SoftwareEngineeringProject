@@ -106,7 +106,7 @@ class _MyScreenState extends State<WordsScreen> {
         title: Text(
           'Tasks',
           style: TextStyle(
-            fontFamily: 'YourFont',
+            fontFamily: 'DancingScript',
             fontWeight: FontWeight.bold,
             fontSize: 24.0,
             color: Colors.white,
@@ -157,7 +157,7 @@ class _MyScreenState extends State<WordsScreen> {
                 ),
 
                 // ACTUAL WORD
-                title: Text(getRandomElement(Activities2),
+                title: Text(getRandomElement(Activities),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
@@ -189,7 +189,7 @@ class _MyScreenState extends State<WordsScreen> {
                   ),
                   width: 200.0,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20.0),
+                    borderRadius: BorderRadius.circular(10.0),
                     child: Image.network(
                       'https://source.unsplash.com/200x150/?random=${index + 4}',
                       fit: BoxFit.cover,
