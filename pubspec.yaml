@@ -66,6 +66,14 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
+  fonts:
+    # - family: Montserrat
+    #   fonts:
+    #     - asset: lib/fonts/Montserrat-VariableFont_wght.ttf
+    - family: DMSans
+      fonts:
+        - asset: lib/fonts/DMSans-VariableFont_opsz,wght.ttf
+        
   assets:
     - lib/assets/Live4youLogo.png
     - lib/assets/Live4youWhite.png

@@ -141,19 +141,17 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
     fetchUserRecentPostData(username: widget.profileUserName);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
-        flexibleSpace: Padding(
-          padding: const EdgeInsets.only(
-              top: 60.0), // Adjust the top padding value to lower the image
-          child: Center(
-            child: Image.asset(
-              'lib/assets/Live4youWhite.png', // Replace 'lib/assets/Live4youWhite.png' with your image path
-              height: 120, // Adjust the height of the image
-              width: 130, // Adjust the width of the image
+          title: Text(
+            'Profile',
+            style: TextStyle(
+              color: Colors.white, // Set text color to white
+              fontWeight: FontWeight.bold, // Set text to bold
+              fontSize: 24, // Set font size to a larger value
+              fontFamily: 'DMSans',
             ),
           ),
+          backgroundColor: Color.fromARGB(251, 0, 0, 0),
         ),
-      ),
 
       body: Column(
         children: <Widget>[
