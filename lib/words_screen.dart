@@ -106,7 +106,7 @@ class _MyScreenState extends State<WordsScreen> {
         title: Text(
           'Tasks',
           style: TextStyle(
-            fontFamily: 'DancingScript',
+            fontFamily: 'YourFont',
             fontWeight: FontWeight.bold,
             fontSize: 24.0,
             color: Colors.white,
