@@ -191,20 +191,24 @@ class _PostCardState extends State<PostCard> {
 
   Future<void> deletePost(BuildContext parentContext) async {
     return showDialog(
-        context: parentContext,
-        builder: (conext) {
-          return SimpleDialog(
-            title: Text("Delete post?"),
-            children: <Widget>[
-              SimpleDialogOption(
-                onPressed: () async {
-                  //removes post from Firebase and user postList
-                  Navigator.pop(conext);
-                  await FirebaseFirestore.instance
-                      .collection('posts')
-                      .doc(widget.post.getPostID())
-                      .delete();
-                  await removeFromPostList();
+      context: parentContext,
+      builder: (conext){
+        return SimpleDialog(title: Text("Delete post?"),
+        children: <Widget>[
+          SimpleDialogOption(
+            onPressed: () async{
+              //removes post from Firebase and user postList
+              Navigator.pop(conext);
+              await removeFromPostList();
+              FirebaseFirestore.instance
+              .collection('posts')
+              .doc(widget.post.getPostID())
+              .delete();
+              if(mounted){
+                setState(() {
+                  
+                });
+              }
 
                   ScaffoldMessenger.of(parentContext).showSnackBar(SnackBar(
                     content: Text('Post has been deleted'),
@@ -226,8 +230,10 @@ class _PostCardState extends State<PostCard> {
 
   Future<void> removeFromPostList() async {
     final firestoreInstance = FirebaseFirestore.instance;
-    await firestoreInstance.collection('users').doc(UserData.userName).update({
-      'postList': FieldValue.arrayRemove([widget.post.getPostID()])
+    await firestoreInstance
+    .collection('users')
+    .doc(UserData.userName)
+    .update({'post_list' : FieldValue.arrayRemove([widget.post.getPostID()])
     });
   }
 
