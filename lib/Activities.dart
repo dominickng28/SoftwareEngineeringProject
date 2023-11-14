@@ -1,3 +1,5 @@
+import 'dart:math';
+
 List<String> Activities = [
   'DIY',
   'Biking',
@@ -44,3 +46,17 @@ List<String> Activities = [
   'Practice',
   'Trade',
 ];
+
+// GRABS RANDOM ELEMENT FROM LIST 
+
+T getRandomElement<T>(List<T> list) {
+    final random = new Random();
+    var i = random.nextInt(list.length);
+    return list[i];
+}
+
+void main() {
+    var list = Activities;
+    var element = getRandomElement(list);
+    print(element);  
+}

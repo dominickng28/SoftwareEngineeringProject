@@ -2,8 +2,8 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'search.dart'; 
-import 'dart:async'; 
+import 'search.dart';
+import 'dart:async';
 
 void main() {
   runApp(MyApp());
@@ -43,29 +43,31 @@ class _MyScreenState extends State<WordsScreen> {
     }
   }
 
-  // TIMER CODE 
+  // TIMER CODE
 
   void _setupTimer() {
-  // Find the next Sunday from the current date
-  DateTime now = DateTime.now();
-  DateTime nextSunday = DateTime(now.year, now.month, now.day + (DateTime.sunday - now.weekday + 7) % 7);
+    // Find the next Sunday from the current date
+    DateTime now = DateTime.now();
+    DateTime nextSunday = DateTime(
+        now.year, now.month, now.day + (DateTime.sunday - now.weekday + 7) % 7);
 
-  // Set the time to 8 PM
-  _nextRefreshTime = DateTime(nextSunday.year, nextSunday.month, nextSunday.day, 20, 0, 0);
+    // Set the time to 8 PM
+    _nextRefreshTime =
+        DateTime(nextSunday.year, nextSunday.month, nextSunday.day, 20, 0, 0);
 
-  // If the next refresh time has already passed for this week, set it for the next week
-  if (_nextRefreshTime.isBefore(now)) {
-    _nextRefreshTime = _nextRefreshTime.add(Duration(days: 7));
+    // If the next refresh time has already passed for this week, set it for the next week
+    if (_nextRefreshTime.isBefore(now)) {
+      _nextRefreshTime = _nextRefreshTime.add(Duration(days: 7));
+    }
+
+    // Calculate the duration until the next refresh time
+    Duration durationUntilNextRefresh = _nextRefreshTime.difference(now);
+
+    // Create a timer that refreshes every Sunday at 8 PM
+    _timer = Timer.periodic(durationUntilNextRefresh, (timer) {
+      print("Refreshed at: ${DateTime.now()}");
+    });
   }
-
-  // Calculate the duration until the next refresh time
-  Duration durationUntilNextRefresh = _nextRefreshTime.difference(now);
-
-  // Create a timer that refreshes every Sunday at 8 PM
-  _timer = Timer.periodic(durationUntilNextRefresh, (timer) {
-    print("Refreshed at: ${DateTime.now()}");
-  });
-}
 
   @override
   void dispose() {
@@ -77,12 +79,14 @@ class _MyScreenState extends State<WordsScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MySearch(title: 'Search',),
+        builder: (context) => MySearch(
+          title: 'Search',
+        ),
       ),
     );
   }
 
-  // MAGNIFYIGN GLASS 
+  // MAGNIFYING GLASS
 
   @override
   Widget build(BuildContext context) {
@@ -92,56 +96,64 @@ class _MyScreenState extends State<WordsScreen> {
           'Tasks',
           style: TextStyle(
             fontFamily: 'YourFont',
-            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+            fontSize: 24.0,
             color: Colors.white,
           ),
         ),
         backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
         actions: [
           IconButton(
-            icon: Icon(Icons.search, color: Colors.white,),
+            icon: Icon(Icons.search, color: Colors.white),
             onPressed: _navigateToMySearch,
           ),
         ],
       ),
 
-      // SCREEN BACKGROUND, BEHIND BOXES 
+      // SCREEN BACKGROUND, BEHIND BOXES
       backgroundColor: const Color.fromARGB(249, 253, 208, 149),
 
-      // WORD BOXES 
+      // WORD BOXES
 
       body: Column(
         children: <Widget>[
           // Existing Rows
           for (int i = 0; i < 4; i++)
             Container(
-              margin: EdgeInsets.all(25.0),
+              constraints: BoxConstraints(minWidth: 500, maxWidth: 5000),
+              margin: EdgeInsets.all(10.0), // SPACE BETWEEN EACH ROW
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.grey,
-                  width: 1.0,
+                  color: Colors.white,
+                  width: 2.0,
                 ),
-                borderRadius: BorderRadius.circular(1000.0),
+                borderRadius: BorderRadius.circular(100.0),
               ),
 
-              // WORD PICTURE 
+              // WORD PICTURE
 
               child: ListTile(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(18.0),
                   child: Image.network(
                     'https://source.unsplash.com/100x100/?random=$i',
-                    width: 40.0,
-                    height: 40.0,
+                    width: 60.0,
+                    height: 60.0,
                     fit: BoxFit.cover,
                   ),
                 ),
 
-                // ACTUAL WORD 
-                title: Text('Random Word $i'),
+                // ACTUAL WORD
+                title: Text('Random Word $i',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0,
+                      color: Colors.white)),
                 trailing: cameraInitialized
                     ? IconButton(
-                        icon: Icon(Icons.camera_alt),
+                        icon: Icon(Icons.camera_alt, color: Colors.white),
                         onPressed: () {
                           _openCamera(i);
                         },
@@ -173,13 +185,13 @@ class _MyScreenState extends State<WordsScreen> {
               },
             ),
           ),
-          
+
           // Live Time Timer
           Container(
             margin: EdgeInsets.all(12.0),
             child: Text(
               'Next Refresh: $_nextRefreshTime',
-              style: TextStyle(fontSize: 16.0),
+              style: TextStyle(fontSize: 16.0, color: Colors.white),
             ),
           ),
         ],
@@ -187,8 +199,7 @@ class _MyScreenState extends State<WordsScreen> {
     );
   }
 
-
-// CAMERA CODE 
+// CAMERA CODE
 
   _openCamera(int rowNumber) async {
     final camera = cameras.first;
@@ -261,7 +272,7 @@ class _CameraScreenState extends State<CameraScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final image = _controller.takePicture(); //await 
+          final image = _controller.takePicture(); //await
           Navigator.pop(context, image);
         },
         child: const Icon(Icons.camera),
