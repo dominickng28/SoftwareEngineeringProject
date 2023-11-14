@@ -41,6 +41,8 @@ dependencies:
   firebase_storage: ^11.4.0
   camera: ^0.10.5+5
   path_provider: ^2.1.1
+  image_picker: ^0.8.4+2
+  
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +71,10 @@ flutter:
     - lib/assets/Live4youWhite.png
     - lib/assets/Live4youLine.png
     - lib/assets/default-user.jpg
+    - lib/assets/Biking.webp
+    - lib/assets/Cooking.jpeg
+    - lib/assets/Draw.jpeg
+    - lib/assets/Explore.jpeg
     - SampleImages/fish.jpg
     - SampleImages/pool.jpg
     - SampleImages/park.jpg

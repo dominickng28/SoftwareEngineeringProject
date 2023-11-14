@@ -64,9 +64,9 @@ class _LoginScreenState extends State<LoginScreen> {
               fontSize: 24, // Set font size to a larger value
             ),
           ),
-          backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+          backgroundColor: Color.fromARGB(251, 17, 18, 18),
         ),
-        backgroundColor: Color.fromARGB(249, 255, 215, 139),
+        backgroundColor: Color.fromARGB(251, 17, 18, 18),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -76,25 +76,27 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: <Widget>[
                   // Logo Image
                   Image.asset(
-                    'lib/assets/Live4youLine.png',
-                    width: 300, // Adjust the width as needed
-                    height: 300, // Adjust the height as needed
+                    'lib/assets/Live4youWhite.png',
+                    width: 350, // Adjust the width as needed
+                    height: 350, // Adjust the height as needed
                   ),
                   const SizedBox(height: 20.0),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                       border: Border.all(
-                          color: const Color.fromARGB(255, 14, 105, 171)),
+                          color: Color.fromARGB(255, 255, 255, 255)),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: TextFormField(
                       controller: _emailController,
+                      style: TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
                         hintText: 'Username',
+                        hintStyle: TextStyle(color: Colors.white),
                         border: InputBorder.none,
                         prefixIcon:
-                            Icon(Icons.person), // Add an icon as the prefix
+                            Icon(Icons.person,  color: Colors.white), // Add an icon as the prefix
                       ),
                     ),
                   ),
@@ -102,27 +104,28 @@ class _LoginScreenState extends State<LoginScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
+                      border: Border.all(color: const Color.fromARGB(255, 255, 255, 255)),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: TextFormField(
                       controller: _passwordController,
+                      style: TextStyle(color: Colors.white),
                       obscureText: true,
                       decoration: const InputDecoration(
                         hintText: 'Password',
+                        hintStyle: TextStyle(color: Colors.white),
                         border: InputBorder.none,
                         prefixIcon:
-                            Icon(Icons.lock), // Add an icon as the prefix
+                            Icon(Icons.lock, color: Colors.white), // Add an icon as the prefix
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 10.0),
+                  const SizedBox(height: 12.0),
                   ElevatedButton(
                     onPressed: _login,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(
-                          255, 219, 219, 219), // Change button color
+                      backgroundColor: Colors.white, // Change button color
                       padding: const EdgeInsets.all(16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -150,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         color:
-                            Color.fromARGB(248, 1, 31, 57),  // Change this to your preferred color
+                            Color.fromARGB(248, 255, 255, 255),  // Change this to your preferred color
                       ),
                     ),
                   ),
