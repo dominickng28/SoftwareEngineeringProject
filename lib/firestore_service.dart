@@ -16,7 +16,7 @@ class FirestoreService {
       'username': username,
       'joinedtimestamp': joinedTimestamp, // Saving the timestamp
       'uid': userID,
-      
+      'friends': [],
     });
   }
 

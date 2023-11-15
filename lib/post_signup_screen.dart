@@ -40,6 +40,7 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
       // Update the user document in Firestore
       await usersCollection.doc(UserData.userName).update({
         'userbio': bio,
+        'friends': []
       });
 
       // Save the image to Firestore or a storage service
