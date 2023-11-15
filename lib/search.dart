@@ -21,6 +21,7 @@ class _MySearchState extends State<MySearch> {
 
   @override
   Widget build(BuildContext context) {
+    // var userProfile;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
