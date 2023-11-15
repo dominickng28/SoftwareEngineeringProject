@@ -196,7 +196,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                                     },
                                   ),
                                 ),
-                                icon: Icon(requestSent ? Icons.person_outline_rounded : isFriend ? Icons.person_remove_rounded : Icons.person_add_alt_1_rounded),
+                                icon: Icon(requestSent ? Icons.person_outline_rounded : isFriend ? Icons.person_remove_rounded : Icons.person_add_alt_1_rounded), 
                               ),
                             ),
                 ],
@@ -233,7 +233,7 @@ Container(
         child : Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(style: TextStyle(fontSize: 25), userProfile?.username ?? "Loading User"),            
+            Text(style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold,), userProfile?.username ?? "Loading User"),            
             const SizedBox(height: 10),
             Text(
                 userBio ?? '', // Display the user's bio if available
@@ -252,7 +252,7 @@ Container(
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const Friends(title: 'Friends',)),
+                            builder: (context) => const MyFriends(title: 'Friends',)),
                       );
                     },
                     child: const Text(

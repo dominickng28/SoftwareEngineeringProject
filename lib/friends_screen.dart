@@ -1,156 +1,137 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:live4you/friend.dart';
+import 'package:live4you/friend_service.dart';
+import 'post.dart';
 import 'user.dart';
-import 'profile_screen.dart';
-import 'main.dart';
-import 'friend_service.dart';
 import 'user_data.dart';
+import 'camera_screen.dart';
 
-class Friends extends StatefulWidget {
-  const Friends({super.key, required this.title});
+class MyFriends extends StatelessWidget {
+  const MyFriends({super.key, required this.title});
 
   final String title;
-
-  @override
-  State<Friends> createState() => _Friends();
-}
-
-class _Friends extends State<Friends> {
-  final TextEditingController _searchController = TextEditingController();
-  final FriendService _friendService = FriendService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(
-            'Search',
-            style: TextStyle(
-              color: Color.fromARGB(249, 253, 208, 149), // Set text color to white
-              fontWeight: FontWeight.bold, // Set text to bold
-              fontSize: 24, // Set font size to a larger value
+      backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+        flexibleSpace: const Padding(
+          padding: EdgeInsets.only(
+              top: 30.0), // Adjust the top padding value to lower the image
+          child: Center(
+            child: Text(
+              'Friends',
+              style: TextStyle(
+            color: Colors.white, // Set text color to white
+            fontWeight: FontWeight.bold, // Set text to bold
+            fontSize: 24, // Set font size to a larger value
+          ), // Replace 'lib/assets/Live4youWhite.png' with your image path
+              // Adjust the width of the image
             ),
           ),
-          backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
         ),
-        backgroundColor: const Color.fromARGB(249, 253, 208, 149),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                labelText: "Search for a username",
-                suffixIcon: IconButton(
-                  onPressed: () async {
-                    String username = _searchController.text;
-                    DocumentSnapshot userDoc = await FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(username)
-                        .get();
-                    if (userDoc.exists) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MyUserProfilePage(title: 'User Profile', profileUserName: username),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text(
-                                'No user found with the username $username')),
-                      );
-                    }
-                  },
-                  icon: Icon(Icons.search),
-                ),
-              ),
-            ),
-          ),
-                      Expanded(
-              child: StreamBuilder<List<String>>(
-                stream: _friendService.receivedFriendRequestsStream(UserData.userName),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List<String> friendRequests = snapshot.data!;
-
-                    return ListView.builder(
-                      itemCount: friendRequests.length,
-                      itemBuilder: (context, index) {
-                        // Retrieve user document for the friend request
-                        DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(friendRequests[index]);
-                        ImageProvider imageProvider;
-                        return StreamBuilder<DocumentSnapshot>(
-                          stream: userDoc.snapshots(),
-                          builder: (context, userSnapshot) {
-                            if (userSnapshot.hasData) {
-                              var userFriend = userSnapshot.data!.data() as Map<String, dynamic>;
-                              var profilePicUrl = userFriend['profilePicURL'] ?? 'lib/assets/default-user.jpg';
-                              if (profilePicUrl == 'lib/assets/default-user.jpg') {
-                              imageProvider = AssetImage(profilePicUrl);
-                            } else {
-                              imageProvider = NetworkImage(profilePicUrl);
-                            }
-                              return ListTile(
-                                leading: GestureDetector(
-                                  onTap: (){
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => MyUserProfilePage(title: 'User Profile', profileUserName: friendRequests[index]),
-                                      ),
-                                    );
-                                  },
-                                  child: CircleAvatar(
-                                    backgroundImage: imageProvider,
-                                    radius: 25.0,
-                                  ),
-                                ),
-                                title: Text(friendRequests[index]),
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        // Accept the friend request
-                                        _friendService.acceptFriendRequest(UserData.userName, friendRequests[index]);
-                                      },
-                                      child: const Text('Accept'),
-                                    ),
-                                    const SizedBox(width: 10.0),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        // Decline the friend request
-                                        _friendService.cancelFriendRequest(friendRequests[index], UserData.userName);
-                                      },
-                                      child: const Text('Decline'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            } else {
-                              // Handle loading or error state for the user document
-                              return ListTile(
-                                title: Text(friendRequests[index]),
-                                subtitle: CircularProgressIndicator(),
-                              );
-                            }
-                          },
-                        );
-                      },
-                    );
-                  } else if (snapshot.hasError) {
-                    return const Center(child: Text('Error loading friend requests'));
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                },
-              ),
-            ),
-        ],
       ),
+      backgroundColor: const Color.fromARGB(249, 253, 208, 149),
+      body: MyFriendsList(),
     );
   }
 }
+
+class MyFriendsList extends StatefulWidget{
+  @override
+  _MyFriendsListState createState() => _MyFriendsListState();
+}
+
+class _MyFriendsListState extends State<MyFriendsList> {
+  final UserData userData = UserData(FirebaseFirestore.instance);
+  final FriendService _friendService = FriendService();
+  List<Friend> friendsList = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchFriends();
+  }
+
+  void fetchFriends() async {
+    try{
+      // Fetch friends list
+      await userData.populateFriendsList();
+      List<String>? friendList = UserData.friends;
+
+      // Access Firestore instance
+      final firestoreInstance = FirebaseFirestore.instance;
+
+      // Fetch all friends
+      QuerySnapshot querySnapshot = await firestoreInstance
+          .collection('users')
+          .where('username', whereIn: friendList)
+          .get();
+
+      // Convert each document to a Friend object and add it to the friend list
+      List<Friend> allFriends = querySnapshot.docs
+          .map((doc) => Friend.fromFirestore(doc))
+          .toList();
+        setState(() {
+          friendsList = allFriends;
+          isLoading = false;
+        });
+    } catch (error) {
+      print('Error fetching friends: $error');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+  @override
+  Widget build(BuildContext context) {
+    return isLoading
+        ? Center(child: CircularProgressIndicator()) // Show loader while fetching data
+        : friendsList.isEmpty
+            ? Center(child: Text("No friends yet..."))
+            : ListView.builder(
+                itemCount: friendsList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return FriendBar(friend: friendsList[index]);
+                },
+              );
+  }
+    
+}
+
+  class FriendBar extends StatelessWidget{
+    final Friend friend;
+  
+    const FriendBar({required this.friend});
+
+    @override
+    Widget build(BuildContext context) {
+      return Container(height: 200,color: const Color.fromARGB(249, 253, 208, 149),
+      child: Column(
+        children: [
+          ListTile(
+              leading: CircleAvatar(
+                backgroundImage: AssetImage(friend.pfp),
+              ),
+              title: Text(friend.username),
+              ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: Image.network(
+              friend.pfp,
+              fit: BoxFit.fill,
+            ),
+          ),
+          
+          Container(
+              height: 2.0,
+              color: Color.fromARGB(248, 172, 113, 36)),
+        ],
+      ),);
+    }
+  }
