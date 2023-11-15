@@ -113,6 +113,7 @@ class _MyScreenState extends State<WordsScreen> {
           ),
         ),
         backgroundColor: const Color.fromARGB(251, 0, 0, 0),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.search, color: Colors.white),
@@ -133,7 +134,7 @@ class _MyScreenState extends State<WordsScreen> {
           for (int i = 0; i < 4; i++)
 
             Container(
-              constraints: const BoxConstraints(minWidth: 500, maxWidth: 5000),
+              constraints: const BoxConstraints(minWidth: 500, maxWidth: 500),
               margin: const EdgeInsets.all(5), // SPACE BETWEEN EACH ROW
               decoration: BoxDecoration(
                 border: Border.all(
