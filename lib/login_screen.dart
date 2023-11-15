@@ -62,6 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
               color: Colors.white, // Set text color to white
               fontWeight: FontWeight.bold, // Set text to bold
               fontSize: 24, // Set font size to a larger value
+              fontFamily: 'DMSans',
             ),
           ),
           backgroundColor: Color.fromARGB(251, 17, 18, 18),
