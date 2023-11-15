@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,6 +8,8 @@ import 'package:live4you/main.dart';
 import 'package:live4you/user_data.dart';
 import 'firestore_service.dart';
 import 'package:live4you/home_feed.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -14,7 +18,7 @@ final CollectionReference usersCollection =
     FirebaseFirestore.instance.collection('users');
 
 class PostSignUpScreen extends StatefulWidget {
-  const PostSignUpScreen({super.key});
+  const PostSignUpScreen({Key? key}) : super(key: key);
 
   @override
   _PostSignUpScreenState createState() => _PostSignUpScreenState();
@@ -22,14 +26,13 @@ class PostSignUpScreen extends StatefulWidget {
 
 class _PostSignUpScreenState extends State<PostSignUpScreen> {
   final TextEditingController _bioController = TextEditingController();
-
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _firstnameController = TextEditingController();
-  final TextEditingController _lastnameController = TextEditingController();
+  File? _imageFile; // Change to File? to allow null
+  final picker = ImagePicker();
+  final _firestoreService = FirestoreService();
+  String profilePictureUrl = '';
 
-  Future<void> _addUser(
-    String bio,
-  ) async {
+  Future<void> _addUser(String bio) async {
     // Fetch the current user
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -39,6 +42,14 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
         'userbio': bio,
         'friends': []
       });
+
+      // Save the image to Firestore or a storage service
+      if (_imageFile != null) {
+        // Example: Save the image to Firestore
+        await usersCollection.doc(UserData.userName).update({
+          'profilePicURL': _imageFile!.path,
+        });
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Account Updated Successfully')),
@@ -53,126 +64,156 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
     }
   }
 
+  Future<void> _getImage() async {
+    final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+      await uploadImage(UserData.userName);
+    }
+  }
+ Future uploadImage(String username) async {
+    try {
+      if (_imageFile == null) {
+        print('No image file selected.');
+        return;
+      }
+
+      setState(() {
+        profilePictureUrl = "";
+      });
+
+      final fileName = 'user_profilePictures/$username.png';
+      final reference = FirebaseStorage.instance.ref(fileName);
+
+      await reference.putFile(_imageFile!);
+
+      final imageUrl = await reference.getDownloadURL();
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(username)
+          .set({'profile_picture': imageUrl}, SetOptions(merge: true));
+
+      setState(() {
+        _imageFile = null;
+        profilePictureUrl = imageUrl;
+      });
+    } catch (error) {
+      print('An error occurred while uploading the image: $error');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.white),
-          title: Text(
-            'Account Info',
-            style: TextStyle(
-              color: Colors.white, // Set text color to white
-              fontWeight: FontWeight.bold, // Set text to bold
-              fontSize: 24, // Set font size to a larger value
-            ),
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          'Account Info',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+            fontFamily: 'DMSans',
           ),
-          backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
         ),
-        backgroundColor: const Color.fromRGBO(153, 206, 255, 0.996),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  // Logo Image
-                  Image.asset(
-                    'lib/assets/Live4youLine.png',
-                    width: 200, // Adjust the width as needed
-                    height: 100, // Adjust the height as needed
+        backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+      ),
+      backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                // Profile Picture
+                SizedBox(
+                  height: 60.0,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    _getImage(); // Call this function when the user taps on the profile picture
+                  },
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 130,
+                        backgroundColor: Colors.white,
+                        backgroundImage: _imageFile != null ? FileImage(_imageFile!) : null,
+                        child: _imageFile == null
+                            ? Icon(
+                                Icons.add,
+                                size: 80,
+                                color: Colors.black,
+                              )
+                            : null,
+                      ),
+                      const SizedBox(height: 20.0),
+                      // Display the username
+                      Text(
+                        UserData.userName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 60,
+                          fontFamily: 'DMSans'
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 20.0),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 14, 105, 171)),
+                ),
+
+                const SizedBox(height: 20.0),
+
+                // Bio Input
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: TextFormField(
+                    controller: _bioController,
+                    style: const TextStyle(
+                      color: Colors.white),
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                      hintText: 'Bio',
+                      hintStyle: TextStyle(color: Colors.white),
+                      border: InputBorder.none,
+                      prefixIcon: Icon(Icons.badge_outlined, color: Colors.white),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 10.0),
+
+                ElevatedButton(
+                  onPressed: () async {
+                    await _addUser(_bioController.text);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                    padding: const EdgeInsets.all(16),
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: TextFormField(
-                      controller: _firstnameController,
-                      decoration: const InputDecoration(
-                        hintText: 'First Name',
-                        border: InputBorder.none,
-                      ),
+                  ),
+                  child: const Text(
+                    "Create Account",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color.fromARGB(255, 0, 0, 0),
                     ),
                   ),
-                  const SizedBox(height: 20.0),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 14, 105, 171)),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextFormField(
-                      controller: _lastnameController,
-                      decoration: const InputDecoration(
-                        hintText: 'Last Name',
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20.0),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextFormField(
-                      controller: _usernameController,
-                      decoration: const InputDecoration(
-                        hintText: 'Username',
-                        border: InputBorder.none,
-                        prefixIcon:
-                            Icon(Icons.person), // Add an icon as the prefix
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20.0),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextFormField(
-                      controller: _bioController,
-                      decoration: const InputDecoration(
-                        hintText: 'Bio',
-                        border: InputBorder.none,
-                        prefixIcon: Icon(
-                            Icons.badge_outlined), // Add an icon as the prefix
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  ElevatedButton(
-                    onPressed: () async {
-                      _addUser(_bioController.text);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(
-                          255, 255, 255, 255), // Change button color
-                      padding: const EdgeInsets.all(16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      "Create Account",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Color.fromARGB(255, 0, 0, 0),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

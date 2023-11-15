@@ -79,6 +79,7 @@ class _CameraScreenState extends State<CameraScreen> {
         'userID': "",
         'embed': '',
         'likes': [],
+        'word' : '',
       });
 
       // Update the post with the post ID

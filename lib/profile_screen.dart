@@ -141,6 +141,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
             height: 120, // Adjust the height of the image
             width: 130, // Adjust the width of the image
           ),
+          backgroundColor: Color.fromARGB(251, 0, 0, 0),
         ),
       ),
     ),

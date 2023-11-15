@@ -60,7 +60,7 @@ class _MyFeedTest extends State<MyFeed> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+        backgroundColor: Color.fromARGB(251, 0, 0, 0),
         flexibleSpace: Padding(
           padding: EdgeInsets.only(
               top: 60.0), // Adjust the top padding value to lower the image
@@ -73,7 +73,7 @@ class _MyFeedTest extends State<MyFeed> {
           ),
         ),
       ),
-      backgroundColor: const Color.fromARGB(249, 253, 208, 149),
+      backgroundColor: Color.fromARGB(248, 0, 0, 0),
       body: posts.isEmpty
           ? Center(
               child: Text("No posts..."),
@@ -143,21 +143,47 @@ class _PostCardState extends State<PostCard> {
     double screenWidth = MediaQuery.of(context).size.width;
     double cutOffValue = 0.95;
     return Container(
-      color: const Color.fromARGB(249, 253, 208, 149),
+      color: Color.fromARGB(248, 0, 0, 0),
       child: Column(
         children: [
           ListTile(
               leading: CircleAvatar(
                 backgroundImage: AssetImage(widget.post.pfp),
               ),
-              title: Text(widget.post.username),
-              subtitle: Text(widget.post.caption),
-              trailing: isPoster
-                  ? IconButton(
-                      icon: Icon(Icons.delete_forever),
-                      onPressed: () => deletePost(context),
-                    )
-                  : null),
+              title: Text(widget.post.username,
+                style: TextStyle(
+                  fontFamily: 'DMSans',
+                  fontSize: 23,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Text(
+                widget.post.caption,
+                style: TextStyle(
+                  fontFamily: 'DMSans',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              trailing: Container(
+                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.teal,
+                ),
+                child: Text(
+                  'Word', //placeholder
+                  style: TextStyle(
+                    fontFamily: 'DMSans',
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
           ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
             child: Image.network(
@@ -165,25 +191,54 @@ class _PostCardState extends State<PostCard> {
               fit: BoxFit.fill,
             ),
           ),
-          Row(
+         Row(
             children: [
               IconButton(
-                icon: Icon(isLiked ? Icons.thumb_up : Icons.thumb_up_alt,
-                    color: isLiked ? Color.fromARGB(255, 2, 23, 117) : null),
+                icon: Icon(isLiked ? Icons.favorite : Icons.favorite_rounded,
+                    color: isLiked ? Colors.teal : Colors.blueGrey),
                 onPressed: () => likePost(context),
               ),
-              Text((widget.post.likeCount).toString()),
-              Spacer(),
-              Padding(
-                padding: EdgeInsets.only(right: 16.0),
-                child: Text(timeAgo(widget.post.date)),
+              Text(
+                (widget.post.likeCount).toString(),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isLiked ? Colors.teal : Colors.blueGrey,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'DMSans'
+                ),
               ),
-            ],
-          ),
-          Container(
-              height: 2.0,
-              width: screenWidth * cutOffValue,
-              color: Color.fromARGB(248, 172, 113, 36)),
+              Spacer(),
+              Flexible(
+                child: Padding(
+                  padding: EdgeInsets.only(right: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        timeAgo(widget.post.date),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'DMSans',
+                        ),
+                      ),
+                      if (widget.post.username == UserData.userName)
+                        IconButton(
+                          icon: Icon(Icons.delete_forever),
+                          color: Colors.blueGrey,
+                          onPressed: () => deletePost(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+        Container(
+            height: 2.0,
+            width: screenWidth * cutOffValue,
+            color: Color.fromARGB(248, 35, 36, 44)),
         ],
       ),
     );
