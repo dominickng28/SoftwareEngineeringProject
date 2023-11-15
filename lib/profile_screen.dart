@@ -9,6 +9,7 @@ import 'post.dart';
 import 'home_feed.dart';
 import 'camera_screen.dart';
 import 'friend_service.dart';
+import 'friends_screen.dart';
 
 class MyUserProfilePage extends StatefulWidget {
   final String? profileUserName;
@@ -145,78 +146,91 @@ late Future<int> followerCount;
 
       body: Column(
         children: <Widget> [
+          Container(
+            padding: const EdgeInsets.only(top:0, left: 300),
+            child: Column(
+              children: <Widget>[
+                  Visibility(
+                              visible: widget.profileUserName != null && widget.profileUserName != UserData.userName,
+                              child: IconButton(
+                                onPressed: () {
+                                  if (requestSent) {
+                                    _friendService.cancelFriendRequest(
+                                      UserData.userName, userProfile!.username);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Canceled Friend Request')),
+                                      );
+                                  }
+                                  else if (isFriend) {
+                                    _friendService.removeFriend(
+                                      UserData.userName, userProfile!.username);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Friend Removed')),
+                                      );
+                                  } else {
+                                      if(userProfile!.sentRequests.contains(UserData.userName)){
+                                      _friendService.acceptFriendRequest(
+                                        UserData.userName, userProfile!.username);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Friend Request Accepted')),
+                                      );
+                                        return;
+                                    }
+                                      _friendService.sendFriendRequest(
+                                        UserData.userName, userProfile!.username);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Friend Request Sent')),
+                                      );
+                                  }
+                                },
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.resolveWith<Color>(
+                                    (Set<MaterialState> states) {
+                                      if (widget.profileUserName != null && widget.profileUserName != UserData.userName){
+                                        if (userProfile?.receivedRequests.contains(UserData.userName) == true){
+                                          return Colors.white;
+                                        }
+                                      }
+                                      return isFriend ? Colors.white : Colors.white;
+                                    },
+                                  ),
+                                ),
+                                icon: Icon(requestSent ? Icons.person_outline_rounded : isFriend ? Icons.person_remove_rounded : Icons.person_add_alt_1_rounded),
+                              ),
+                            ),
+                ],
+            ),
+),
           // Code for the Profile Banner
 Container(
   color: Colors.grey,
   child: Padding(
     padding: const EdgeInsets.all(20.0),
-    child: Row( // Wrap the Column in a Row // Separates the children
+    child: Column( // Wrap the Column in a Row // Separates the children
       children: <Widget>[
         ClipOval(
           child: userProfile?.profilePicURL == null ||
               userProfile?.profilePicURL == 'lib/assets/default-user.jpg'
               ? Image.asset(
                   'lib/assets/default-user.jpg',
-                  width: 100,
-                  height: 100,
+                  width: 150,
+                  height: 150,
                   fit: BoxFit.cover,
                 )
               : Image.network(
                   userProfile!.profilePicURL,
-                  width: 100,
-                  height: 100,
+                  width: 150,
+                  height: 150,
                   fit: BoxFit.cover,
                 ),
         ),
         const SizedBox(width: 20.0),
+        //Username
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(userProfile?.username ?? "Loading User"),
-            const SizedBox(height: 20.0),
-            Visibility(
-              visible: widget.profileUserName != null && widget.profileUserName != UserData.userName,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (requestSent) {
-                    _friendService.cancelFriendRequest(
-                      UserData.userName, userProfile!.username);
-                  }
-                  else if (isFriend) {
-                    _friendService.removeFriend(
-                      UserData.userName, userProfile!.username);
-                  } else {
-                      if(userProfile!.sentRequests.contains(UserData.userName)){
-                       _friendService.acceptFriendRequest(
-                        UserData.userName, userProfile!.username);
-                        return;
-                     }
-                      _friendService.sendFriendRequest(
-                        UserData.userName, userProfile!.username);
-                  }
-                },
-                style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (widget.profileUserName != null && widget.profileUserName != UserData.userName){
-                        if (userProfile?.receivedRequests.contains(UserData.userName) == true){
-                          return Colors.grey;
-                        }
-                      }
-                      return isFriend ? Colors.grey : Colors.green;
-                    },
-                  ),
-                ),
-                child:
-                  Container(
-                    width: 100,
-                    child: Center(
-                      child: Text(requestSent ? 'Cancel Request' : isFriend ? 'Remove Friend' : 'Add Friend')
-                    ),
-                  )
-              ),
-            )
+            Text(style: TextStyle(fontSize: 25), userProfile?.username ?? "Loading User"),            
           ],
         ),
         Container(
@@ -224,15 +238,23 @@ Container(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    // Add any logic or navigation you need when the button is pressed
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey,
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Friends(title: 'Friends',)),
+                      );
+                    },
+                    child: const Text(
+                      "Friends",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color:
+                            Color.fromARGB(248, 1, 31, 57),  // Change this to your preferred color
+                      ),
+                    ),
                   ),
-                  child: Text('Followers'),
-                ),
                 SizedBox(width: 8.0),
                 FutureBuilder<int>(
                   future: followerCount,
@@ -256,6 +278,7 @@ Container(
     ),
   ),
 ),
+
 
   
 
