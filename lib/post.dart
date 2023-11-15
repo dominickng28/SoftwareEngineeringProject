@@ -11,7 +11,8 @@ class Post {
   String embed;
   String pfp;
   String userID;
-  Post(this.username, this.pfp, this._postid, this.userID, this.caption,
+  String word;
+  Post(this.username, this.pfp, this._postid, this.userID, this.word, this.caption,
       this.embed, this.date, this.likeCount, this.likes, this.imageUrl);
 
   String getPostID() {
@@ -33,6 +34,7 @@ class Post {
         data['userID'],
         data['caption'],
         data['embed'],
+        data['word'],
         date,
         data['likecount'],
         data['likes'],

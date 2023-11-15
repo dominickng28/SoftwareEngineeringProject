@@ -167,12 +167,23 @@ class _PostCardState extends State<PostCard> {
                   color: Colors.white,
                 ),
               ),
-              trailing: isPoster
-                  ? IconButton(
-                      icon: Icon(Icons.delete_forever),
-                      onPressed: () => deletePost(context),
-                    )
-                  : null),
+              trailing: Container(
+                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.teal,
+                ),
+                child: Text(
+                  'Word', //placeholder
+                  style: TextStyle(
+                    fontFamily: 'DMSans',
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
           ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
             child: Image.network(
@@ -183,32 +194,51 @@ class _PostCardState extends State<PostCard> {
          Row(
             children: [
               IconButton(
-                icon: Icon(isLiked ? Icons.thumb_up : Icons.thumb_up_alt,
-                    color: isLiked ? Color.fromARGB(255, 2, 23, 117) : null),
+                icon: Icon(isLiked ? Icons.favorite : Icons.favorite_rounded,
+                    color: isLiked ? Colors.teal : Colors.blueGrey),
                 onPressed: () => likePost(context),
               ),
-              Text((widget.post.likeCount).toString()),
-              Spacer(),
-              Padding(
-                padding: EdgeInsets.only(right: 16.0),
-                child: Text(
-                  timeAgo(widget.post.date),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'DMSans',
-                  ),
+              Text(
+                (widget.post.likeCount).toString(),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isLiked ? Colors.teal : Colors.blueGrey,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'DMSans'
                 ),
               ),
-
-            ],
-          ),
-
-          Container(
-              height: 2.0,
-              width: screenWidth * cutOffValue,
-              color: Color.fromARGB(248, 0, 0, 0)),
+              Spacer(),
+              Flexible(
+                child: Padding(
+                  padding: EdgeInsets.only(right: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        timeAgo(widget.post.date),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'DMSans',
+                        ),
+                      ),
+                      if (widget.post.username == UserData.userName)
+                        IconButton(
+                          icon: Icon(Icons.delete_forever),
+                          color: Colors.blueGrey,
+                          onPressed: () => deletePost(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+        Container(
+            height: 2.0,
+            width: screenWidth * cutOffValue,
+            color: Color.fromARGB(248, 35, 36, 44)),
         ],
       ),
     );
