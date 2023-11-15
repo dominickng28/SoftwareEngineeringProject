@@ -228,6 +228,7 @@ class _PostCardState extends State<PostCard> {
   }
   Future<void> deletePost(BuildContext parentContext) async{
     return showDialog(
+<<<<<<< Updated upstream
       context: parentContext,
       builder: (conext){
         return SimpleDialog(title: Text("Delete post?"),
@@ -256,6 +257,80 @@ class _PostCardState extends State<PostCard> {
         ],
         
         );
+=======
+        context: parentContext,
+        builder: (conext) {
+          return SimpleDialog(
+            title: Text("Delete post?"),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () async {
+                  //removes post from Firebase and user postList
+                  Navigator.pop(conext);
+                  await removeFromPostList();
+                  FirebaseFirestore.instance
+                      .collection('posts')
+                      .doc(widget.post.getPostID())
+                      .delete();
+                  if (mounted) {
+                    setState(() {});
+                  }
+                  _MyFeedTest parent =
+                      context.findAncestorStateOfType<_MyFeedTest>()!;
+                  parent.fetchAllPostData();
+
+                  ScaffoldMessenger.of(parentContext).showSnackBar(SnackBar(
+                    content: Text('Post has been deleted'),
+                  ));
+                },
+                child: Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+              SimpleDialogOption(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              )
+            ],
+          );
+        });
+  }
+
+  Future<void> removeFromPostList() async {
+    final firestoreInstance = FirebaseFirestore.instance;
+    await firestoreInstance.collection('users').doc(UserData.userName).update({
+      'post_list': FieldValue.arrayRemove([widget.post.getPostID()])
+    });
+  }
+
+  Future<void> likePost(BuildContext parentContext) async {
+    if (isProcessing) {
+      return;
+    }
+
+    setState(() {
+      isProcessing = true;
+    });
+
+    final user = UserData.userName;
+    widget.post.likes ??= [];
+
+    //Use a transaction to handle concurrent updates safely
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot postSnapshot = await transaction.get(FirebaseFirestore
+          .instance
+          .collection('posts')
+          .doc(widget.post.getPostID()));
+
+      //Update likes, increment or decrement if necessary
+      List<String> updatedLikes =
+          List<String>.from(postSnapshot['likes'] ?? []);
+      if (updatedLikes.contains(user)) {
+        updatedLikes.remove(user);
+      } else {
+        updatedLikes.add(user);
+>>>>>>> Stashed changes
       }
     );
   }

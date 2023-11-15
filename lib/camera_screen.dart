@@ -25,6 +25,10 @@ class _CameraScreenState extends State<CameraScreen> {
   final TextEditingController _captionController = TextEditingController();
   String? imagePath;
 
+  // List of options for the carousel
+  final List<String> options = ["DIY", "Biking", "Smile", "Run"];
+  String selectedOption = "DIY";
+
   @override
   void initState() {
     super.initState();
@@ -47,21 +51,100 @@ class _CameraScreenState extends State<CameraScreen> {
 
       final XFile photo = await _controller.takePicture();
 
-      setState(() {
-        imagePath = photo.path;
-      });
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CaptionScreen(
+            imagePath: photo.path,
+            selectedOption: selectedOption,
+          ),
+        ),
+      );
     } catch (e) {
       print(e);
     }
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Take a picture')),
+      body: Stack(
+        children: [
+          FutureBuilder<void>(
+            future: _initializeControllerFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return CameraPreview(_controller);
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Transform.translate(
+                offset: Offset(0, -100), // Move the carousel up
+                child: DefaultTextStyle(
+                  style: TextStyle(fontSize: 30), // Increase the font size
+                  child: PageView.builder(
+                    itemCount: options.length,
+                    onPageChanged: (int index) {
+                      setState(() {
+                        selectedOption = options[index];
+                      });
+                    },
+                    itemBuilder: (_, i) {
+                      return Center(child: Text(options[i]));
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: FloatingActionButton(
+                child: Icon(Icons.camera_alt),
+                onPressed: _takePicture,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CaptionScreen extends StatefulWidget {
+  final String imagePath;
+  final String selectedOption;
+
+  CaptionScreen({
+    Key? key,
+    required this.imagePath,
+    required this.selectedOption,
+  }) : super(key: key);
+
+  @override
+  _CaptionScreenState createState() => _CaptionScreenState();
+}
+
+class _CaptionScreenState extends State<CaptionScreen> {
+  final TextEditingController _captionController = TextEditingController();
+
   Future<void> _savePicture() async {
     try {
-      final String fileName = imagePath!.split('/').last;
+      final String fileName = widget.imagePath.split('/').last;
       Reference firebaseStorageRef =
           FirebaseStorage.instance.ref().child('posts/$fileName');
 
-      UploadTask uploadTask = firebaseStorageRef.putFile(File(imagePath!));
+      UploadTask uploadTask =
+          firebaseStorageRef.putFile(File(widget.imagePath));
       TaskSnapshot taskSnapshot = await uploadTask;
 
       String imageUrl = await taskSnapshot.ref.getDownloadURL();
@@ -78,6 +161,12 @@ class _CameraScreenState extends State<CameraScreen> {
         'pfp': null,
         'userID': "",
         'embed': '',
+<<<<<<< Updated upstream
+=======
+        'likes': [],
+        'option':
+            widget.selectedOption, // Save the selected option with the post
+>>>>>>> Stashed changes
       });
 
       // Update the post with the post ID
@@ -113,34 +202,19 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Take a picture')),
-      body: imagePath == null
-          ? FutureBuilder<void>(
-              future: _initializeControllerFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return CameraPreview(_controller);
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            )
-          : Column(
-              children: [
-                Image.file(File(imagePath!)),
-                TextField(
-                  controller: _captionController,
-                  decoration: InputDecoration(labelText: 'Caption'),
-                ),
-                ElevatedButton(
-                  onPressed: _savePicture,
-                  child: Text('Post'),
-                ),
-              ],
-            ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.camera_alt),
-        onPressed: imagePath == null ? _takePicture : null,
+      appBar: AppBar(title: Text('Add a caption')),
+      body: Column(
+        children: [
+          Image.file(File(widget.imagePath)),
+          TextField(
+            controller: _captionController,
+            decoration: InputDecoration(labelText: 'Caption'),
+          ),
+          ElevatedButton(
+            onPressed: _savePicture,
+            child: Text('Post'),
+          ),
+        ],
       ),
     );
   }
