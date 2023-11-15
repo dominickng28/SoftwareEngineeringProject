@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'user.dart';
+// import 'user.dart';
 import 'profile_screen.dart';
-import 'main.dart';
+// import 'main.dart';
 import 'friend_service.dart';
 import 'user_data.dart';
 

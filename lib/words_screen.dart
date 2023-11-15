@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:ui';
+// import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:live4you/Activities.dart';
 
-import 'home_feed.dart';
+// import 'home_feed.dart';
 import 'search.dart';
 
 void main() {
