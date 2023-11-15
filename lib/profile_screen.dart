@@ -31,9 +31,8 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
   bool requestSent = false;
   List<Post> posts = [];
   final FriendService _friendService = FriendService();
-
-
-late Future<int> followerCount;
+  late Future<int> followerCount;
+  String? userBio;
 
   @override
   void initState() {
@@ -97,6 +96,7 @@ late Future<int> followerCount;
         // Trigger a rebuild with the fetched user data
         isFriend = userProfile!.isFriend();
         requestSent = userProfile!.receivedRequests.contains(UserData.userName);
+        userBio = userProfile!.userBio;
       });
     }
   }
@@ -227,12 +227,21 @@ Container(
         ),
         const SizedBox(width: 20.0),
         //Username
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      Center(
+        child : Container(
+          padding : const EdgeInsets.all(10.0),
+        child : Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(style: TextStyle(fontSize: 25), userProfile?.username ?? "Loading User"),            
+            const SizedBox(height: 10),
+            Text(
+                userBio ?? '', // Display the user's bio if available
+                style: TextStyle(fontSize: 16),)
           ],
         ),
+    ),
+      ),
         Container(
             color: Colors.grey,
             child: Row(
