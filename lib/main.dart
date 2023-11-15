@@ -76,7 +76,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Color.fromARGB(249, 253, 208, 149), 
+        selectedItemColor: Color.fromARGB(248, 255, 255, 255), 
         unselectedItemColor: const Color.fromARGB(248, 255, 255, 255),
         onTap: onTabTapped,
         currentIndex: _currentIndex,
@@ -98,7 +98,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
-            activeIcon: Icon(Icons.home, color: Color.fromARGB(248, 255, 255, 255), ),
+            activeIcon: Icon(Icons.search, color: Color.fromARGB(248, 255, 255, 255), ),
             backgroundColor: Color.fromARGB(251, 0, 0, 0),
             label: 'Search',
           ),
@@ -110,7 +110,6 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Profile',
           ),
         ],
-
       ),
     );
   }
