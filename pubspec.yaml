@@ -29,7 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
-    sdk: flutter
+    sdk: flutter    
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -41,6 +41,8 @@ dependencies:
   firebase_storage: ^11.4.0
   camera: ^0.10.5+5
   path_provider: ^2.1.1
+  image_picker: ^0.8.4+2
+  
 
 dev_dependencies:
   flutter_test:
@@ -64,11 +66,23 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
+  fonts:
+    # - family: Montserrat
+    #   fonts:
+    #     - asset: lib/fonts/Montserrat-VariableFont_wght.ttf
+    - family: DMSans
+      fonts:
+        - asset: lib/fonts/DMSans-VariableFont_opsz,wght.ttf
+        
   assets:
     - lib/assets/Live4youLogo.png
     - lib/assets/Live4youWhite.png
     - lib/assets/Live4youLine.png
     - lib/assets/default-user.jpg
+    - lib/assets/Biking.webp
+    - lib/assets/Cooking.jpeg
+    - lib/assets/Draw.jpeg
+    - lib/assets/Explore.jpeg
     - SampleImages/fish.jpg
     - SampleImages/pool.jpg
     - SampleImages/park.jpg
