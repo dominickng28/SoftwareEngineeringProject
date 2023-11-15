@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:live4you/friend.dart';
 import 'package:live4you/home_feed.dart';
 import 'user.dart';
 import 'user_data.dart';

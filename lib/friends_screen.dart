@@ -8,6 +8,7 @@ import 'post.dart';
 import 'user.dart';
 import 'user_data.dart';
 import 'camera_screen.dart';
+import 'package:live4you/profile_screen.dart';
 
 class MyFriends extends StatelessWidget {
   const MyFriends({super.key, required this.title});
@@ -18,20 +19,24 @@ class MyFriends extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-      backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+        title: const Text(
+          'Friends',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context); // Go back to the previous screen
+          },
+        ),
+        backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
         flexibleSpace: const Padding(
           padding: EdgeInsets.only(
-              top: 30.0), // Adjust the top padding value to lower the image
-          child: Center(
-            child: Text(
-              'Friends',
-              style: TextStyle(
-            color: Colors.white, // Set text color to white
-            fontWeight: FontWeight.bold, // Set text to bold
-            fontSize: 24, // Set font size to a larger value
-          ), // Replace 'lib/assets/Live4youWhite.png' with your image path
-              // Adjust the width of the image
-            ),
+            top: 30.0,
           ),
         ),
       ),
@@ -111,7 +116,13 @@ class _MyFriendsListState extends State<MyFriendsList> {
 
     @override
     Widget build(BuildContext context) {
-      return Container(height: 200,color: const Color.fromARGB(249, 253, 208, 149),
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(context,
+          MaterialPageRoute(builder: (context) => MyUserProfilePage(profileUserName: friend.username, title: '',),
+          ));
+        },
+        child: Container(color: const Color.fromARGB(249, 253, 208, 149),
       child: Column(
         children: [
           ListTile(
@@ -120,18 +131,13 @@ class _MyFriendsListState extends State<MyFriendsList> {
               ),
               title: Text(friend.username),
               ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: Image.network(
-              friend.pfp,
-              fit: BoxFit.fill,
-            ),
-          ),
           
           Container(
               height: 2.0,
               color: Color.fromARGB(248, 172, 113, 36)),
         ],
-      ),);
+      ),));
     }
+      
+      
   }
