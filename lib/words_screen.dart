@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:ui';
+// import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:live4you/Activities.dart';
 
-import 'home_feed.dart';
+// import 'home_feed.dart';
 import 'search.dart';
 
 void main() {
@@ -67,7 +67,7 @@ class _MyScreenState extends State<WordsScreen> {
 
     // If the next refresh time has already passed for this week, set it for the next week
     if (_nextRefreshTime.isBefore(now)) {
-      _nextRefreshTime = _nextRefreshTime.add(Duration(days: 7));
+      _nextRefreshTime = _nextRefreshTime.add(const Duration(days: 7));
     }
 
     // Calculate the duration until the next refresh time
@@ -90,7 +90,7 @@ class _MyScreenState extends State<WordsScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MySearch(
+        builder: (context) => const MySearch(
           title: 'Search',
         ),
       ),
@@ -103,7 +103,7 @@ class _MyScreenState extends State<WordsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Tasks',
           style: TextStyle(
             fontFamily: 'DMSans',
@@ -112,27 +112,30 @@ class _MyScreenState extends State<WordsScreen> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Color.fromARGB(251, 0, 0, 0),
+        backgroundColor: const Color.fromARGB(251, 0, 0, 0),
+        centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.search, color: Colors.white),
+            icon: const Icon(Icons.search, color: Colors.white),
             onPressed: _navigateToMySearch,
           ),
         ],
       ),
 
       // SCREEN BACKGROUND, BEHIND BOXES
-      backgroundColor: Color.fromARGB(248, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(248, 0, 0, 0),
 
       // WORD BOXES
 
       body: Column(
         children: <Widget>[
+          
           // Existing Rows
           for (int i = 0; i < 4; i++)
+
             Container(
-              constraints: BoxConstraints(minWidth: 500, maxWidth: 5000),
-              margin: EdgeInsets.all(5), // SPACE BETWEEN EACH ROW
+              constraints: const BoxConstraints(minWidth: 500, maxWidth: 500),
+              margin: const EdgeInsets.all(5), // SPACE BETWEEN EACH ROW
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.white,
@@ -145,7 +148,7 @@ class _MyScreenState extends State<WordsScreen> {
 
               child: ListTile(
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(18.0),
                   child: Image.network(
@@ -158,14 +161,16 @@ class _MyScreenState extends State<WordsScreen> {
 
                 // ACTUAL WORD
                 title: Text(getRandomElement(Activities),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
                       color: Colors.white)),
+
+                // CAMERA ICON       
                 trailing: cameraInitialized
                     ? IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.camera_alt, 
                           color: Colors.white, 
                           size: 30,),
@@ -173,7 +178,7 @@ class _MyScreenState extends State<WordsScreen> {
                           _openCamera(i);
                         },
                       )
-                    : CircularProgressIndicator.adaptive(),
+                    : const CircularProgressIndicator.adaptive(),
               ),
             ),
 
@@ -203,10 +208,10 @@ class _MyScreenState extends State<WordsScreen> {
 
           // Live Time Timer
           Container(
-            margin: EdgeInsets.all(12.0),
+            margin: const EdgeInsets.all(12.0),
             child: Text(
               'Next Refresh: $_nextRefreshTime',
-              style: TextStyle(fontSize: 16.0, color: Colors.white),
+              style: const TextStyle(fontSize: 16.0, color: Colors.white),
             ),
           ),
         ],
