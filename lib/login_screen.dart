@@ -91,10 +91,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: TextFormField(
                       controller: _emailController,
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                       decoration: const InputDecoration(
                         hintText: 'Username',
-                        hintStyle: TextStyle(color: Colors.white),
+                        hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                         border: InputBorder.none,
                         prefixIcon:
                             Icon(Icons.person,  color: Colors.white), // Add an icon as the prefix
@@ -110,11 +110,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: TextFormField(
                       controller: _passwordController,
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                       obscureText: true,
                       decoration: const InputDecoration(
                         hintText: 'Password',
-                        hintStyle: TextStyle(color: Colors.white),
+                        hintStyle: TextStyle(color: Colors.white,fontFamily: 'DNSans'),
                         border: InputBorder.none,
                         prefixIcon:
                             Icon(Icons.lock, color: Colors.white), // Add an icon as the prefix
@@ -136,6 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       "Login",
                       style: TextStyle(
                         fontSize: 16,
+                        fontFamily: 'DNSans',
                         color: Color.fromARGB(255, 0, 0, 0),
                       ),
                     ),
@@ -153,6 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       "Don't have an account? Sign Up",
                       style: TextStyle(
                         fontSize: 16,
+                        fontFamily: 'DNSans',
                         color:
                             Color.fromARGB(248, 255, 255, 255),  // Change this to your preferred color
                       ),

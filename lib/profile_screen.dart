@@ -11,6 +11,7 @@ import 'home_feed.dart';
 import 'camera_screen.dart';
 import 'friend_service.dart';
 import 'friends_screen.dart';
+import 'search.dart';
 
 class MyUserProfilePage extends StatefulWidget {
   final String? profileUserName;
@@ -124,26 +125,37 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
       });
     }
   }
-
-  @override
-  Widget build(BuildContext context) {
-    fetchUserData(username: widget.profileUserName);
-    fetchUserPostData(username: widget.profileUserName);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
-        flexibleSpace: Padding(
-          padding: const EdgeInsets.only(
-              top: 60.0), // Adjust the top padding value to lower the image
-          child: Center(
-            child: Image.asset(
-              'lib/assets/Live4youWhite.png', // Replace 'lib/assets/Live4youWhite.png' with your image path
-              height: 120, // Adjust the height of the image
-              width: 130, // Adjust the width of the image
-            ),
-          ),
+ void _navigateToMySearch() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MySearch(
+          title: 'Search',
         ),
       ),
+    );
+  }
+
+@override
+Widget build(BuildContext context) {
+  fetchUserData(username: widget.profileUserName);
+  fetchUserPostData(username: widget.profileUserName);
+
+  // Display a default title if the profileUserName is null
+  String title = widget.profileUserName ?? 'Profile';
+
+  return Scaffold(
+    appBar: AppBar(
+      backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      centerTitle: true,
+    ),
 
       body: Column(
         children: <Widget>[
