@@ -7,6 +7,7 @@ import 'package:live4you/Activities.dart';
 
 // import 'home_feed.dart';
 import 'search.dart';
+import 'profile_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -96,6 +97,17 @@ class _MyScreenState extends State<WordsScreen> {
       ),
     );
   }
+    void _navigateToMyUserProfilePage() {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => MyUserProfilePage(
+        title: 'User Profile',
+        // Add any necessary parameters for the profile screen
+      ),
+    ),
+  );
+}
 
   // MAGNIFYING GLASS
 
@@ -119,6 +131,10 @@ class _MyScreenState extends State<WordsScreen> {
             icon: const Icon(Icons.search, color: Colors.white),
             onPressed: _navigateToMySearch,
           ),
+          IconButton(
+          icon: Icon(Icons.account_circle, color: Colors.white),
+          onPressed: _navigateToMyUserProfilePage,
+        ),
         ],
       ),
 

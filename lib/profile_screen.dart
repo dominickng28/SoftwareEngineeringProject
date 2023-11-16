@@ -11,6 +11,7 @@ import 'home_feed.dart';
 import 'camera_screen.dart';
 import 'friend_service.dart';
 import 'friends_screen.dart';
+import 'search.dart';
 
 class MyUserProfilePage extends StatefulWidget {
   final String? profileUserName;
@@ -124,6 +125,16 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
       });
     }
   }
+ void _navigateToMySearch() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MySearch(
+          title: 'Search',
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,6 +155,8 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
           ),
         ),
       ),
+      centerTitle: true,
+    ),
 
       body: SingleChildScrollView(
       child: Column(

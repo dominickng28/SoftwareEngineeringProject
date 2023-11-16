@@ -100,7 +100,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           style: TextStyle(
             color: Colors.white, // Set text color to white
             fontWeight: FontWeight.bold, // Set text to bold
-            fontSize: 24, // Set font size to a larger value
+            fontSize: 24,
+            fontFamily: 'DNSans' // Set font size to a larger value
           ),
         ),
         backgroundColor: Color.fromARGB(251, 17, 18, 18),
@@ -127,10 +128,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 child: TextFormField(
                   controller: _emailController,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white,fontFamily: 'DNSans'),
                   decoration: const InputDecoration(
                     hintText: 'Email',
-                    hintStyle: TextStyle(color: Colors.white),
+                    hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                     border: InputBorder.none,
                     prefixIcon: Icon(Icons.email,color: Colors.white), // Add an icon as the prefix
                   ),
@@ -151,7 +152,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   maxLength: 15,
                   decoration: const InputDecoration(
                     hintText: 'Username',
-                    hintStyle: TextStyle(color: Colors.white),
+                    hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                     border: InputBorder.none,
                     prefixIcon: Icon(Icons.person,color: Colors.white), // Add an icon as the prefix
                   ),
@@ -166,11 +167,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     border: Border.all(color: const Color.fromARGB(255, 255, 255, 255))),
                 child: TextFormField(
                   controller: _passwordController,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                   obscureText: true,
                   decoration: const InputDecoration(
                     hintText: 'Password',
-                    hintStyle: TextStyle(color: Colors.white),
+                    hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                     border: InputBorder.none,
                     prefixIcon: Icon(Icons.lock, color: Colors.white), // Add an icon as the prefix
                   ),
@@ -185,11 +186,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     border: Border.all(color: const Color.fromARGB(255, 255, 255, 255))),
                 child: TextFormField(
                   controller: _confirmPasswordController,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                   obscureText: true,
                   decoration: const InputDecoration(
                     hintText: 'Confirm Password',
-                    hintStyle: TextStyle(color: Colors.white),
+                    hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                     border: InputBorder.none,
                     prefixIcon: Icon(Icons.lock, color: Colors.white), // Add an icon as the prefix
                   ),
@@ -210,6 +211,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   "Sign Up",
                   style: TextStyle(
                     fontSize: 16,
+                    fontFamily: 'DNSans',
                     color: Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
