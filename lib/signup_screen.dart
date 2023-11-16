@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:live4you/user_data.dart';
 import 'post_signup_screen.dart';
 
@@ -145,8 +146,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextFormField(
-                  controller: _usernameController,
-                  style: TextStyle(color: Colors.white,fontFamily: 'DNSans'),
+                  maxLengthEnforcement: MaxLengthEnforcement.enforced, controller: _usernameController,
+                  style: TextStyle(color: Colors.white),
+                  maxLines: null,
+                  maxLength: 15,
                   decoration: const InputDecoration(
                     hintText: 'Username',
                     hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
