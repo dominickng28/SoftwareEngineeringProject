@@ -6,6 +6,9 @@ import 'post.dart';
 import 'user.dart';
 import 'user_data.dart';
 import 'camera_screen.dart';
+import 'search.dart';
+import 'profile_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyFeed extends StatefulWidget {
   const MyFeed({super.key, required this.title});
@@ -22,7 +25,74 @@ class _MyFeedTest extends State<MyFeed> {
   @override
   void initState() {
     super.initState();
+    _checkIfFirstTime();
     fetchAllPostData();
+  }
+
+  void _checkIfFirstTime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
+    print('isFirstTime: $isFirstTime');
+    if (isFirstTime) {
+      _showWelcomeDialog();
+      prefs.setBool('isFirstTime', false);
+    }
+  }
+
+  void _showWelcomeDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          content: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              color: Colors.white, // Customize the background color
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Image.asset(
+                      'Live4youLine.png',
+                      height: 50,
+                      width: 50,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      'Welcome to Live4You!',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'DMSans',
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Text(
+                  "Live4You is not just another social media app; it's a platform designed to inspire you to live an active and fulfilling life. Each week, we present you with four exciting words/activities. Your mission: turn these words into actions! 🚴‍♂️🏞️\n\nHere's how it works:\n1. Every Monday, discover four new words of the week.\n2. Embark on exciting activities that align with the weekly words. \n3. Capture the moments by sharing photos of your completed activites.\n4. Personalize your profile, connect with friends, and share your journey through your post.\n\nLet Live4You be your guide to a more vibrant and active lifestyle! 🌟",
+                  style: TextStyle(fontSize: 16, fontFamily: 'DNSans'),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Explore'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void fetchAllPostData() async {
@@ -56,8 +126,32 @@ class _MyFeedTest extends State<MyFeed> {
     }
   }
 
+  void _navigateToMySearch() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MySearch(
+          title: 'Search',
+        ),
+      ),
+    );
+  }
+
+  void _navigateToMyUserProfilePage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyUserProfilePage(
+          title: 'User Profile',
+          // Add any necessary parameters for the profile screen
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    _checkIfFirstTime();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(251, 0, 0, 0),
@@ -72,6 +166,16 @@ class _MyFeedTest extends State<MyFeed> {
             ),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search, color: Colors.white),
+            onPressed: _navigateToMySearch,
+          ),
+          IconButton(
+            icon: Icon(Icons.account_circle, color: Colors.white),
+            onPressed: _navigateToMyUserProfilePage,
+          ),
+        ],
       ),
       backgroundColor: Color.fromARGB(248, 0, 0, 0),
       body: posts.isEmpty
@@ -124,11 +228,11 @@ class _PostCardState extends State<PostCard> {
   String timeAgo(DateTime date) {
     Duration diff = DateTime.now().difference(date);
     if (diff.inDays > 0) {
-      return '${diff.inDays} day(s) ago';
+      return '${diff.inDays} days ago';
     } else if (diff.inHours > 0) {
-      return '${diff.inHours} hour(s) ago';
+      return '${diff.inHours} hours ago';
     } else if (diff.inMinutes > 0) {
-      return '${diff.inMinutes} minute(s) ago';
+      return '${diff.inMinutes} minutes ago';
     } else {
       return 'Just now';
     }

@@ -48,7 +48,7 @@ class _MySearchState extends State<MySearch> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   labelText: "Search for a username",
-                  labelStyle: const TextStyle(color: Colors.white),
+                  labelStyle: const TextStyle(color: Colors.white,fontFamily: 'DNSans'),
                   suffixIcon: IconButton(
                     onPressed: () async {
                       String username = _searchController.text;
@@ -172,6 +172,7 @@ class _MySearchState extends State<MySearch> {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
+                  fontFamily: 'DNSans',
                   color: Colors.white,
                 ),
               ),
@@ -206,6 +207,7 @@ class _MySearchState extends State<MySearch> {
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
+                      fontFamily: 'DNSans',
                       color: Colors.white,
                     ),
                   ),
