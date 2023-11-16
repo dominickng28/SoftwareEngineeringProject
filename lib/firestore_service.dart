@@ -19,7 +19,7 @@ class FirestoreService {
       'uid': userID,
       'friends': emptyarray,
       'post_list': emptyarray,
-      'profilePicURL': "",
+      'profile_picture': "",
       'recieved_requests': emptyarray,
       'sent_requests': emptyarray,
       'userbio': "",
@@ -41,7 +41,7 @@ class FirestoreService {
 
   Future<bool> checkUsernameExists(String username) async {
     // Convert username to lowercase for a case-insensitive comparison
-    username = username.toLowerCase();
+    //username = username.toLowerCase();
 
     // Perform a case-insensitive query
     QuerySnapshot result = await FirebaseFirestore.instance

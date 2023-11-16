@@ -21,8 +21,8 @@ class User {
   User(this.userID, this.username);
 
   // constructor for sample cases only
-  User.withDetails(this.userID, this.username,
-      this.profilePicURL, this.friendsList, this.postList);
+  User.withDetails(this.userID, this.username, this.profilePicURL,
+      this.friendsList, this.postList);
 
   String getUserID() {
     return userID;
@@ -59,7 +59,8 @@ class User {
       userName,
     );
 
-    user.profilePicURL = data['profilePicURL'] ?? "lib/assets/default-user.jpg";
+    user.profilePicURL =
+        data['profile_picture'] ?? "lib/assets/default-user.jpg";
     user.userBio = data['userbio'] ?? "";
     user.streaks = data['streaks'] ?? 0;
     if (data['received_requests'] != null) {

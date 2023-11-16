@@ -76,14 +76,17 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Color.fromARGB(248, 255, 255, 255), 
+        selectedItemColor: Color.fromARGB(248, 255, 255, 255),
         unselectedItemColor: const Color.fromARGB(248, 255, 255, 255),
         onTap: onTabTapped,
         currentIndex: _currentIndex,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            activeIcon: Icon(Icons.home, color: Color.fromARGB(248, 255, 255, 255), ),
+            activeIcon: Icon(
+              Icons.home,
+              color: Color.fromARGB(248, 255, 255, 255),
+            ),
             backgroundColor: Color.fromARGB(251, 0, 0, 0),
             // activeIcon: Icon(Icons.home, color: Color.fromARGB(248, 136, 0, 255), ),
             // backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
@@ -92,19 +95,28 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.looks_4),
             // icon: Icon(Icons.beach_access),
-            activeIcon: Icon(Icons.looks_4, color: Color.fromARGB(248, 255, 255, 255), ),
+            activeIcon: Icon(
+              Icons.looks_4,
+              color: Color.fromARGB(248, 255, 255, 255),
+            ),
             backgroundColor: Color.fromARGB(251, 0, 0, 0),
-            label: 'Words', 
+            label: 'Words',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
-            activeIcon: Icon(Icons.search, color: Color.fromARGB(248, 255, 255, 255), ),
+            activeIcon: Icon(
+              Icons.search,
+              color: Color.fromARGB(248, 255, 255, 255),
+            ),
             backgroundColor: Color.fromARGB(251, 0, 0, 0),
             label: 'Search',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            activeIcon: Icon(Icons.home, color: Color.fromARGB(248, 255, 255, 255), ),
+            activeIcon: Icon(
+              Icons.home,
+              color: Color.fromARGB(248, 255, 255, 255),
+            ),
             // activeIcon: Icon(Icons.person, color: const Color.fromARGB(249, 253, 208, 149)),
             backgroundColor: Color.fromARGB(251, 0, 0, 0),
             label: 'Profile',

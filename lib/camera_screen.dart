@@ -201,10 +201,10 @@ class _PreviewPostCardState extends State<PreviewPostCard> {
               ListTile(
                 leading: CircleAvatar(
                   backgroundImage: AssetImage(
-                      'assets/avatar_placeholder.png'), // Replace with your placeholder image
+                      'lib/assets/default-user.jpg'), // Replace with your placeholder image
                 ),
                 title: Text(
-                  'Username', // Replace with the username
+                  UserData.userName, // Replace with the username
                   style: TextStyle(
                     fontFamily: 'DMSans',
                     fontSize: 23,
@@ -237,8 +237,10 @@ class _PreviewPostCardState extends State<PreviewPostCard> {
                 ),
               ),
               TextField(
+                style: TextStyle(color: Colors.white),
                 controller: _captionController,
-                decoration: InputDecoration(labelText: 'Caption'),
+                decoration: InputDecoration(
+                    labelText: 'Caption', fillColor: Colors.white),
               ),
               ElevatedButton(
                 onPressed: _savePicture,
@@ -335,6 +337,7 @@ class _CaptionScreenState extends State<CaptionScreen> {
           children: [
             Image.file(File(widget.imagePath)),
             TextField(
+              style: TextStyle(color: Colors.white),
               controller: _captionController,
               decoration: InputDecoration(labelText: 'Caption'),
             ),

@@ -10,6 +10,7 @@ import 'firestore_service.dart';
 import 'package:live4you/home_feed.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'friend_service.dart'; // Import the FriendService
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -31,6 +32,7 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
   final picker = ImagePicker();
   final _firestoreService = FirestoreService();
   String profilePictureUrl = '';
+  final FriendService friendService = FriendService(); // Add the FriendService
 
   Future<void> _addUser(String bio) async {
     // Fetch the current user
@@ -38,16 +40,15 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
 
     if (user != null) {
       // Update the user document in Firestore
-      await usersCollection.doc(UserData.userName).update({
-        'userbio': bio,
-        'friends': []
-      });
+      await usersCollection
+          .doc(UserData.userName)
+          .update({'userbio': bio, 'friends': []});
 
       // Save the image to Firestore or a storage service
       if (_imageFile != null) {
         // Example: Save the image to Firestore
         await usersCollection.doc(UserData.userName).update({
-          'profilePicURL': _imageFile!.path,
+          'profile_picture': _imageFile!.path,
         });
       }
 
@@ -65,7 +66,8 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
   }
 
   Future<void> _getImage() async {
-    final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().getImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
@@ -74,7 +76,8 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
       await uploadImage(UserData.userName);
     }
   }
- Future uploadImage(String username) async {
+
+  Future uploadImage(String username) async {
     try {
       if (_imageFile == null) {
         print('No image file selected.');
@@ -104,6 +107,7 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
       print('An error occurred while uploading the image: $error');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,37 +138,55 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    _getImage(); // Call this function when the user taps on the profile picture
+                    _getImage();
                   },
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 130,
-                        backgroundColor: Colors.white,
-                        backgroundImage: _imageFile != null ? FileImage(_imageFile!) : null,
-                        child: _imageFile == null
-                            ? Icon(
-                                Icons.add,
-                                size: 80,
-                                color: Colors.black,
-                              )
-                            : null,
-                      ),
-                      const SizedBox(height: 20.0),
-                      // Display the username
-                      Text(
-                        UserData.userName,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 60,
-                          fontFamily: 'DMSans'
-                        ),
-                      ),
-                    ],
+                  child: StreamBuilder<String?>(
+                    stream: FriendService()
+                        .userProfilePictureStream(UserData.userName),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<String?> snapshot) {
+                      ImageProvider imageProvider;
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        // Use a placeholder image when the profile picture is loading
+                        imageProvider =
+                            const AssetImage('lib/assets/default-user.jpg');
+                      } else if (snapshot.hasError) {
+                        imageProvider =
+                            const AssetImage('lib/assets/default-user.jpg');
+                      } else {
+                        String? profilePictureUrl = snapshot.data;
+                        if (profilePictureUrl == null ||
+                            profilePictureUrl.isEmpty) {
+                          // Use a default profile picture when there's no profile picture
+                          imageProvider =
+                              const AssetImage('lib/assets/default-user.jpg');
+                        } else {
+                          // Use NetworkImage when loading an image from a URL
+                          imageProvider = NetworkImage(profilePictureUrl);
+                        }
+                      }
+                      return Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 130,
+                            backgroundColor: Colors.white,
+                            backgroundImage: imageProvider,
+                          ),
+                          const SizedBox(height: 20.0),
+                          // Display the username
+                          Text(
+                            UserData.userName,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 60,
+                                fontFamily: 'DMSans'),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
-
                 const SizedBox(height: 20.0),
 
                 // Bio Input
@@ -177,14 +199,15 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
                   child: TextFormField(
                     controller: _bioController,
                     style: const TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'DNSans'),
+                        color: Colors.white, fontFamily: 'DNSans'),
                     maxLines: null,
                     decoration: const InputDecoration(
                       hintText: 'Bio',
-                      hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                      hintStyle:
+                          TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                       border: InputBorder.none,
-                      prefixIcon: Icon(Icons.badge_outlined, color: Colors.white),
+                      prefixIcon:
+                          Icon(Icons.badge_outlined, color: Colors.white),
                     ),
                   ),
                 ),

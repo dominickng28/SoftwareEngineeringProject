@@ -9,6 +9,7 @@ import 'camera_screen.dart';
 import 'search.dart';
 import 'profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'friend_service.dart';
 
 class MyFeed extends StatefulWidget {
   const MyFeed({super.key, required this.title});
@@ -221,6 +222,8 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
+  final FriendService friendService = FriendService();
+
   bool isLiked = false; // Track whether the post is liked
   bool isProcessing =
       false; // Track whether a like/unlike operation is in progress
@@ -251,8 +254,46 @@ class _PostCardState extends State<PostCard> {
       child: Column(
         children: [
           ListTile(
-            leading: CircleAvatar(
-              backgroundImage: AssetImage(widget.post.pfp),
+            leading: StreamBuilder<String?>(
+              stream:
+                  friendService.userProfilePictureStream(widget.post.username),
+              builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                ImageProvider imageProvider;
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Use a placeholder image when the profile picture is loading
+                  imageProvider =
+                      const AssetImage('lib/assets/default-user.jpg');
+                } else if (snapshot.hasError) {
+                  imageProvider =
+                      const AssetImage('lib/assets/images/error.png');
+                } else {
+                  String? profilePictureUrl = snapshot.data;
+                  if (profilePictureUrl == null || profilePictureUrl.isEmpty) {
+                    // Use a default profile picture when there's no profile picture
+                    imageProvider = const AssetImage(
+                        'lib/assets/images/default_profile_picture.png');
+                  } else {
+                    // Use NetworkImage when loading an image from a URL
+                    imageProvider = NetworkImage(profilePictureUrl);
+                  }
+                }
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyUserProfilePage(
+                          profileUserName: widget.post.username,
+                          title: '',
+                        ),
+                      ),
+                    );
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: imageProvider,
+                  ),
+                );
+              },
             ),
             title: Text(
               widget.post.username,
@@ -279,7 +320,7 @@ class _PostCardState extends State<PostCard> {
                 color: Colors.teal,
               ),
               child: Text(
-                'Word', //placeholder
+                widget.post.word, //placeholder
                 style: TextStyle(
                   fontFamily: 'DMSans',
                   fontSize: 20,
