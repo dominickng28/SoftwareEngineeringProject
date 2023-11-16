@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:live4you/firestore_service.dart';
 import 'package:live4you/user_data.dart';
 import 'post_signup_screen.dart';
 
@@ -54,12 +55,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             });
             UserData.userName = username;
             // Add the user to Firestore
-            await usersCollection.doc(username).set({
-              'username': username,
-              'useremail': email,
-              'uid': user.uid,
-              'joinedTimestamp': Timestamp.now(), // Store the current timestamp
-            });
+            FirestoreService()
+                .addUserToFirestore(username, email, user.uid, Timestamp.now());
             // Navigate to the PostSignUpScreen to set the bio etc.
             Navigator.push(
               context,
@@ -104,7 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
         backgroundColor: Color.fromARGB(251, 17, 18, 18),
       ),
-        backgroundColor: Color.fromARGB(251, 17, 18, 18),
+      backgroundColor: Color.fromARGB(251, 17, 18, 18),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -120,8 +117,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Color.fromARGB(255, 255, 255, 255)),
+                  border: Border.all(color: Color.fromARGB(255, 255, 255, 255)),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextFormField(
@@ -131,7 +127,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     hintText: 'Email',
                     hintStyle: TextStyle(color: Colors.white),
                     border: InputBorder.none,
-                    prefixIcon: Icon(Icons.email,color: Colors.white), // Add an icon as the prefix
+                    prefixIcon: Icon(Icons.email,
+                        color: Colors.white), // Add an icon as the prefix
                   ),
                 ),
               ),
@@ -139,8 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      color: Color.fromARGB(255, 255, 255, 255)),
+                  border: Border.all(color: Color.fromARGB(255, 255, 255, 255)),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextFormField(
@@ -150,7 +146,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     hintText: 'Username',
                     hintStyle: TextStyle(color: Colors.white),
                     border: InputBorder.none,
-                    prefixIcon: Icon(Icons.person,color: Colors.white), // Add an icon as the prefix
+                    prefixIcon: Icon(Icons.person,
+                        color: Colors.white), // Add an icon as the prefix
                   ),
                 ),
               ),
@@ -160,7 +157,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     horizontal: 16), // Add an icon as the prefix
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color.fromARGB(255, 255, 255, 255))),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 255, 255, 255))),
                 child: TextFormField(
                   controller: _passwordController,
                   style: TextStyle(color: Colors.white),
@@ -169,7 +167,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     hintText: 'Password',
                     hintStyle: TextStyle(color: Colors.white),
                     border: InputBorder.none,
-                    prefixIcon: Icon(Icons.lock, color: Colors.white), // Add an icon as the prefix
+                    prefixIcon: Icon(Icons.lock,
+                        color: Colors.white), // Add an icon as the prefix
                   ),
                 ),
               ),
@@ -179,7 +178,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     horizontal: 16), // Add an icon as the prefix
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color.fromARGB(255, 255, 255, 255))),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 255, 255, 255))),
                 child: TextFormField(
                   controller: _confirmPasswordController,
                   style: TextStyle(color: Colors.white),
@@ -188,7 +188,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     hintText: 'Confirm Password',
                     hintStyle: TextStyle(color: Colors.white),
                     border: InputBorder.none,
-                    prefixIcon: Icon(Icons.lock, color: Colors.white), // Add an icon as the prefix
+                    prefixIcon: Icon(Icons.lock,
+                        color: Colors.white), // Add an icon as the prefix
                   ),
                 ),
               ),

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirestoreService {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
+  List<String> emptyarray = [];
 
   Future<void> addUserToFirestore(
     String username,
@@ -12,11 +13,16 @@ class FirestoreService {
     Timestamp joinedTimestamp, // new parameter to store the join date
   ) async {
     await FirebaseFirestore.instance.collection('users').doc(username).set({
-      'email': email,
+      'useremail': email,
       'username': username,
       'joinedtimestamp': joinedTimestamp, // Saving the timestamp
       'uid': userID,
-      'friends': [],
+      'friends': emptyarray,
+      'post_list': emptyarray,
+      'profilePicURL': "",
+      'recieved_requests': emptyarray,
+      'sent_requests': emptyarray,
+      'userbio': "",
     });
   }
 

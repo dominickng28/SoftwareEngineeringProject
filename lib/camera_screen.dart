@@ -54,7 +54,7 @@ class _CameraScreenState extends State<CameraScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => CaptionScreen(
+          builder: (context) => PreviewPostCard(
             imagePath: photo.path,
             selectedOption: selectedOption,
           ),
@@ -120,6 +120,138 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 }
 
+class PreviewPostCard extends StatefulWidget {
+  final String imagePath;
+  final String selectedOption;
+
+  PreviewPostCard({required this.imagePath, required this.selectedOption});
+
+  @override
+  _PreviewPostCardState createState() => _PreviewPostCardState();
+}
+
+class _PreviewPostCardState extends State<PreviewPostCard> {
+  final TextEditingController _captionController = TextEditingController();
+
+  Future<void> _savePicture() async {
+    try {
+      final String fileName = widget.imagePath.split('/').last;
+      Reference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child('posts/$fileName');
+
+      UploadTask uploadTask =
+          firebaseStorageRef.putFile(File(widget.imagePath));
+      TaskSnapshot taskSnapshot = await uploadTask;
+
+      String imageUrl = await taskSnapshot.ref.getDownloadURL();
+
+      CollectionReference posts =
+          FirebaseFirestore.instance.collection('posts');
+
+      DocumentReference docRef = await posts.add({
+        'imageUrl': imageUrl,
+        'caption': _captionController.text,
+        'likecount': 0,
+        'username': UserData.userName,
+        'timestamp': FieldValue.serverTimestamp(),
+        'pfp': null,
+        'userID': "",
+        'embed': '',
+        'likes': [],
+        'word': widget.selectedOption, // Save the selected option with the post
+      });
+
+      // Update the post with the post ID
+      await docRef.update({
+        'postid': docRef.id,
+      });
+
+      DocumentReference userDoc =
+          FirebaseFirestore.instance.collection('users').doc(UserData.userName);
+      DocumentSnapshot userSnapshot = await userDoc.get();
+
+      if (userSnapshot.exists) {
+        var data = userSnapshot.data() as Map<String, dynamic>;
+        if (!data.containsKey('post_list')) {
+          userDoc.set({
+            'post_list': [docRef.id],
+          }, SetOptions(merge: true));
+        } else {
+          List<String> currentList = List.from(data['post_list']);
+          currentList.add(docRef.id);
+          userDoc.update({'post_list': currentList});
+        }
+      }
+
+      Navigator.pop(context, true);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Add a caption')),
+      body: SingleChildScrollView(
+        child: Container(
+          color: Color.fromARGB(248, 0, 0, 0),
+          child: Column(
+            children: [
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: AssetImage(
+                      'assets/avatar_placeholder.png'), // Replace with your placeholder image
+                ),
+                title: Text(
+                  'Username', // Replace with the username
+                  style: TextStyle(
+                    fontFamily: 'DMSans',
+                    fontSize: 23,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                trailing: Container(
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.teal,
+                  ),
+                  child: Text(
+                    widget.selectedOption, // Display the selected option
+                    style: TextStyle(
+                      fontFamily: 'DMSans',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.file(
+                  File(widget.imagePath),
+                  fit: BoxFit.fill,
+                ),
+              ),
+              TextField(
+                controller: _captionController,
+                decoration: InputDecoration(labelText: 'Caption'),
+              ),
+              ElevatedButton(
+                onPressed: _savePicture,
+                child: Text('Post'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class CaptionScreen extends StatefulWidget {
   final String imagePath;
   final String selectedOption;
@@ -161,12 +293,8 @@ class _CaptionScreenState extends State<CaptionScreen> {
         'pfp': null,
         'userID': "",
         'embed': '',
-<<<<<<< Updated upstream
-=======
         'likes': [],
-        'option':
-            widget.selectedOption, // Save the selected option with the post
->>>>>>> Stashed changes
+        'word': widget.selectedOption, // Save the selected option with the post
       });
 
       // Update the post with the post ID
@@ -174,22 +302,20 @@ class _CaptionScreenState extends State<CaptionScreen> {
         'postid': docRef.id,
       });
 
-      DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(UserData.userName);
+      DocumentReference userDoc =
+          FirebaseFirestore.instance.collection('users').doc(UserData.userName);
       DocumentSnapshot userSnapshot = await userDoc.get();
 
       if (userSnapshot.exists) {
         var data = userSnapshot.data() as Map<String, dynamic>;
         if (!data.containsKey('post_list')) {
           userDoc.set({
-            'post_list' : [docRef.id],
+            'post_list': [docRef.id],
           }, SetOptions(merge: true));
-        }
-        else {
+        } else {
           List<String> currentList = List.from(data['post_list']);
           currentList.add(docRef.id);
-          userDoc.update({
-            'post_list' : currentList
-          });
+          userDoc.update({'post_list': currentList});
         }
       }
 
@@ -203,18 +329,21 @@ class _CaptionScreenState extends State<CaptionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Add a caption')),
-      body: Column(
-        children: [
-          Image.file(File(widget.imagePath)),
-          TextField(
-            controller: _captionController,
-            decoration: InputDecoration(labelText: 'Caption'),
-          ),
-          ElevatedButton(
-            onPressed: _savePicture,
-            child: Text('Post'),
-          ),
-        ],
+      body: SingleChildScrollView(
+        // Add this
+        child: Column(
+          children: [
+            Image.file(File(widget.imagePath)),
+            TextField(
+              controller: _captionController,
+              decoration: InputDecoration(labelText: 'Caption'),
+            ),
+            ElevatedButton(
+              onPressed: _savePicture,
+              child: Text('Post'),
+            ),
+          ],
+        ),
       ),
     );
   }
