@@ -136,6 +136,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
     );
   }
 
+
   void refreshProfile() {
     setState(() {
       fetchUserData(username: widget.profileUserName);
@@ -156,12 +157,14 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
+
           ),
         ),
         centerTitle: true,
       ),
 
-      body: Column(
+      body: SingleChildScrollView(
+      child: Column(
         children: <Widget>[
           Container(
             padding: const EdgeInsets.only(top: 0, left: 300),
@@ -230,7 +233,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
           ),
           // Code for the Profile Banner
           Container(
-            color: Colors.grey,
+            color: Color.fromARGB(248, 0, 0, 0),
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -282,22 +285,29 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                         children: <Widget>[
                           Text(
                               style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
+                  fontFamily: 'DMSans',
+                  fontSize: 23,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
                               userProfile?.username ?? "Loading User"),
                           const SizedBox(height: 10),
                           Text(
                             userBio ??
                                 '', // Display the user's bio if available
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(
+                  fontFamily: 'DMSans',
+                  fontSize: 14,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
                           )
                         ],
                       ),
                     ),
                   ),
                   Container(
-                    color: Colors.grey,
+                    color: Color.fromARGB(248, 0, 0, 0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -314,10 +324,11 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                           child: const Text(
                             "Friends",
                             style: TextStyle(
-                              fontSize: 16,
-                              color: Color.fromARGB(248, 1, 31,
-                                  57), // Change this to your preferred color
-                            ),
+                  fontFamily: 'DMSans',
+                  fontSize: 12,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
                           ),
                         ),
                         SizedBox(width: 8.0),
@@ -333,7 +344,12 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                             } else {
                               return Text(
                                 snapshot.data.toString(),
-                                style: TextStyle(fontSize: 16.0),
+                                style: TextStyle(
+                  fontFamily: 'DMSans',
+                  fontSize: 12,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
                               );
                             }
                           },
@@ -346,66 +362,68 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
             ),
           ),
 
-          // Code for the Posts
-          // Code for the Posts
-          Expanded(
-            child: FutureBuilder<List<Post>>(
-              future: fetchUserPostData(username: widget.profileUserName),
-              builder:
-                  (BuildContext context, AsyncSnapshot<List<Post>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else {
-                  return Padding(
-                    padding: const EdgeInsets.all(
-                        8.0), // Add padding around the grid
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 8.0, // Increase main axis spacing
-                        crossAxisSpacing: 8.0, // Increase cross axis spacing
-                      ),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Dialog(
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.8, // Set the width to 80% of screen width
-                                    child:
-                                        PostCard(post: snapshot.data![index]),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                  20), // Increase border radius
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                    snapshot.data![index].imageUrl),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                }
-              },
+          // Code for the Post
+         Expanded(
+  child: FutureBuilder<List<Post>>(
+    future: fetchUserPostData(username: widget.profileUserName),
+    builder: (BuildContext context, AsyncSnapshot<List<Post>> snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child: CircularProgressIndicator());
+      } else if (snapshot.hasError) {
+        return Center(child: Text('Error: ${snapshot.error}'));
+      } else {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 8.0,
             ),
+            itemCount: snapshot.data!.length,
+            itemBuilder: (BuildContext context, int index) {
+              return GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: PostCard(post: snapshot.data![index]),
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      image: NetworkImage(snapshot.data![index].imageUrl),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
-        ],
-      ),
+        );
+      }
+    },
+  ),
+),
+Container(
+  height: MediaQuery.of(context).size.height - 300,
+  child: ListView.builder(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    itemCount: posts.length,
+    itemBuilder: (BuildContext context, int index) {
+      return PostCard(post: posts[index]);
+    },
+  ),
+),
       // Code for the create post button
       floatingActionButton: userProfile?.username != UserData.userName
           ? null
