@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       // If an error occurs, show an error message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
+        SnackBar(content: Text('Error error: ${e.toString()}')),
       );
     }
   }
@@ -85,19 +85,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Color.fromARGB(255, 255, 255, 255)),
+                      border:
+                          Border.all(color: Color.fromARGB(255, 255, 255, 255)),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: TextFormField(
                       controller: _emailController,
-                      style: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                      style:
+                          TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                       decoration: const InputDecoration(
                         hintText: 'Username',
-                        hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                        hintStyle: TextStyle(
+                            color: Colors.white, fontFamily: 'DNSans'),
                         border: InputBorder.none,
-                        prefixIcon:
-                            Icon(Icons.person,  color: Colors.white), // Add an icon as the prefix
+                        prefixIcon: Icon(Icons.person,
+                            color: Colors.white), // Add an icon as the prefix
                       ),
                     ),
                   ),
@@ -105,19 +107,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      border: Border.all(color: const Color.fromARGB(255, 255, 255, 255)),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 255, 255, 255)),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: TextFormField(
                       controller: _passwordController,
-                      style: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                      style:
+                          TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                       obscureText: true,
                       decoration: const InputDecoration(
                         hintText: 'Password',
-                        hintStyle: TextStyle(color: Colors.white,fontFamily: 'DNSans'),
+                        hintStyle: TextStyle(
+                            color: Colors.white, fontFamily: 'DNSans'),
                         border: InputBorder.none,
-                        prefixIcon:
-                            Icon(Icons.lock, color: Colors.white), // Add an icon as the prefix
+                        prefixIcon: Icon(Icons.lock,
+                            color: Colors.white), // Add an icon as the prefix
                       ),
                     ),
                   ),
@@ -155,8 +160,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontFamily: 'DNSans',
-                        color:
-                            Color.fromARGB(248, 255, 255, 255),  // Change this to your preferred color
+                        color: Color.fromARGB(248, 255, 255,
+                            255), // Change this to your preferred color
                       ),
                     ),
                   ),

@@ -36,23 +36,22 @@ class _MySearchState extends State<MySearch> {
         centerTitle: true,
       ),
       backgroundColor: const Color.fromARGB(248, 0, 0, 0),
-
-
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
                   labelText: "Search for a username",
-                  labelStyle: const TextStyle(color: Colors.white,fontFamily: 'DNSans'),
+                  labelStyle: const TextStyle(
+                      color: Colors.white, fontFamily: 'DNSans'),
                   suffixIcon: IconButton(
                     onPressed: () async {
                       String username = _searchController.text;
-                      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+                      DocumentSnapshot userDoc = await FirebaseFirestore
+                          .instance
                           .collection('users')
                           .doc(username)
                           .get();
@@ -82,9 +81,9 @@ class _MySearchState extends State<MySearch> {
                 ),
               ),
             ),
-
             StreamBuilder<List<String>>(
-              stream: _friendService.receivedFriendRequestsStream(UserData.userName),
+              stream: _friendService
+                  .receivedFriendRequestsStream(UserData.userName),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<String> friendRequests = snapshot.data!;
@@ -93,16 +92,20 @@ class _MySearchState extends State<MySearch> {
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: friendRequests.length,
                     itemBuilder: (context, index) {
-                      DocumentReference userDoc =
-                          FirebaseFirestore.instance.collection('users').doc(friendRequests[index]);
+                      DocumentReference userDoc = FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(friendRequests[index]);
                       ImageProvider imageProvider;
                       return StreamBuilder<DocumentSnapshot>(
                         stream: userDoc.snapshots(),
                         builder: (context, userSnapshot) {
                           if (userSnapshot.hasData) {
-                            var userFriend = userSnapshot.data!.data() as Map<String, dynamic>;
-                            var profilePicUrl = userFriend['profilePicURL'] ?? 'lib/assets/default-user.jpg';
-                            if (profilePicUrl == 'lib/assets/default-user.jpg') {
+                            var userFriend = userSnapshot.data!.data()
+                                as Map<String, dynamic>;
+                            var profilePicUrl = userFriend['profile_picture'] ??
+                                'lib/assets/default-user.jpg';
+                            if (profilePicUrl ==
+                                'lib/assets/default-user.jpg') {
                               imageProvider = AssetImage(profilePicUrl);
                             } else {
                               imageProvider = NetworkImage(profilePicUrl);
@@ -132,7 +135,8 @@ class _MySearchState extends State<MySearch> {
                                   ElevatedButton(
                                     onPressed: () {
                                       _friendService.acceptFriendRequest(
-                                          UserData.userName, friendRequests[index]);
+                                          UserData.userName,
+                                          friendRequests[index]);
                                     },
                                     child: const Text('Accept'),
                                   ),
@@ -140,7 +144,8 @@ class _MySearchState extends State<MySearch> {
                                   ElevatedButton(
                                     onPressed: () {
                                       _friendService.cancelFriendRequest(
-                                          friendRequests[index], UserData.userName);
+                                          friendRequests[index],
+                                          UserData.userName);
                                     },
                                     child: const Text('Decline'),
                                   ),
@@ -158,13 +163,13 @@ class _MySearchState extends State<MySearch> {
                     },
                   );
                 } else if (snapshot.hasError) {
-                  return const Center(child: Text('Error loading friend requests'));
+                  return const Center(
+                      child: Text('Error loading friend requests'));
                 } else {
                   return const Center(child: CircularProgressIndicator());
                 }
               },
             ),
-
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
@@ -177,10 +182,10 @@ class _MySearchState extends State<MySearch> {
                 ),
               ),
             ),
-
             for (int i = 0; i < 3; i++)
               Container(
-                constraints: const BoxConstraints(minWidth: 200, maxWidth: 400, maxHeight: 200),
+                constraints: const BoxConstraints(
+                    minWidth: 200, maxWidth: 400, maxHeight: 200),
                 margin: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -189,19 +194,18 @@ class _MySearchState extends State<MySearch> {
                   ),
                   borderRadius: BorderRadius.circular(100.0),
                 ),
-
                 child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 16.0),
                   leading: ClipRRect(
                     borderRadius: BorderRadius.circular(16.0),
                     child: Image.network(
-                      'https://source.unsplash.com/100x100/?random=$i', 
+                      'https://source.unsplash.com/100x100/?random=$i',
                       width: 60.0,
                       height: 60.0,
                       fit: BoxFit.cover,
                     ),
                   ),
-
                   title: Text(
                     UserData.userName,
                     style: const TextStyle(
@@ -211,7 +215,6 @@ class _MySearchState extends State<MySearch> {
                       color: Colors.white,
                     ),
                   ),
-
                   trailing: IconButton(
                     icon: const Icon(
                       Icons.add,
@@ -225,36 +228,37 @@ class _MySearchState extends State<MySearch> {
                   ),
                 ),
               ),
-              
             ListView.builder(
-              shrinkWrap: true, 
-              physics: const NeverScrollableScrollPhysics(), 
-              itemCount: 1, 
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 1,
               itemBuilder: (context, index) {
-              return GridView.builder(
-                shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8.0,
-                  mainAxisSpacing: 8.0,
-                  childAspectRatio: 1.3,
-                ),
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Container(
-                    constraints: const BoxConstraints(minHeight: 50, maxWidth: 100),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      image: const DecorationImage(
-                        image: NetworkImage('https://source.unsplash.com/100x100/?random='),
-                        fit: BoxFit.cover,
+                return GridView.builder(
+                  shrinkWrap: true,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 8.0,
+                    childAspectRatio: 1.3,
+                  ),
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      constraints:
+                          const BoxConstraints(minHeight: 50, maxWidth: 100),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        image: const DecorationImage(
+                          image: NetworkImage(
+                              'https://source.unsplash.com/100x100/?random='),
+                          fit: BoxFit.cover,
                         ),
                       ),
                     );
                   },
                 );
-              }, 
-            ), 
+              },
+            ),
           ],
         ),
       ),

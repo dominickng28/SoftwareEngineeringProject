@@ -9,6 +9,7 @@ import 'camera_screen.dart';
 import 'search.dart';
 import 'profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'friend_service.dart';
 
 class MyFeed extends StatefulWidget {
   const MyFeed({super.key, required this.title});
@@ -28,71 +29,72 @@ class _MyFeedTest extends State<MyFeed> {
     _checkIfFirstTime();
     fetchAllPostData();
   }
- void _checkIfFirstTime() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
-  print('isFirstTime: $isFirstTime');
-  if (isFirstTime) {
-    _showWelcomeDialog();
-    prefs.setBool('isFirstTime', false);
-  }
-}
 
-void _showWelcomeDialog() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        content: Container(
-          decoration: BoxDecoration(
+  void _checkIfFirstTime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
+    print('isFirstTime: $isFirstTime');
+    if (isFirstTime) {
+      _showWelcomeDialog();
+      prefs.setBool('isFirstTime', false);
+    }
+  }
+
+  void _showWelcomeDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
-            color: Colors.white, // Customize the background color
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Image.asset(
-                    'Live4youLine.png',
-                    height: 50,
-                    width: 50,
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    'Welcome to Live4You!',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'DMSans',
+          content: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              color: Colors.white, // Customize the background color
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Image.asset(
+                      'Live4youLine.png',
+                      height: 50,
+                      width: 50,
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Text(
-                "Live4You is not just another social media app; it's a platform designed to inspire you to live an active and fulfilling life. Each week, we present you with four exciting words/activities. Your mission: turn these words into actions! 🚴‍♂️🏞️\n\nHere's how it works:\n1. Every Monday, discover four new words of the week.\n2. Embark on exciting activities that align with the weekly words. \n3. Capture the moments by sharing photos of your completed activites.\n4. Personalize your profile, connect with friends, and share your journey through your post.\n\nLet Live4You be your guide to a more vibrant and active lifestyle! 🌟",
-                style: TextStyle(fontSize: 16, fontFamily: 'DNSans'),
-              ),
-            ],
+                    SizedBox(width: 10),
+                    Text(
+                      'Welcome to Live4You!',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'DMSans',
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Text(
+                  "Live4You is not just another social media app; it's a platform designed to inspire you to live an active and fulfilling life. Each week, we present you with four exciting words/activities. Your mission: turn these words into actions! 🚴‍♂️🏞️\n\nHere's how it works:\n1. Every Monday, discover four new words of the week.\n2. Embark on exciting activities that align with the weekly words. \n3. Capture the moments by sharing photos of your completed activites.\n4. Personalize your profile, connect with friends, and share your journey through your post.\n\nLet Live4You be your guide to a more vibrant and active lifestyle! 🌟",
+                  style: TextStyle(fontSize: 16, fontFamily: 'DNSans'),
+                ),
+              ],
+            ),
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text('Explore'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+          actions: <Widget>[
+            TextButton(
+              child: Text('Explore'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void fetchAllPostData() async {
     // Fetch friends list
@@ -124,6 +126,7 @@ void _showWelcomeDialog() {
       });
     }
   }
+
   void _navigateToMySearch() {
     Navigator.push(
       context,
@@ -134,17 +137,19 @@ void _showWelcomeDialog() {
       ),
     );
   }
+
   void _navigateToMyUserProfilePage() {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => MyUserProfilePage(
-        title: 'User Profile',
-        // Add any necessary parameters for the profile screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyUserProfilePage(
+          title: 'User Profile',
+          // Add any necessary parameters for the profile screen
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     _checkIfFirstTime();
@@ -168,9 +173,9 @@ void _showWelcomeDialog() {
             onPressed: _navigateToMySearch,
           ),
           IconButton(
-          icon: Icon(Icons.account_circle, color: Colors.white),
-          onPressed: _navigateToMyUserProfilePage,
-        ),
+            icon: Icon(Icons.account_circle, color: Colors.white),
+            onPressed: _navigateToMyUserProfilePage,
+          ),
         ],
       ),
       backgroundColor: Color.fromARGB(248, 0, 0, 0),
@@ -217,6 +222,8 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
+  final FriendService friendService = FriendService();
+
   bool isLiked = false; // Track whether the post is liked
   bool isProcessing =
       false; // Track whether a like/unlike operation is in progress
@@ -247,44 +254,82 @@ class _PostCardState extends State<PostCard> {
       child: Column(
         children: [
           ListTile(
-              leading: CircleAvatar(
-                backgroundImage: AssetImage(widget.post.pfp),
-              ),
-              title: Text(widget.post.username,
-                style: TextStyle(
-                  fontFamily: 'DMSans',
-                  fontSize: 23,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text(
-                widget.post.caption,
-                style: TextStyle(
-                  fontFamily: 'DMSans',
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              trailing: Container(
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.teal,
-                ),
-                child: Text(
-                  'Word', //placeholder
-                  style: TextStyle(
-                    fontFamily: 'DMSans',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+            leading: StreamBuilder<String?>(
+              stream:
+                  friendService.userProfilePictureStream(widget.post.username),
+              builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                ImageProvider imageProvider;
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Use a placeholder image when the profile picture is loading
+                  imageProvider =
+                      const AssetImage('lib/assets/default-user.jpg');
+                } else if (snapshot.hasError) {
+                  imageProvider =
+                      const AssetImage('lib/assets/images/error.png');
+                } else {
+                  String? profilePictureUrl = snapshot.data;
+                  if (profilePictureUrl == null || profilePictureUrl.isEmpty) {
+                    // Use a default profile picture when there's no profile picture
+                    imageProvider = const AssetImage(
+                        'lib/assets/images/default_profile_picture.png');
+                  } else {
+                    // Use NetworkImage when loading an image from a URL
+                    imageProvider = NetworkImage(profilePictureUrl);
+                  }
+                }
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyUserProfilePage(
+                          profileUserName: widget.post.username,
+                          title: '',
+                        ),
+                      ),
+                    );
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: imageProvider,
                   ),
-                ),
-                
+                );
+              },
+            ),
+            title: Text(
+              widget.post.username,
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                fontSize: 23,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
             ),
+            subtitle: Text(
+              widget.post.caption,
+              style: TextStyle(
+                fontFamily: 'DMSans',
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            trailing: Container(
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.teal,
+              ),
+              child: Text(
+                widget.post.word, //placeholder
+                style: TextStyle(
+                  fontFamily: 'DMSans',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
           ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
             child: Image.network(
@@ -292,7 +337,7 @@ class _PostCardState extends State<PostCard> {
               fit: BoxFit.fill,
             ),
           ),
-         Row(
+          Row(
             children: [
               IconButton(
                 icon: Icon(isLiked ? Icons.favorite : Icons.favorite_rounded,
@@ -302,11 +347,10 @@ class _PostCardState extends State<PostCard> {
               Text(
                 (widget.post.likeCount).toString(),
                 style: TextStyle(
-                  fontSize: 12,
-                  color: isLiked ? Colors.teal : Colors.blueGrey,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'DMSans'
-                ),
+                    fontSize: 12,
+                    color: isLiked ? Colors.teal : Colors.blueGrey,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'DMSans'),
               ),
               Spacer(),
               Flexible(
@@ -330,16 +374,16 @@ class _PostCardState extends State<PostCard> {
                           color: Colors.blueGrey,
                           onPressed: () => deletePost(context),
                         ),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-        Container(
-            height: 2.0,
-            width: screenWidth * cutOffValue,
-            color: Color.fromARGB(248, 35, 36, 44)),
+              ),
+            ],
+          ),
+          Container(
+              height: 2.0,
+              width: screenWidth * cutOffValue,
+              color: Color.fromARGB(248, 35, 36, 44)),
         ],
       ),
     );
@@ -347,24 +391,23 @@ class _PostCardState extends State<PostCard> {
 
   Future<void> deletePost(BuildContext parentContext) async {
     return showDialog(
-      context: parentContext,
-      builder: (conext){
-        return SimpleDialog(title: Text("Delete post?"),
-        children: <Widget>[
-          SimpleDialogOption(
-            onPressed: () async{
-              //removes post from Firebase and user postList
-              Navigator.pop(conext);
-              await removeFromPostList();
-              FirebaseFirestore.instance
-              .collection('posts')
-              .doc(widget.post.getPostID())
-              .delete();
-              if(mounted){
-                setState(() {
-                  
-                });
-              }
+        context: parentContext,
+        builder: (conext) {
+          return SimpleDialog(
+            title: Text("Delete post?"),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () async {
+                  //removes post from Firebase and user postList
+                  Navigator.pop(conext);
+                  await removeFromPostList();
+                  FirebaseFirestore.instance
+                      .collection('posts')
+                      .doc(widget.post.getPostID())
+                      .delete();
+                  if (mounted) {
+                    setState(() {});
+                  }
 
                   ScaffoldMessenger.of(parentContext).showSnackBar(SnackBar(
                     content: Text('Post has been deleted'),
@@ -386,10 +429,8 @@ class _PostCardState extends State<PostCard> {
 
   Future<void> removeFromPostList() async {
     final firestoreInstance = FirebaseFirestore.instance;
-    await firestoreInstance
-    .collection('users')
-    .doc(UserData.userName)
-    .update({'post_list' : FieldValue.arrayRemove([widget.post.getPostID()])
+    await firestoreInstance.collection('users').doc(UserData.userName).update({
+      'post_list': FieldValue.arrayRemove([widget.post.getPostID()])
     });
   }
 

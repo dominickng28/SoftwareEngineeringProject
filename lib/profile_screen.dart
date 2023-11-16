@@ -12,6 +12,7 @@ import 'camera_screen.dart';
 import 'friend_service.dart';
 import 'friends_screen.dart';
 import 'search.dart';
+import 'edit_profile_page.dart';
 
 class MyUserProfilePage extends StatefulWidget {
   final String? profileUserName;
@@ -40,6 +41,8 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
   void initState() {
     super.initState();
     followerCount = fetchFollowerCount();
+    fetchUserData(username: widget.profileUserName);
+    fetchUserPostData(username: widget.profileUserName);
   }
 
   void addFriend(User userProfile) async {
@@ -103,7 +106,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
     }
   }
 
-  void fetchUserPostData({String? username}) async {
+  Future<List<Post>> fetchUserPostData({String? username}) async {
     final firestoreInstance = FirebaseFirestore.instance;
     String profile = UserData.userName;
     if (username != null) {
@@ -119,13 +122,10 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
         .toList();
 
     allPostData.sort((a, b) => b.date.compareTo(a.date));
-    if (mounted) {
-      setState(() {
-        posts = allPostData;
-      });
-    }
+    return allPostData;
   }
- void _navigateToMySearch() {
+
+  void _navigateToMySearch() {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -136,27 +136,32 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
     );
   }
 
+
+  void refreshProfile() {
+    setState(() {
+      fetchUserData(username: widget.profileUserName);
+      fetchUserPostData(username: widget.profileUserName);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    fetchUserData(username: widget.profileUserName);
-    fetchUserPostData(username: widget.profileUserName);
+    // Display a default title if the profileUserName is null
+    String title = widget.profileUserName ?? 'Profile';
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(248, 0, 0, 0),
-        flexibleSpace: Padding(
-          padding: const EdgeInsets.only(
-              top: 60.0), // Adjust the top padding value to lower the image
-          child: Center(
-            child: Image.asset(
-              'lib/assets/Live4youWhite.png', // Replace 'lib/assets/Live4youWhite.png' with your image path
-              height: 120, // Adjust the height of the image
-              width: 130, // Adjust the width of the image
-            ),
+        backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+
           ),
         ),
+        centerTitle: true,
       ),
-      centerTitle: true,
-    ),
 
       body: SingleChildScrollView(
       child: Column(
@@ -234,22 +239,41 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
               child: Column(
                 // Wrap the Column in a Row // Separates the children
                 children: <Widget>[
-                  ClipOval(
-                    child: userProfile?.profilePicURL == null ||
-                            userProfile?.profilePicURL ==
-                                'lib/assets/default-user.jpg'
-                        ? Image.asset(
-                            'lib/assets/default-user.jpg',
-                            width: 150,
-                            height: 150,
-                            fit: BoxFit.cover,
-                          )
-                        : Image.network(
-                            userProfile!.profilePicURL,
-                            width: 150,
-                            height: 150,
-                            fit: BoxFit.cover,
+                  GestureDetector(
+                    onTap: () {
+                      if (widget.profileUserName == null ||
+                          widget.profileUserName == UserData.userName) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditProfilePage(
+                              profilePictureUrl: userProfile?.profilePicURL,
+                              usernameNotifier:
+                                  ValueNotifier(UserData.userName),
+                              onProfileUpdated: refreshProfile,
+                            ),
                           ),
+                        );
+                      }
+                    },
+                    child: ClipOval(
+                      child: userProfile?.profilePicURL == null ||
+                              userProfile?.profilePicURL ==
+                                  'lib/assets/default-user.jpg' ||
+                              !Uri.parse(userProfile!.profilePicURL).isAbsolute
+                          ? Image.asset(
+                              'lib/assets/default-user.jpg',
+                              width: 150,
+                              height: 150,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.network(
+                              userProfile!.profilePicURL,
+                              width: 150,
+                              height: 150,
+                              fit: BoxFit.cover,
+                            ),
+                    ),
                   ),
                   const SizedBox(width: 20.0),
                   //Username
@@ -338,21 +362,68 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
             ),
           ),
 
-          // Code for the Posts
-          Container(
-            height: MediaQuery.of(context).size.height - 300,
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: posts.length,
-              itemBuilder: (BuildContext context, int index) {
-                return PostCard(post: posts[index]);
-              },
+          // Code for the Post
+         Expanded(
+  child: FutureBuilder<List<Post>>(
+    future: fetchUserPostData(username: widget.profileUserName),
+    builder: (BuildContext context, AsyncSnapshot<List<Post>> snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child: CircularProgressIndicator());
+      } else if (snapshot.hasError) {
+        return Center(child: Text('Error: ${snapshot.error}'));
+      } else {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 8.0,
             ),
+            itemCount: snapshot.data!.length,
+            itemBuilder: (BuildContext context, int index) {
+              return GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: PostCard(post: snapshot.data![index]),
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: DecorationImage(
+                      image: NetworkImage(snapshot.data![index].imageUrl),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
-        ],
-      ),
-      ),
+        );
+      }
+    },
+  ),
+),
+Container(
+  height: MediaQuery.of(context).size.height - 300,
+  child: ListView.builder(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    itemCount: posts.length,
+    itemBuilder: (BuildContext context, int index) {
+      return PostCard(post: posts[index]);
+    },
+  ),
+),
       // Code for the create post button
       floatingActionButton: userProfile?.username != UserData.userName
           ? null

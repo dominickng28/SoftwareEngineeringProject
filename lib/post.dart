@@ -12,8 +12,18 @@ class Post {
   String pfp;
   String userID;
   String word;
-  Post(this.username, this.pfp, this._postid, this.userID, this.word, this.caption,
-      this.embed, this.date, this.likeCount, this.likes, this.imageUrl);
+  Post(
+      this.username,
+      this.pfp,
+      this._postid,
+      this.userID,
+      this.word,
+      this.caption,
+      this.embed,
+      this.date,
+      this.likeCount,
+      this.likes,
+      this.imageUrl);
 
   String getPostID() {
     return _postid;
@@ -32,9 +42,9 @@ class Post {
             'lib/assets/default-user.jpg', // Use a default value if 'pfp' is null
         postid,
         data['userID'],
+        data['word'],
         data['caption'],
         data['embed'],
-        data['word'],
         date,
         data['likecount'],
         data['likes'],
