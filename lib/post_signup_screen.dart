@@ -177,11 +177,12 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
                   child: TextFormField(
                     controller: _bioController,
                     style: const TextStyle(
-                      color: Colors.white),
+                      color: Colors.white,
+                      fontFamily: 'DNSans'),
                     maxLines: null,
                     decoration: const InputDecoration(
                       hintText: 'Bio',
-                      hintStyle: TextStyle(color: Colors.white),
+                      hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                       border: InputBorder.none,
                       prefixIcon: Icon(Icons.badge_outlined, color: Colors.white),
                     ),
@@ -205,6 +206,7 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
                     "Create Account",
                     style: TextStyle(
                       fontSize: 16,
+                      fontFamily: 'DNSans',
                       color: Color.fromARGB(255, 0, 0, 0),
                     ),
                   ),
