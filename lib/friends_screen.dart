@@ -22,25 +22,26 @@ class MyFriends extends StatelessWidget {
         title: const Text(
           'Friends',
           style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-          ),
+                  fontFamily: 'DMSans',
+                  fontSize: 23,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.white,),
           onPressed: () {
             Navigator.pop(context); // Go back to the previous screen
           },
         ),
-        backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+        backgroundColor: const Color.fromARGB(248, 0, 0, 0),
         flexibleSpace: const Padding(
           padding: EdgeInsets.only(
             top: 30.0,
           ),
         ),
       ),
-      backgroundColor: const Color.fromARGB(249, 253, 208, 149),
+      backgroundColor: const Color.fromARGB(248, 0, 0, 0),
       body: MyFriendsList(),
     );
   }
@@ -98,7 +99,12 @@ class _MyFriendsListState extends State<MyFriendsList> {
     return isLoading
         ? Center(child: CircularProgressIndicator()) // Show loader while fetching data
         : friendsList.isEmpty
-            ? Center(child: Text("No friends yet..."))
+            ? Center(child: Text("No friends yet...", style: TextStyle(
+                  fontFamily: 'DMSans',
+                  fontSize: 23,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),))
             : ListView.builder(
                 itemCount: friendsList.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -122,19 +128,24 @@ class _MyFriendsListState extends State<MyFriendsList> {
           MaterialPageRoute(builder: (context) => MyUserProfilePage(profileUserName: friend.username, title: '',),
           ));
         },
-        child: Container(color: const Color.fromARGB(249, 253, 208, 149),
+        child: Container(color: const Color.fromARGB(248, 0, 0, 0),
       child: Column(
         children: [
           ListTile(
               leading: CircleAvatar(
                 backgroundImage: AssetImage(friend.pfp),
               ),
-              title: Text(friend.username),
+              title: Text(friend.username, style: TextStyle(
+                  fontFamily: 'DMSans',
+                  fontSize: 23,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),),
               ),
           
           Container(
               height: 2.0,
-              color: Color.fromARGB(248, 172, 113, 36)),
+              color: Color.fromARGB(248, 0, 0, 0)),
         ],
       ),));
     }

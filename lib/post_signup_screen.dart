@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:live4you/main.dart';
 import 'package:live4you/user_data.dart';
 import 'firestore_service.dart';
@@ -33,6 +34,12 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
   String profilePictureUrl = '';
 
   Future<void> _addUser(String bio) async {
+    List<String> lines = bio.split('\n');
+  if (lines.length > 4){
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Bio should not exceed 4 lines')),
+    );
+    return;}
     // Fetch the current user
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -175,10 +182,11 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: TextFormField(
-                    controller: _bioController,
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced, controller: _bioController,
                     style: const TextStyle(
                       color: Colors.white),
-                    maxLines: null,
+                      maxLines: null,
+                      maxLength: 100,
                     decoration: const InputDecoration(
                       hintText: 'Bio',
                       hintStyle: TextStyle(color: Colors.white),

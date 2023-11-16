@@ -131,7 +131,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
     fetchUserPostData(username: widget.profileUserName);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+        backgroundColor: const Color.fromRGBO(248, 0, 0, 0),
         flexibleSpace: Padding(
           padding: const EdgeInsets.only(
               top: 60.0), // Adjust the top padding value to lower the image
@@ -145,7 +145,8 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
         ),
       ),
 
-      body: Column(
+      body: SingleChildScrollView(
+      child: Column(
         children: <Widget>[
           Container(
             padding: const EdgeInsets.only(top: 0, left: 300),
@@ -214,7 +215,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
           ),
           // Code for the Profile Banner
           Container(
-            color: Colors.grey,
+            color: Color.fromARGB(248, 0, 0, 0),
             child: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
@@ -247,22 +248,29 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                         children: <Widget>[
                           Text(
                               style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
+                  fontFamily: 'DMSans',
+                  fontSize: 23,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
                               userProfile?.username ?? "Loading User"),
                           const SizedBox(height: 10),
                           Text(
                             userBio ??
                                 '', // Display the user's bio if available
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(
+                  fontFamily: 'DMSans',
+                  fontSize: 14,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
                           )
                         ],
                       ),
                     ),
                   ),
                   Container(
-                    color: Colors.grey,
+                    color: Color.fromARGB(248, 0, 0, 0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -279,10 +287,11 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                           child: const Text(
                             "Friends",
                             style: TextStyle(
-                              fontSize: 16,
-                              color: Color.fromARGB(248, 1, 31,
-                                  57), // Change this to your preferred color
-                            ),
+                  fontFamily: 'DMSans',
+                  fontSize: 12,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
                           ),
                         ),
                         SizedBox(width: 8.0),
@@ -298,7 +307,12 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                             } else {
                               return Text(
                                 snapshot.data.toString(),
-                                style: TextStyle(fontSize: 16.0),
+                                style: TextStyle(
+                  fontFamily: 'DMSans',
+                  fontSize: 12,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
                               );
                             }
                           },
@@ -312,8 +326,11 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
           ),
 
           // Code for the Posts
-          Expanded(
+          Container(
+            height: MediaQuery.of(context).size.height - 300,
             child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: posts.length,
               itemBuilder: (BuildContext context, int index) {
                 return PostCard(post: posts[index]);
@@ -321,6 +338,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
             ),
           ),
         ],
+      ),
       ),
       // Code for the create post button
       floatingActionButton: userProfile?.username != UserData.userName
