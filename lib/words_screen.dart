@@ -32,6 +32,7 @@ class _MyScreenState extends State<WordsScreen> {
   bool cameraInitialized = false;
   late Timer _timer;
   late DateTime _nextRefreshTime;
+  late Duration durationUntilNextRefresh = Duration(); 
 
   List<String> words = ['DIY', 'Biking', 'Smile', 'Run']; // STORES WORDS
 
@@ -39,7 +40,7 @@ class _MyScreenState extends State<WordsScreen> {
   void initState() {
     super.initState();
     _initializeCamera();
-    _setupTimer();
+    _setupTimer(); 
   }
 
   _initializeCamera() async {
@@ -58,30 +59,49 @@ class _MyScreenState extends State<WordsScreen> {
 
   // TIMER CODE
 
-  void _setupTimer() {
-    // Find the next Sunday from the current date
-    DateTime now = DateTime.now();
-    DateTime nextSunday = DateTime(
-        now.year, now.month, now.day + (DateTime.sunday - now.weekday + 7) % 7);
+void _setupTimer() {
+  // Find the next Monday from the current date
+  DateTime now = DateTime.now();
+  DateTime nextMonday = DateTime(
+    now.year,
+    now.month,
+    now.day + (DateTime.monday - now.weekday + 7) % 7,
+    12, // Set the hour to noon (12 PM)
+    0,
+    0,
+  );
 
-    // Set the time to 8 PM
-    _nextRefreshTime =
-        DateTime(nextSunday.year, nextSunday.month, nextSunday.day, 20, 0, 0);
+  // Set the time to noon
+  _nextRefreshTime = nextMonday;
 
-    // If the next refresh time has already passed for this week, set it for the next week
-    if (_nextRefreshTime.isBefore(now)) {
-      _nextRefreshTime = _nextRefreshTime.add(const Duration(days: 7));
-    }
-
-    // Calculate the duration until the next refresh time
-    Duration durationUntilNextRefresh = _nextRefreshTime.difference(now);
-
-    // Create a timer that refreshes once, counting down to the next Sunday at 8 PM
-    _timer = Timer(durationUntilNextRefresh, () {
-      print("Refreshed at: ${DateTime.now()}");
-      // You can add any other logic that needs to be executed when the timer completes
-    });
+  // If the next refresh time has already passed for this week, set it for the next week
+  if (_nextRefreshTime.isBefore(now)) {
+    _nextRefreshTime = _nextRefreshTime.add(const Duration(days: 7));
   }
+
+  // Initialize durationUntilNextRefresh to the initial calculated duration
+  durationUntilNextRefresh = _nextRefreshTime.difference(now);
+
+  // Create a timer that refreshes once, counting down to the next Monday at noon
+  _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    setState(() {
+      // Recalculate the duration until the next refresh time
+      durationUntilNextRefresh = _nextRefreshTime.difference(DateTime.now());
+    });
+
+    // Check if the timer should be canceled
+    if (durationUntilNextRefresh.isNegative) {
+      timer.cancel();
+    }
+  });
+}
+
+  String _formatDuration(Duration duration) {
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  return '${duration.inDays}d ${twoDigits(duration.inHours.remainder(24))}h ${twoDigitMinutes}m ${twoDigitSeconds}s';
+}
 
   @override
   void dispose() {
@@ -229,7 +249,7 @@ class _MyScreenState extends State<WordsScreen> {
           Container(
             margin: const EdgeInsets.all(12.0),
             child: Text(
-              'Next Refresh: $_nextRefreshTime',
+              'Time Left: ${_formatDuration(durationUntilNextRefresh)}',
               style: const TextStyle(fontSize: 16.0, color: Colors.white),
             ),
           ),

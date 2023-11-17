@@ -30,7 +30,7 @@ Widget _buildRandomUserGrid() {
     ),
     shrinkWrap: true,
     physics: const NeverScrollableScrollPhysics(),
-    itemCount: 6, // YOU CAN ADJUST THE NUMBER OF ITEMS IN THE GRID
+    itemCount: 12,  // YOU CAN ADJUST THE NUMBER OF ITEMS IN THE GRID
     itemBuilder: (context, index) {
       return GestureDetector(
         onTap: () {
