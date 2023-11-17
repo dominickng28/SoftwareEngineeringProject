@@ -5,6 +5,7 @@ import 'profile_screen.dart';
 // import 'main.dart';
 import 'friend_service.dart';
 import 'user_data.dart';
+import 'friend.dart';
 
 class MySearch extends StatefulWidget {
   const MySearch({super.key, required this.title});
@@ -18,6 +19,47 @@ class MySearch extends StatefulWidget {
 class _MySearchState extends State<MySearch> {
   final TextEditingController _searchController = TextEditingController();
   final FriendService _friendService = FriendService();
+
+
+Widget _buildRandomUserGrid() {
+  return GridView.builder(
+    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 3,
+      crossAxisSpacing: 8.0,
+      mainAxisSpacing: 8.0,
+    ),
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    itemCount: 6, // YOU CAN ADJUST THE NUMBER OF ITEMS IN THE GRID
+    itemBuilder: (context, index) {
+      return GestureDetector(
+        onTap: () {
+          // HANDLE THE CLICK EVENT, E.G., NAVIGATE TO A USER PROFILE PAGE
+          print('Clicked on random user profile $index');
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.white,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.network(
+              'https://source.unsplash.com/100x100/?random=$index',
+              width: 60.0,
+              height: 60.0,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +78,7 @@ class _MySearchState extends State<MySearch> {
         centerTitle: true,
       ),
       backgroundColor: const Color.fromARGB(248, 0, 0, 0),
+      
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -79,8 +122,10 @@ class _MySearchState extends State<MySearch> {
                     icon: const Icon(Icons.search, color: Colors.white),
                   ),
                 ),
+                style: const TextStyle(color: Colors.white),
               ),
             ),
+
             StreamBuilder<List<String>>(
               stream: _friendService
                   .receivedFriendRequestsStream(UserData.userName),
@@ -89,13 +134,14 @@ class _MySearchState extends State<MySearch> {
                   List<String> friendRequests = snapshot.data!;
                   return ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: friendRequests.length,
                     itemBuilder: (context, index) {
                       DocumentReference userDoc = FirebaseFirestore.instance
                           .collection('users')
                           .doc(friendRequests[index]);
                       ImageProvider imageProvider;
+
                       return StreamBuilder<DocumentSnapshot>(
                         stream: userDoc.snapshots(),
                         builder: (context, userSnapshot) {
@@ -110,6 +156,7 @@ class _MySearchState extends State<MySearch> {
                             } else {
                               imageProvider = NetworkImage(profilePicUrl);
                             }
+                            
                             return ListTile(
                               leading: GestureDetector(
                                 onTap: () {
@@ -128,10 +175,12 @@ class _MySearchState extends State<MySearch> {
                                   radius: 25.0,
                                 ),
                               ),
-                              title: Text(friendRequests[index]),
-                              trailing: Row(
+                              
+                              title: Text(friendRequests[index]), 
+                                trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
+
                                   ElevatedButton(
                                     onPressed: () {
                                       _friendService.acceptFriendRequest(
@@ -140,6 +189,7 @@ class _MySearchState extends State<MySearch> {
                                     },
                                     child: const Text('Accept'),
                                   ),
+
                                   const SizedBox(width: 10.0),
                                   ElevatedButton(
                                     onPressed: () {
@@ -152,6 +202,7 @@ class _MySearchState extends State<MySearch> {
                                 ],
                               ),
                             );
+
                           } else {
                             return ListTile(
                               title: Text(friendRequests[index]),
@@ -182,6 +233,7 @@ class _MySearchState extends State<MySearch> {
                 ),
               ),
             ),
+
             for (int i = 0; i < 3; i++)
               Container(
                 constraints: const BoxConstraints(
@@ -194,6 +246,7 @@ class _MySearchState extends State<MySearch> {
                   ),
                   borderRadius: BorderRadius.circular(100.0),
                 ),
+                
                 child: ListTile(
                   contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16.0, vertical: 16.0),
@@ -212,7 +265,7 @@ class _MySearchState extends State<MySearch> {
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
                       fontFamily: 'DNSans',
-                      color: Colors.white,
+                      color: Colors.white, 
                     ),
                   ),
                   trailing: IconButton(
@@ -228,40 +281,22 @@ class _MySearchState extends State<MySearch> {
                   ),
                 ),
               ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 1,
-              itemBuilder: (context, index) {
-                return GridView.builder(
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 8.0,
-                    mainAxisSpacing: 8.0,
-                    childAspectRatio: 1.3,
+
+              const Padding(padding: EdgeInsets.symmetric(vertical: 8.0), 
+                child: Text('The Rest of The World', 
+                style: TextStyle(
+                  fontWeight: FontWeight.bold, 
+                  fontSize: 18, 
+                  fontFamily: 'DNSans', 
+                  color: Colors.white, 
                   ),
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      constraints:
-                          const BoxConstraints(minHeight: 50, maxWidth: 100),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20.0),
-                        image: const DecorationImage(
-                          image: NetworkImage(
-                              'https://source.unsplash.com/100x100/?random='),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+                ),
+              ), 
+              _buildRandomUserGrid(), 
           ],
         ),
       ),
+
     );
   }
 }
