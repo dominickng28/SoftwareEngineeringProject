@@ -132,6 +132,7 @@ Widget _buildRandomUserGrid() {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<String> friendRequests = snapshot.data!;
+                  
                   return ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -176,7 +177,12 @@ Widget _buildRandomUserGrid() {
                                 ),
                               ),
                               
-                              title: Text(friendRequests[index]), 
+                              title: Text(friendRequests[index], 
+                                style: const TextStyle(
+                                  color: Colors.white, 
+                                ),
+                              ), 
+
                                 trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
