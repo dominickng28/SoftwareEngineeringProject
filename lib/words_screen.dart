@@ -33,6 +33,8 @@ class _MyScreenState extends State<WordsScreen> {
   late Timer _timer;
   late DateTime _nextRefreshTime;
 
+  List<String> words = ['DIY', 'Biking', 'Smile', 'Run']; // STORES WORDS
+
   @override
   void initState() {
     super.initState();
@@ -97,17 +99,17 @@ class _MyScreenState extends State<WordsScreen> {
       ),
     );
   }
-    void _navigateToMyUserProfilePage() {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => MyUserProfilePage(
-        title: 'User Profile',
-        // Add any necessary parameters for the profile screen
+  void _navigateToMyUserProfilePage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyUserProfilePage(
+          title: 'User Profile',
+          // Add any necessary parameters for the profile screen
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   // MAGNIFYING GLASS
 
@@ -176,7 +178,8 @@ class _MyScreenState extends State<WordsScreen> {
                 ),
 
                 // ACTUAL WORD
-                title: Text(getRandomElement(Activities),
+                title: Text(
+                    words[i],
                     style: const TextStyle(
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.bold,
