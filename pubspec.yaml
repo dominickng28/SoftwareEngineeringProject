@@ -91,6 +91,7 @@ flutter:
     - SampleImages/fish.jpg
     - SampleImages/pool.jpg
     - SampleImages/park.jpg
+    - lib/assets/chris.jpg 
 
   #   - images/a_dot_ham.jpeg
 

@@ -29,13 +29,24 @@ class WordsScreen extends StatefulWidget {
 }
 
 class _MyScreenState extends State<WordsScreen> {
+
   late List<CameraDescription> cameras;
   bool cameraInitialized = false;
+
   late Timer _timer;
   late DateTime _nextRefreshTime;
   late Duration durationUntilNextRefresh = Duration(); 
 
   List<String> words = ['DIY', 'Biking', 'Smile', 'Run']; // STORES WORDS
+  List<String> wordImages = [
+    'chris.jpg', 
+    'chris.jpg', 
+    'chris.jpg', 
+    'chris.jpg', 
+  ];
+  List<bool> checkBoxState = [false, false, false, false]; 
+
+  late CameraController _cameraController; 
 
   @override
   void initState() {
@@ -45,17 +56,19 @@ class _MyScreenState extends State<WordsScreen> {
   }
 
   _initializeCamera() async {
-    try { 
-      cameras = await availableCameras();
-      if (cameras.isNotEmpty) {
-        setState(() {
-          cameraInitialized = true;
-        });
+  try { 
+    cameras = await availableCameras();
+    print("Cameras: $cameras"); // Add this line to check the cameras
+    if (cameras.isNotEmpty) {
+      _cameraController = CameraController(cameras.first, ResolutionPreset.high);
+      await _cameraController.initialize();
+      setState(() {
+        cameraInitialized = true;
+      });
     }
-    } catch(e) { 
-      print("Error getting camera: $e"); 
-    }
-    
+  } catch(e) { 
+    print("Error getting camera: $e"); 
+  }
 }
 
 // TIMER CODE
@@ -188,12 +201,11 @@ void _setupTimer() {
               // WORD PICTURE
 
               child: ListTile(
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(18.0),
-                  child: Image.network(
-                    'https://source.unsplash.com/100x100/?random=$i',
+                  child: Image.asset(
+                    'lib/assets/chris.jpg',
                     width: 60.0,
                     height: 60.0,
                     fit: BoxFit.cover,
@@ -207,20 +219,26 @@ void _setupTimer() {
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0,
-                      color: Colors.white)),
+                      color: Colors.white)), 
 
                 // CAMERA ICON       
                 trailing: cameraInitialized
                     ? IconButton(
-                        icon: const Icon(
-                          Icons.camera_alt, 
-                          color: Colors.white, 
-                          size: 30,),
+                        // width: 30.0,
+                        // height: 30.0,
+                        // child: IconButton(
+                          icon: const Icon(
+                            Icons.camera_alt, 
+                            color: Colors.white, 
+                            size: 30,
+                          ),
                         onPressed: () {
                           _openCamera(i);
                         },
                       )
-                    : const CircularProgressIndicator.adaptive(),
+                    : const CircularProgressIndicator.adaptive(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
               ),
             ),
 
@@ -263,93 +281,90 @@ void _setupTimer() {
 
   // CAMERA CODE
 
-_openCamera(int rowNumber) async {
-  try {
-    final camera = cameras.isNotEmpty ? cameras.first : null;
-    
-    if (camera != null) {
-      final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CameraScreen(
-            camera: camera,
-            rowNumber: rowNumber,
+  _openCamera(int rowNumber) async {
+    try {
+      if (cameraInitialized) {
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CameraScreen(
+              camera: cameras.first,
+            ),
           ),
-        ),
-      );
+        );
 
-      if (result != null) {
-        print('Image captured for Row $rowNumber: $result');
+        if (result != null) {
+          print('Image captured for Row $rowNumber: $result');
+        }
+      } else {
+        print('Camera not initialized.');
       }
-    } else {
-      print('No cameras available.');
+    } catch (e) {
+      print('Error opening camera: $e');
     }
-  } catch (e) {
-    print('Error opening camera: $e');
   }
-}
 
 }
 
-class CameraScreen extends StatefulWidget {
-  final CameraDescription camera;
-  final int rowNumber;
+// // class CameraScreen extends StatefulWidget {
+// //   final CameraDescription camera;
+// //   final int rowNumber;
 
-  const CameraScreen({required this.camera, required this.rowNumber});
+// //   const CameraScreen({required this.camera, required this.rowNumber});
 
-  @override
-  _CameraScreenState createState() => _CameraScreenState();
-}
+// //   @override
+// //   _CameraScreenState createState() => _CameraScreenState();
+// // }
 
-class _CameraScreenState extends State<CameraScreen> {
-  late CameraController _controller;
+// // class _CameraScreenState extends State<CameraScreen> {
+// //   late CameraController _controller;
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = CameraController(widget.camera, ResolutionPreset.high);
-    _controller.initialize().then((_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {});
-    });
-  }
+// //   @override
+// //   void initState() {
+// //     super.initState();
+// //     _controller = CameraController(widget.camera, ResolutionPreset.high);
+// //     _controller.initialize().then((_) {
+// //       if (!mounted) {
+// //         return;
+// //       }
+// //       setState(() {});
+// //     });
+// //   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     super.dispose();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (!_controller.value.isInitialized) {
-      return Container();
-    }
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Camera',
-          style: TextStyle(
-            fontFamily: 'YourFont',
-            fontSize: 20.0,
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: CameraPreview(_controller),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final image = _controller.takePicture(); //await
-          Navigator.pop(context, image);
-        },
-        child: const Icon(Icons.camera),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     if (!_controller.value.isInitialized) {
+//       return Container();
+//     }
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text(
+//           'Camera',
+//           style: TextStyle(
+//             fontFamily: 'YourFont',
+//             fontSize: 20.0,
+//             color: Colors.white,
+//           ),
+//         ),
+//         backgroundColor: Colors.blue,
+//       ),
+//       body: Center(
+//         child: CameraPreview(_controller),
+//       ),
+//       floatingActionButton: FloatingActionButton(
+//         onPressed: () async {
+//           final image = _controller.takePicture(); //await
+//           Navigator.pop(context, image);
+//         },
+//         child: const Icon(Icons.camera),
+//       ),
+//       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+//     );
+//   }
+// }

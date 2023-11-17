@@ -52,6 +52,9 @@
 	<string>camera description.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>photos description.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Allow access to the camera for taking pictures</string>
+
 
 </dict>
 </plist>
