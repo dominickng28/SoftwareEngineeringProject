@@ -69,7 +69,7 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
         'Take a picture', 
         style: TextStyle(
           fontWeight: FontWeight.bold, 
