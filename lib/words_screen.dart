@@ -8,6 +8,7 @@ import 'package:live4you/Activities.dart';
 // import 'home_feed.dart';
 import 'search.dart';
 import 'profile_screen.dart';
+import 'camera_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -55,9 +56,9 @@ class _MyScreenState extends State<WordsScreen> {
       print("Error getting camera: $e"); 
     }
     
-  }
+}
 
-  // TIMER CODE
+// TIMER CODE
 
 void _setupTimer() {
   // Find the next Monday from the current date
@@ -119,6 +120,7 @@ void _setupTimer() {
       ),
     );
   }
+
   void _navigateToMyUserProfilePage() {
     Navigator.push(
       context,
@@ -153,10 +155,11 @@ void _setupTimer() {
             icon: const Icon(Icons.search, color: Colors.white),
             onPressed: _navigateToMySearch,
           ),
+
           IconButton(
-          icon: Icon(Icons.account_circle, color: Colors.white),
+          icon: const Icon(Icons.account_circle, color: Colors.white),
           onPressed: _navigateToMyUserProfilePage,
-        ),
+          ),
         ],
       ),
 
@@ -260,22 +263,32 @@ void _setupTimer() {
 
   // CAMERA CODE
 
-  _openCamera(int rowNumber) async {
-    final camera = cameras.first;
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CameraScreen(
-          camera: camera,
-          rowNumber: rowNumber,
+_openCamera(int rowNumber) async {
+  try {
+    final camera = cameras.isNotEmpty ? cameras.first : null;
+    
+    if (camera != null) {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CameraScreen(
+            camera: camera,
+            rowNumber: rowNumber,
+          ),
         ),
-      ),
-    );
+      );
 
-    if (result != null) {
-      print('Image captured for Row $rowNumber: $result');
+      if (result != null) {
+        print('Image captured for Row $rowNumber: $result');
+      }
+    } else {
+      print('No cameras available.');
     }
+  } catch (e) {
+    print('Error opening camera: $e');
   }
+}
+
 }
 
 class CameraScreen extends StatefulWidget {
