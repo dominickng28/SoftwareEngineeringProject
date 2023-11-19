@@ -144,7 +144,19 @@ Widget _buildRandomUserGrid() {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   List<String> friendRequests = snapshot.data!;
-                  
+                if (friendRequests.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'No Friend Requests',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          fontFamily: 'DNSans',
+                          color: Color.fromARGB(115, 255, 255, 255),
+                        ),
+                      ),
+                    );
+                  }  
                   return ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -278,7 +290,7 @@ Widget _buildRandomUserGrid() {
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                       fontFamily: 'DNSans',
-                      color: Colors.white,
+                      color: Color.fromARGB(115, 255, 255, 255),
                     ),
                   );
                 } else {
@@ -290,7 +302,7 @@ Widget _buildRandomUserGrid() {
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                         fontFamily: 'DNSans',
-                        color: Colors.white,
+                        color: Color.fromARGB(115, 255, 255, 255),
                       ),
                     );
                   }
