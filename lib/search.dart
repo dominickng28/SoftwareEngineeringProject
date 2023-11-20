@@ -42,133 +42,48 @@ class _MySearchState extends State<MySearch> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  labelText: "Search for a username",
-                  labelStyle: const TextStyle(
-                      color: Colors.white, fontFamily: 'DNSans'),
-                  suffixIcon: IconButton(
-                    onPressed: () async {
-                      String username = _searchController.text;
-                      DocumentSnapshot userDoc = await FirebaseFirestore
-                          .instance
-                          .collection('users')
-                          .doc(username)
-                          .get();
-                      if (userDoc.exists) {
-                        // ignore: use_build_context_synchronously
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MyUserProfilePage(
-                              title: 'User Profile',
-                              profileUserName: username,
-                            ),
-                          ),
-                        );
-                      } else {
-                        // ignore: use_build_context_synchronously
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                'No user found with the username $username'),
-                          ),
-                        );
-                      }
-                    },
-                    icon: const Icon(Icons.search, color: Colors.white),
-                  ),
-                ),
+  controller: _searchController,
+  style: TextStyle(color: Colors.white), // Set the text color to white
+  decoration: InputDecoration(
+    labelText: "Search for a username",
+    labelStyle: TextStyle(
+      color: Colors.white,
+      fontFamily: 'DNSans',
+    ),
+    focusedBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.white), // Set the underline color to white
+    ),
+    suffixIcon: IconButton(
+      onPressed: () async {
+        String username = _searchController.text;
+        DocumentSnapshot userDoc = await FirebaseFirestore
+            .instance
+            .collection('users')
+            .doc(username)
+            .get();
+        if (userDoc.exists) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MyUserProfilePage(
+                title: 'User Profile',
+                profileUserName: username,
               ),
             ),
-            StreamBuilder<List<String>>(
-              stream: _friendService
-                  .receivedFriendRequestsStream(UserData.userName),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<String> friendRequests = snapshot.data!;
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: friendRequests.length,
-                    itemBuilder: (context, index) {
-                      DocumentReference userDoc = FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(friendRequests[index]);
-                      ImageProvider imageProvider;
-                      return StreamBuilder<DocumentSnapshot>(
-                        stream: userDoc.snapshots(),
-                        builder: (context, userSnapshot) {
-                          if (userSnapshot.hasData) {
-                            var userFriend = userSnapshot.data!.data()
-                                as Map<String, dynamic>;
-                            var profilePicUrl = userFriend['profile_picture'] ??
-                                'lib/assets/default-user.jpg';
-                            if (profilePicUrl ==
-                                'lib/assets/default-user.jpg') {
-                              imageProvider = AssetImage(profilePicUrl);
-                            } else {
-                              imageProvider = NetworkImage(profilePicUrl);
-                            }
-                            return ListTile(
-                              leading: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => MyUserProfilePage(
-                                        title: 'User Profile',
-                                        profileUserName: friendRequests[index],
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: CircleAvatar(
-                                  backgroundImage: imageProvider,
-                                  radius: 25.0,
-                                ),
-                              ),
-                              title: Text(friendRequests[index]),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      _friendService.acceptFriendRequest(
-                                          UserData.userName,
-                                          friendRequests[index]);
-                                    },
-                                    child: const Text('Accept'),
-                                  ),
-                                  const SizedBox(width: 10.0),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      _friendService.cancelFriendRequest(
-                                          friendRequests[index],
-                                          UserData.userName);
-                                    },
-                                    child: const Text('Decline'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          } else {
-                            return ListTile(
-                              title: Text(friendRequests[index]),
-                              subtitle: const CircularProgressIndicator(),
-                            );
-                          }
-                        },
-                      );
-                    },
-                  );
-                } else if (snapshot.hasError) {
-                  return const Center(
-                      child: Text('Error loading friend requests'));
-                } else {
-                  return const Center(child: CircularProgressIndicator());
-                }
-              },
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('No user found with the username $username'),
+            ),
+          );
+        }
+      },
+      icon: Icon(Icons.search, color: Colors.white),
+    ),
+  ),
+),
+
             ),
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 8.0),
