@@ -21,6 +21,7 @@ class MyFeed extends StatefulWidget {
 }
 
 class _MyFeedTest extends State<MyFeed> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   final UserData userData = UserData(FirebaseFirestore.instance);
   List<Post> posts = [];
 
@@ -151,6 +152,10 @@ class _MyFeedTest extends State<MyFeed> {
     );
   }
 
+  Future<void> _handleRefresh() async {
+    fetchAllPostData();
+  }
+
   @override
   Widget build(BuildContext context) {
     _checkIfFirstTime();
@@ -191,7 +196,10 @@ class _MyFeedTest extends State<MyFeed> {
         ],
       ),
       backgroundColor: Color.fromARGB(248, 0, 0, 0),
-      body: posts.isEmpty
+      body: RefreshIndicator(
+        key: _refreshIndicatorKey,
+        onRefresh: _handleRefresh,
+        child: posts.isEmpty
           ? Center(
               child: Text("No posts..."),
             )
@@ -201,6 +209,7 @@ class _MyFeedTest extends State<MyFeed> {
                 return PostCard(post: posts[index]);
               },
             ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final cameras = await availableCameras();

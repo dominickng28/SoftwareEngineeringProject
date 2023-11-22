@@ -3,9 +3,11 @@ import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:live4you/user_data.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class CameraScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -51,11 +53,19 @@ class _CameraScreenState extends State<CameraScreen> {
 
       final XFile photo = await _controller.takePicture();
 
+      //Compress image and saving it
+      List<int> compressedPic = await FlutterImageCompress.compressWithList(
+        File(photo.path).readAsBytesSync(),
+        quality: 60,
+      );
+      File compressedFile = File(photo.path);
+      await compressedFile.writeAsBytes(compressedPic);
+
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => PreviewPostCard(
-            imagePath: photo.path,
+            imagePath: compressedFile.path,
             selectedOption: selectedOption,
           ),
         ),
