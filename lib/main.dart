@@ -4,7 +4,7 @@ import 'package:live4you/signup_screen.dart';
 import 'package:live4you/home_feed.dart'; // Import the home screen
 import 'package:live4you/profile_screen.dart'; // Import the profile screen
 import 'package:firebase_core/firebase_core.dart';
-import 'package:live4you/search.dart';
+import 'package:live4you/search_screen.dart';
 import 'package:live4you/words_screen.dart';
 import 'package:live4you/firebase_options.dart';
 
