@@ -150,7 +150,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
+        backgroundColor: const Color.fromRGBO(248, 0, 0, 0),
         title: Text(
           title,
           style: TextStyle(
@@ -161,249 +161,269 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
         centerTitle: true,
       ),
 
-      body: Column(
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.only(top: 0, left: 300),
-            child: Column(
-              children: <Widget>[
-                Visibility(
-                  visible: widget.profileUserName != null &&
-                      widget.profileUserName != UserData.userName,
-                  child: IconButton(
-                    onPressed: () {
-                      if (requestSent) {
-                        _friendService.cancelFriendRequest(
-                            UserData.userName, userProfile!.username);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Canceled Friend Request')),
-                        );
-                      } else if (isFriend) {
-                        _friendService.removeFriend(
-                            UserData.userName, userProfile!.username);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Friend Removed')),
-                        );
-                      } else {
-                        if (userProfile!.sentRequests
-                            .contains(UserData.userName)) {
-                          _friendService.acceptFriendRequest(
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.only(top: 0, left: 300),
+              child: Column(
+                children: <Widget>[
+                  Visibility(
+                    visible: widget.profileUserName != null &&
+                        widget.profileUserName != UserData.userName,
+                    child: IconButton(
+                      onPressed: () {
+                        if (requestSent) {
+                          _friendService.cancelFriendRequest(
                               UserData.userName, userProfile!.username);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content: Text('Friend Request Accepted')),
+                                content: Text('Canceled Friend Request')),
                           );
-                          return;
-                        }
-                        _friendService.sendFriendRequest(
-                            UserData.userName, userProfile!.username);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Friend Request Sent')),
-                        );
-                      }
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                        (Set<MaterialState> states) {
-                          if (widget.profileUserName != null &&
-                              widget.profileUserName != UserData.userName) {
-                            if (userProfile?.receivedRequests
-                                    .contains(UserData.userName) ==
-                                true) {
-                              return Colors.white;
-                            }
-                          }
-                          return isFriend ? Colors.white : Colors.white;
-                        },
-                      ),
-                    ),
-                    icon: Icon(requestSent
-                        ? Icons.person_outline_rounded
-                        : isFriend
-                            ? Icons.person_remove_rounded
-                            : Icons.person_add_alt_1_rounded),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Code for the Profile Banner
-          Container(
-            color: Colors.grey,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                // Wrap the Column in a Row // Separates the children
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      if (widget.profileUserName == null ||
-                          widget.profileUserName == UserData.userName) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditProfilePage(
-                              profilePictureUrl: userProfile?.profilePicURL,
-                              usernameNotifier:
-                                  ValueNotifier(UserData.userName),
-                              onProfileUpdated: refreshProfile,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                    child: ClipOval(
-                      child: userProfile?.profilePicURL == null ||
-                              userProfile?.profilePicURL ==
-                                  'lib/assets/default-user.jpg' ||
-                              !Uri.parse(userProfile!.profilePicURL).isAbsolute
-                          ? Image.asset(
-                              'lib/assets/default-user.jpg',
-                              width: 150,
-                              height: 150,
-                              fit: BoxFit.cover,
-                            )
-                          : Image.network(
-                              userProfile!.profilePicURL,
-                              width: 150,
-                              height: 150,
-                              fit: BoxFit.cover,
-                            ),
-                    ),
-                  ),
-                  const SizedBox(width: 20.0),
-                  //Username
-                  Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              userProfile?.username ?? "Loading User"),
-                          const SizedBox(height: 10),
-                          Text(
-                            userBio ??
-                                '', // Display the user's bio if available
-                            style: TextStyle(fontSize: 16),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  Container(
-                    color: Colors.grey,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const MyFriends(
-                                        title: 'Friends',
-                                      )),
+                        } else if (isFriend) {
+                          _friendService.removeFriend(
+                              UserData.userName, userProfile!.username);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Friend Removed')),
+                          );
+                        } else {
+                          if (userProfile!.sentRequests
+                              .contains(UserData.userName)) {
+                            _friendService.acceptFriendRequest(
+                                UserData.userName, userProfile!.username);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Friend Request Accepted')),
                             );
-                          },
-                          child: const Text(
-                            "Friends",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Color.fromARGB(248, 1, 31,
-                                  57), // Change this to your preferred color
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 8.0),
-                        FutureBuilder<int>(
-                          future: followerCount,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<int> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
-                            } else {
-                              return Text(
-                                snapshot.data.toString(),
-                                style: TextStyle(fontSize: 16.0),
-                              );
+                            return;
+                          }
+                          _friendService.sendFriendRequest(
+                              UserData.userName, userProfile!.username);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Friend Request Sent')),
+                          );
+                        }
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            if (widget.profileUserName != null &&
+                                widget.profileUserName != UserData.userName) {
+                              if (userProfile?.receivedRequests
+                                      .contains(UserData.userName) ==
+                                  true) {
+                                return Colors.white;
+                              }
                             }
+                            return isFriend ? Colors.white : Colors.white;
                           },
                         ),
-                      ],
+                      ),
+                      icon: Icon(requestSent
+                          ? Icons.person_outline_rounded
+                          : isFriend
+                              ? Icons.person_remove_rounded
+                              : Icons.person_add_alt_1_rounded),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-
-          // Code for the Posts
-          Expanded(
-            child: FutureBuilder<List<Post>>(
-              future: fetchUserPostData(username: widget.profileUserName),
-              builder:
-                  (BuildContext context, AsyncSnapshot<List<Post>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else {
-                  return Padding(
-                    padding: const EdgeInsets.all(
-                        8.0), // Add padding around the grid
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 8.0, // Increase main axis spacing
-                        crossAxisSpacing: 8.0, // Increase cross axis spacing
-                      ),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Dialog(
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.8, // Set the width to 80% of screen width
-                                    child:
-                                        PostCard(post: snapshot.data![index]),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                  20), // Increase border radius
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                    snapshot.data![index].imageUrl),
+            // Code for the Profile Banner
+            Container(
+              color: Color.fromARGB(248, 0, 0, 0),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  // Wrap the Column in a Row // Separates the children
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        if (widget.profileUserName == null ||
+                            widget.profileUserName == UserData.userName) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditProfilePage(
+                                profilePictureUrl: userProfile?.profilePicURL,
+                                usernameNotifier:
+                                    ValueNotifier(UserData.userName),
+                                onProfileUpdated: refreshProfile,
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      child: ClipOval(
+                        child: userProfile?.profilePicURL == null ||
+                                userProfile?.profilePicURL ==
+                                    'lib/assets/default-user.jpg' ||
+                                !Uri.parse(userProfile!.profilePicURL)
+                                    .isAbsolute
+                            ? Image.asset(
+                                'lib/assets/default-user.jpg',
+                                width: 150,
+                                height: 150,
                                 fit: BoxFit.cover,
+                              )
+                            : Image.network(
+                                userProfile!.profilePicURL,
+                                width: 150,
+                                height: 150,
+                                fit: BoxFit.cover,
+                              ),
+                      ),
+                    ),
+                    const SizedBox(width: 20.0),
+                    //Username
+                    Center(
+                      child: Container(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                                style: TextStyle(
+                                  fontFamily: 'DMSans',
+                                  fontSize: 23,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                userProfile?.username ?? "Loading User"),
+                            const SizedBox(height: 10),
+                            Text(
+                              userBio ??
+                                  '', // Display the user's bio if available
+                              style: TextStyle(
+                                fontFamily: 'DMSans',
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      color: Color.fromARGB(248, 0, 0, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const MyFriends(
+                                          title: 'Friends',
+                                        )),
+                              );
+                            },
+                            child: const Text(
+                              "Friends",
+                              style: TextStyle(
+                                fontFamily: 'DMSans',
+                                fontSize: 12,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                        );
-                      },
+                          SizedBox(width: 8.0),
+                          FutureBuilder<int>(
+                            future: followerCount,
+                            builder: (BuildContext context,
+                                AsyncSnapshot<int> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else {
+                                return Text(
+                                  snapshot.data.toString(),
+                                  style: TextStyle(
+                                    fontFamily: 'DMSans',
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  );
-                }
-              },
+                  ],
+                ),
+              ),
             ),
-          ),
-        ],
+
+            // Code for the Posts
+            Container(
+              color: Colors.black,
+              height: MediaQuery.of(context).size.height - 300,
+              child: FutureBuilder<List<Post>>(
+                future: fetchUserPostData(username: widget.profileUserName),
+                builder:
+                    (BuildContext context, AsyncSnapshot<List<Post>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.all(
+                          8.0), // Add padding around the grid
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 8.0, // Increase main axis spacing
+                          crossAxisSpacing: 8.0, // Increase cross axis spacing
+                        ),
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Dialog(
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.8, // Set the width to 80% of screen width
+                                      child:
+                                          PostCard(post: snapshot.data![index]),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    20), // Increase border radius
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                      snapshot.data![index].imageUrl),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
       // Code for the create post button
       floatingActionButton: userProfile?.username != UserData.userName

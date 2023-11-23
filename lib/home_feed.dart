@@ -10,6 +10,7 @@ import 'search_screen.dart';
 import 'profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'friend_service.dart';
+import 'notification_screen.dart';
 
 class MyFeed extends StatefulWidget {
   const MyFeed({super.key, required this.title});
@@ -20,6 +21,7 @@ class MyFeed extends StatefulWidget {
 }
 
 class _MyFeedTest extends State<MyFeed> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   final UserData userData = UserData(FirebaseFirestore.instance);
   List<Post> posts = [];
 
@@ -150,12 +152,27 @@ class _MyFeedTest extends State<MyFeed> {
     );
   }
 
+  Future<void> _handleRefresh() async {
+    fetchAllPostData();
+  }
+
   @override
   Widget build(BuildContext context) {
     _checkIfFirstTime();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(251, 0, 0, 0),
+        leading: IconButton(
+        icon: Icon(Icons.notifications, color: Colors.white), // Bell icon
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NotificationsScreen(),
+            ),
+          );
+        },
+      ),
         flexibleSpace: Padding(
           padding: EdgeInsets.only(
               top: 60.0), // Adjust the top padding value to lower the image
@@ -179,7 +196,10 @@ class _MyFeedTest extends State<MyFeed> {
         ],
       ),
       backgroundColor: Color.fromARGB(248, 0, 0, 0),
-      body: posts.isEmpty
+      body: RefreshIndicator(
+        key: _refreshIndicatorKey,
+        onRefresh: _handleRefresh,
+        child: posts.isEmpty
           ? Center(
               child: Text("No posts..."),
             )
@@ -189,6 +209,7 @@ class _MyFeedTest extends State<MyFeed> {
                 return PostCard(post: posts[index]);
               },
             ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final cameras = await availableCameras();
@@ -270,8 +291,8 @@ class _PostCardState extends State<PostCard> {
                   String? profilePictureUrl = snapshot.data;
                   if (profilePictureUrl == null || profilePictureUrl.isEmpty) {
                     // Use a default profile picture when there's no profile picture
-                    imageProvider = const AssetImage(
-                        'lib/assets/images/default_profile_picture.png');
+                    imageProvider =
+                        const AssetImage('lib/assets/default-user.jpg');
                   } else {
                     // Use NetworkImage when loading an image from a URL
                     imageProvider = NetworkImage(profilePictureUrl);
@@ -314,21 +335,31 @@ class _PostCardState extends State<PostCard> {
               ),
             ),
             trailing: Container(
-              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.teal,
-              ),
-              child: Text(
-                widget.post.word, //placeholder
-                style: TextStyle(
-                  fontFamily: 'DMSans',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+  child: Transform(
+    transform: Matrix4.skewX(-0.05), // Adjust the skew factor as needed
+    child: Container(
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6), // Adjust the padding values
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        widget.post.word, // Placeholder for your word
+        style: TextStyle(
+          fontFamily: 'DMSans',
+          fontSize: 22, // Adjust the font size as needed
+          fontWeight: FontWeight.w900, // Adjust the fontWeight for thicker letters
+          fontStyle: FontStyle.italic,
+          decoration: TextDecoration.underline,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  ),
+)
+
+
           ),
           ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
