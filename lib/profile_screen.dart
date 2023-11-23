@@ -11,7 +11,7 @@ import 'home_feed.dart';
 import 'camera_screen.dart';
 import 'friend_service.dart';
 import 'friends_screen.dart';
-import 'search.dart';
+import 'search_screen.dart';
 import 'edit_profile_page.dart';
 
 class MyUserProfilePage extends StatefulWidget {
@@ -346,7 +346,6 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
             ),
           ),
 
-          // Code for the Posts
           // Code for the Posts
           Expanded(
             child: FutureBuilder<List<Post>>(
