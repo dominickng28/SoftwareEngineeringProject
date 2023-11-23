@@ -22,14 +22,17 @@ class MyFriends extends StatelessWidget {
         title: const Text(
           'Friends',
           style: TextStyle(
-                  fontFamily: 'DMSans',
-                  fontSize: 23,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+            fontFamily: 'DMSans',
+            fontSize: 23,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white,),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
           onPressed: () {
             Navigator.pop(context); // Go back to the previous screen
           },
@@ -101,12 +104,16 @@ class _MyFriendsListState extends State<MyFriendsList> {
             child:
                 CircularProgressIndicator()) // Show loader while fetching data
         : friendsList.isEmpty
-            ? Center(child: Text("No friends yet...", style: TextStyle(
+            ? Center(
+                child: Text(
+                "No friends yet...",
+                style: TextStyle(
                   fontFamily: 'DMSans',
                   fontSize: 23,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                ),))
+                ),
+              ))
             : ListView.builder(
                 itemCount: friendsList.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -136,7 +143,7 @@ class FriendBar extends StatelessWidget {
               ));
         },
         child: Container(
-          color: const Color.fromARGB(249, 253, 208, 149),
+          color: const Color.fromARGB(248, 0, 0, 0),
           child: Column(
             children: [
               ListTile(
@@ -170,9 +177,17 @@ class FriendBar extends StatelessWidget {
                     );
                   },
                 ),
-                title: Text(friend.username),
+                title: Text(
+                  friend.username,
+                  style: TextStyle(
+                    fontFamily: 'DMSans',
+                    fontSize: 23,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              Container(height: 2.0, color: Color.fromARGB(248, 172, 113, 36)),
+              Container(height: 2.0, color: Color.fromARGB(248, 0, 0, 0)),
             ],
           ),
         ));

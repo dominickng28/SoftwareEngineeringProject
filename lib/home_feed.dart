@@ -270,8 +270,8 @@ class _PostCardState extends State<PostCard> {
                   String? profilePictureUrl = snapshot.data;
                   if (profilePictureUrl == null || profilePictureUrl.isEmpty) {
                     // Use a default profile picture when there's no profile picture
-                    imageProvider = const AssetImage(
-                        'lib/assets/images/default_profile_picture.png');
+                    imageProvider =
+                        const AssetImage('lib/assets/default-user.jpg');
                   } else {
                     // Use NetworkImage when loading an image from a URL
                     imageProvider = NetworkImage(profilePictureUrl);
