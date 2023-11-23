@@ -37,11 +37,12 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
 
   Future<void> _addUser(String bio) async {
     List<String> lines = bio.split('\n');
-  if (lines.length > 4){
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Bio should not exceed 4 lines')),
-    );
-    return;}
+    if (lines.length > 4) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Bio should not exceed 4 lines')),
+      );
+      return;
+    }
     // Fetch the current user
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -204,7 +205,8 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: TextFormField(
-                    maxLengthEnforcement: MaxLengthEnforcement.enforced, controller: _bioController,
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                    controller: _bioController,
                     style: const TextStyle(
                         color: Colors.white, fontFamily: 'DNSans'),
                     maxLines: null,
