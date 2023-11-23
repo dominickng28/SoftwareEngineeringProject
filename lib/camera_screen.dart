@@ -78,7 +78,13 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Take a picture')),
+      appBar: AppBar(
+        title: const Text(
+        'Take a picture', 
+        style: TextStyle(
+          fontWeight: FontWeight.bold, 
+        ),), 
+        centerTitle: true,),
       body: Stack(
         children: [
           FutureBuilder<void>(
@@ -96,9 +102,12 @@ class _CameraScreenState extends State<CameraScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Transform.translate(
-                offset: Offset(0, -100), // Move the carousel up
+                offset: Offset(0, -250), // Move the carousel up
                 child: DefaultTextStyle(
-                  style: TextStyle(fontSize: 30), // Increase the font size
+                  style: TextStyle(
+                    fontSize: 30, 
+                    color: Colors.black, 
+                    fontWeight: FontWeight.bold), // Increase the font size
                   child: PageView.builder(
                     itemCount: options.length,
                     onPageChanged: (int index) {

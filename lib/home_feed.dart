@@ -6,7 +6,7 @@ import 'post.dart';
 import 'user.dart';
 import 'user_data.dart';
 import 'camera_screen.dart';
-import 'search.dart';
+import 'search_screen.dart';
 import 'profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'friend_service.dart';
