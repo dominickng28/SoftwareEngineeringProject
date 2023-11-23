@@ -10,6 +10,7 @@ import 'search.dart';
 import 'profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'friend_service.dart';
+import 'notification_screen.dart';
 
 class MyFeed extends StatefulWidget {
   const MyFeed({super.key, required this.title});
@@ -156,6 +157,17 @@ class _MyFeedTest extends State<MyFeed> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(251, 0, 0, 0),
+        leading: IconButton(
+        icon: Icon(Icons.notifications, color: Colors.white), // Bell icon
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NotificationsScreen(),
+            ),
+          );
+        },
+      ),
         flexibleSpace: Padding(
           padding: EdgeInsets.only(
               top: 60.0), // Adjust the top padding value to lower the image
@@ -314,21 +326,31 @@ class _PostCardState extends State<PostCard> {
               ),
             ),
             trailing: Container(
-              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.teal,
-              ),
-              child: Text(
-                widget.post.word, //placeholder
-                style: TextStyle(
-                  fontFamily: 'DMSans',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+  child: Transform(
+    transform: Matrix4.skewX(-0.05), // Adjust the skew factor as needed
+    child: Container(
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6), // Adjust the padding values
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        widget.post.word, // Placeholder for your word
+        style: TextStyle(
+          fontFamily: 'DMSans',
+          fontSize: 22, // Adjust the font size as needed
+          fontWeight: FontWeight.w900, // Adjust the fontWeight for thicker letters
+          fontStyle: FontStyle.italic,
+          decoration: TextDecoration.underline,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  ),
+)
+
+
           ),
           ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
