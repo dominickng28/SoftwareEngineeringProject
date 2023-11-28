@@ -133,6 +133,26 @@ Widget _buildpostGrid(List<Post> postList) {
   );
 }
 
+Future<void> _searchByUsername(String username) async {
+  DocumentSnapshot userDoc = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(username)
+      .get();
+  
+  if (userDoc.exists) {
+    List<String> usernames = [username];
+    _usernameStream.add(usernames);
+  } else {
+    // ignore: use_build_context_synchronously
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('No user found with the username $username'),
+      ),
+    );
+  }
+}
+
+
 @override
 Widget build(BuildContext context) {
   return Scaffold(
@@ -157,37 +177,23 @@ Widget build(BuildContext context) {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _searchController,
+              onSubmitted: (String value) async {
+                // Perform the search when Enter key is pressed
+                await _searchByUsername(value);
+              },
               decoration: InputDecoration(
                 labelText: "Search for a username",
-                labelStyle: const TextStyle(
-                    color: Colors.white, fontFamily: 'DNSans'),
+                labelStyle: const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                 suffixIcon: IconButton(
                   onPressed: () async {
                     // add the searched username to a list to generate the profile list
-                    String username = _searchController.text;
-                    DocumentSnapshot userDoc = await FirebaseFirestore
-                        .instance
-                        .collection('users')
-                        .doc(username)
-                        .get();
-                    if (userDoc.exists) {
-                    List<String> usernames = [_searchController.text];
-                    _usernameStream.add(usernames);
-                    } else {
-                      // ignore: use_build_context_synchronously
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                              'No user found with the username $username'),
-                        ),
-                      );
-                    } 
+                    await _searchByUsername(_searchController.text);
                   },
                   icon: const Icon(Icons.search, color: Colors.white),
                 ),
               ),
               style: const TextStyle(color: Colors.white),
-            ),
+            )
           ),
           // Generate searched user profile list
           StreamBuilder<List<String>>(
