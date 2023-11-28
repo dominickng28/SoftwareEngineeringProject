@@ -37,12 +37,12 @@ class _MyScreenState extends State<WordsScreen> {
   late DateTime _nextRefreshTime;
   late Duration durationUntilNextRefresh = Duration(); 
 
-  List<String> words = ['DIY', 'Biking', 'Smile', 'Run']; // STORES WORDS
+  List<String> words = ['Cook', 'Biking', 'Draw', 'Run']; // STORES WORDS
   List<String> wordImages = [
-    'chris.jpg', 
-    'chris.jpg', 
-    'chris.jpg', 
-    'chris.jpg', 
+    'Cooking.jpeg', 
+    'Biking.webp', 
+    'Draw.jpeg', 
+    'Explore.jpeg', 
   ];
   List<bool> checkBoxState = [false, false, false, false]; 
 
@@ -205,9 +205,9 @@ void _setupTimer() {
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(18.0),
                   child: Image.asset(
-                    'lib/assets/chris.jpg',
-                    width: 60.0,
-                    height: 60.0,
+                    'lib/assets/${wordImages[i]}',
+                    width: 93.0,
+                    height: 93.0,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -218,7 +218,7 @@ void _setupTimer() {
                     style: const TextStyle(
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
+                      fontSize: 26.0,
                       color: Colors.white)), 
 
                 // CAMERA ICON       
@@ -244,20 +244,20 @@ void _setupTimer() {
 
           // Scrollable Row of Rectangular Photos
           SizedBox(
-            height: 150.0, // Adjust the height as needed
+            height: 160.0, // Adjust the height as needed
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: 10,
+              itemCount: 4,
               itemBuilder: (context, index) {
                 return Container(
                   margin: EdgeInsets.only(
                     left: index == 0 ? 0.0 : 8.0,
                   ),
-                  width: 200.0,
+                  width: 230.0,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
-                    child: Image.network(
-                      'https://source.unsplash.com/200x150/?random=${index + 4}',
+                    child: Image.asset(
+                    'lib/assets/${wordImages[index]}',
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -271,7 +271,7 @@ void _setupTimer() {
             margin: const EdgeInsets.all(12.0),
             child: Text(
               'Time Left: ${_formatDuration(durationUntilNextRefresh)}',
-              style: const TextStyle(fontSize: 16.0, color: Colors.white),
+              style: const TextStyle(fontSize: 20.0, color: Colors.white,fontFamily: "DNSans"),
             ),
           ),
         ],
