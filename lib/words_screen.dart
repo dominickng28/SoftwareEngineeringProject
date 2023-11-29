@@ -202,16 +202,29 @@ void _setupTimer() {
 
               child: ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(18.0),
-                  child: Image.asset(
-                    'lib/assets/${wordImages[i]}',
-                    width: 93.0,
-                    height: 93.0,
-                    fit: BoxFit.cover,
-                  ),
+                leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Checkbox(
+                    value: checkBoxState[i], 
+                      onChanged: (value) { 
+                        setState(() {
+                          checkBoxState[i] = value!; 
+                        });
+                      }
+                    ), 
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(18.0),
+                      child: Image.asset(
+                        'lib/assets/${wordImages[i]}',
+                        width: 93.0,
+                        height: 93.0,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
                 ),
-
+                
                 // ACTUAL WORD
                 title: Text(
                     words[i],
