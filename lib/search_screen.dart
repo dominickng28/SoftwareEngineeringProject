@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'profile_screen.dart';
 import 'friend_service.dart';
 import 'user_data.dart';
 import 'friend.dart';
+import 'post.dart';
+import 'user_data.dart';
+import 'home_feed.dart';
+import 'dart:async';
 
 class MySearch extends StatefulWidget {
   const MySearch({super.key, required this.title});
@@ -18,9 +21,59 @@ class MySearch extends StatefulWidget {
 class _MySearchState extends State<MySearch> {
   final TextEditingController _searchController = TextEditingController();
   final FriendService _friendService = FriendService();
+  final UserData userData = UserData(FirebaseFirestore.instance);
+  final StreamController<List<String>> _usernameStream = StreamController<List<String>>();
+  // posts list for "the rest of the world" portion
+  List<Post> posts = [];
 
+  @override
+  void initState() {
+    super.initState();
+    fetchMostLikedPostData();
+  }
 
-Widget _buildRandomUserGrid() {
+StreamController<List<String>> usernameStreamController = StreamController<List<String>>();
+@override
+void dispose() {
+  usernameStreamController.close();
+  super.dispose();
+}
+
+void fetchMostLikedPostData() async {
+    // Fetch friends list
+    await userData.populateFriendsList();
+    List<String>? userAndFriendList = UserData.friends;
+
+    // Add the current user's username to the list
+    userAndFriendList?.add(UserData.userName);
+    // Access Firestore instance
+    final firestoreInstance = FirebaseFirestore.instance;
+
+    // Fetch most liked posts
+    QuerySnapshot querySnapshot = await firestoreInstance
+        .collection('posts')
+        .where('username', whereNotIn: userAndFriendList)
+        .limit(12)
+        .get();
+
+    // Convert each document to a Post object and add it to the posts list
+    List<Post> mostLikedPostData = querySnapshot.docs
+        .map((doc) => Post.fromFirestore(doc, doc.id))
+        .toList();
+
+    // Sort posts by timestamp
+    mostLikedPostData.sort((a, b) => b.date.compareTo(a.date));
+    if (mounted) {
+      setState(() {
+        posts = mostLikedPostData;
+      });
+    }
+  }
+
+Widget _buildpostGrid(List<Post> postList) {
+    if (postList.isEmpty) {
+    return const SizedBox.shrink(); // Returns nothing if postList is empty
+  }
   return GridView.builder(
     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 3,
@@ -29,13 +82,26 @@ Widget _buildRandomUserGrid() {
     ),
     shrinkWrap: true,
     physics: const NeverScrollableScrollPhysics(),
-    itemCount: 12,  // YOU CAN ADJUST THE NUMBER OF ITEMS IN THE GRID
+    itemCount: postList.length,
     itemBuilder: (context, index) {
       return GestureDetector(
+        // Make profile pic a button
         onTap: () {
-          // HANDLE THE CLICK EVENT, E.G., NAVIGATE TO A USER PROFILE PAGE
-          print('Clicked on random user profile $index');
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return Dialog(
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width *
+                      0.8, // Set the width to 80% of screen width
+                  child:
+                      PostCard(post: postList[index]),
+                ),
+              );
+            },
+          );
         },
+        //Container for the post list
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
@@ -46,11 +112,19 @@ Widget _buildRandomUserGrid() {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
-            child: Image.network(
-              'https://firebasestorage.googleapis.com/v0/b/live-4-you.appspot.com/o/pfp2.jpeg?alt=media&token=fb4ea6b5-29d1-441d-a026-d201fd798dd7',
+            child: Image.network(postList[index].imageUrl,
               width: 60.0,
               height: 60.0,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                // Return a local asset image if there's an error
+                return Image.asset(
+                  'lib/assets/chris.jpg', 
+                  width: 60.0,
+                  height: 60.0,
+                  fit: BoxFit.cover,
+                );
+              },
             ),
           ),
         ),
@@ -59,309 +133,416 @@ Widget _buildRandomUserGrid() {
   );
 }
 
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Search',
-          style: TextStyle(
-            color: Color.fromARGB(248, 255, 255, 255),
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-          ),
-        ),
-        backgroundColor: const Color.fromARGB(251, 0, 0, 0),
-        centerTitle: true,
+Future<void> _searchByUsername(String username) async {
+  DocumentSnapshot userDoc = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(username)
+      .get();
+  
+  if (userDoc.exists) {
+    List<String> usernames = [username];
+    _usernameStream.add(usernames);
+  } else {
+    // ignore: use_build_context_synchronously
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('No user found with the username $username'),
       ),
-      backgroundColor: const Color.fromARGB(248, 0, 0, 0),
-      
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  labelText: "Search for a username",
-                  labelStyle: const TextStyle(
-                      color: Colors.white, fontFamily: 'DNSans'),
-                  suffixIcon: IconButton(
-                    onPressed: () async {
-                      String username = _searchController.text;
-                      DocumentSnapshot userDoc = await FirebaseFirestore
-                          .instance
-                          .collection('users')
-                          .doc(username)
-                          .get();
-                      if (userDoc.exists) {
-                        // ignore: use_build_context_synchronously
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MyUserProfilePage(
-                              title: 'User Profile',
-                              profileUserName: username,
-                            ),
-                          ),
-                        ); 
-                      } else {
-                        // ignore: use_build_context_synchronously
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                'No user found with the username $username'),
-                          ),
-                        );
-                      }
-                    },
-                    icon: const Icon(Icons.search, color: Colors.white),
-                  ),
-                ),
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-            // WIP
-            // TO ADD THE PROFILE LIST THING
-            
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                'Friend Requests',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  fontFamily: 'DNSans',
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            StreamBuilder<List<String>>(
-              stream: _friendService.receivedFriendRequestsStream(UserData.userName),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<String> friendRequests = snapshot.data!;
-                if (friendRequests.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'No Friend Requests',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          fontFamily: 'DNSans',
-                          color: Color.fromARGB(115, 255, 255, 255),
-                        ),
-                      ),
-                    );
-                  }  
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: friendRequests.length,
-                    itemBuilder: (context, index) {
-                      DocumentReference userDoc = FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(friendRequests[index]);
-                      ImageProvider imageProvider;
+    );
+  }
+}
 
-                      return StreamBuilder<DocumentSnapshot>(
-                        stream: userDoc.snapshots(),
-                        builder: (context, userSnapshot) {
-                          if (userSnapshot.hasData) {
-                            var userFriend = userSnapshot.data!.data() as Map<String, dynamic>;
-                            var profilePicUrl = (userFriend['profile_picture'] ?? '').isEmpty ? 
-                            'lib/assets/default-user.jpg' : userFriend['profile_picture'];
-                            if (profilePicUrl == 'lib/assets/default-user.jpg') {
-                              imageProvider = AssetImage(profilePicUrl);
-                            } else {
-                              imageProvider = NetworkImage(profilePicUrl);
-                            }
-                            
-                            return ListTile(
-                              contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 16.0),
-                              leading: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => MyUserProfilePage(
-                                        title: 'User Profile',
-                                        profileUserName: friendRequests[index],
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                  child: SizedBox(
-                                    width: 60.0,
-                                    height: 60.0,
-                                    child: Image(
-                                      image: imageProvider,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                )
-                                ),
-                              title: Text(friendRequests[index], 
-                                style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                fontFamily: 'DNSans',
-                                color: Colors.white,
-                              ),
-                              ), 
-                              trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.add,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                  onPressed: () {
-                                    _friendService.acceptFriendRequest(
-                                      UserData.userName,
-                                      friendRequests[index]);
-                                  },
-                                ),
-                                const SizedBox(width: 10.0),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.remove,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                  onPressed: () {
-                                    _friendService.cancelFriendRequest(
-                                      UserData.userName,
-                                      friendRequests[index]);
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
 
-                          } else {
-                            return ListTile(
-                              title: Text(friendRequests[index]),
-                              subtitle: const CircularProgressIndicator(),
-                            );
-                          }
-                        },
-                      );
-                    },
-                  );
-                } else if (snapshot.hasError) {
-                  return const Center(
-                      child: Text('Error loading friend requests'));
-                } else {
-                  return const Center(child: CircularProgressIndicator());
-                }
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text(
+        'Search',
+        style: TextStyle(
+          color: Color.fromARGB(248, 255, 255, 255),
+          fontWeight: FontWeight.bold,
+          fontSize: 24,
+        ),
+      ),
+      backgroundColor: const Color.fromARGB(251, 0, 0, 0),
+      centerTitle: true,
+    ),
+    backgroundColor: const Color.fromARGB(248, 0, 0, 0),
+    
+    body: SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _searchController,
+              onSubmitted: (String value) async {
+                // Perform the search when Enter key is pressed
+                await _searchByUsername(value);
               },
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                'Recommended',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  fontFamily: 'DNSans',
-                  color: Colors.white,
+              decoration: InputDecoration(
+                labelText: "Search for a username",
+                labelStyle: const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                suffixIcon: IconButton(
+                  onPressed: () async {
+                    // add the searched username to a list to generate the profile list
+                    await _searchByUsername(_searchController.text);
+                  },
+                  icon: const Icon(Icons.search, color: Colors.white),
                 ),
               ),
+              style: const TextStyle(color: Colors.white),
+            )
+          ),
+          // Generate searched user profile list
+          StreamBuilder<List<String>>(
+            stream: _usernameStream.stream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<String> userSearch = snapshot.data!;
+              if (userSearch.isEmpty) {
+                  return const SizedBox();
+                }  
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: userSearch.length,
+                  itemBuilder: (context, index) {
+                    DocumentReference userDoc = FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(userSearch[index]);
+                    ImageProvider imageProvider;
+                    
+                    return StreamBuilder<DocumentSnapshot>(
+                      stream: userDoc.snapshots(),
+                      builder: (context, userSnapshot) {
+                        // check if user exist
+                        if (userSnapshot.hasData) {
+                          var userFriend = userSnapshot.data!.data() as Map<String, dynamic>;
+                          // get profile pic
+                          var profilePicUrl = (userFriend['profile_picture'] ?? '').isEmpty ? 'lib/assets/default-user.jpg' : userFriend['profile_picture'];
+                          if (profilePicUrl == 'lib/assets/default-user.jpg') {
+                            imageProvider = AssetImage(profilePicUrl);
+                          } else {
+                            imageProvider = NetworkImage(profilePicUrl);
+                          }
+                          
+                          return ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 16.0),
+                            // Make profile pic a button
+                            leading: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MyUserProfilePage(
+                                      title: 'User Profile',
+                                      profileUserName: userSearch[index],
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16.0),
+                                child: SizedBox(
+                                  width: 60.0,
+                                  height: 60.0,
+                                  child: Image(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              )
+                              ),
+                            // user's username
+                            title: Text(userSearch[index], 
+                              style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              fontFamily: 'DNSans',
+                              color: Colors.white,
+                            ),
+                            ), 
+                            // Add friend button
+                            trailing: IconButton(
+                              icon: const Icon(
+                                Icons.add,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                              onPressed: () {
+                                _friendService.sendFriendRequest(UserData.userName, userSearch[index]);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Friend Request Sent')),
+                              );
+                              },
+                            ),
+                        );
+                        } else {
+                          return ListTile(
+                            title: Text(userSearch[index]),
+                            subtitle: const CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    );
+                  },
+                );
+              } else if (snapshot.hasError) {
+                return const Center(
+                    child: Text('Error loading user'));
+              } else {
+                return const SizedBox();
+              }
+            },
+          ),
+
+          //Generate Friend Request List
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              'Friend Requests',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                fontFamily: 'DNSans',
+                color: Colors.white,
+              ),
             ),
-            //Recommended List WIP
-            StreamBuilder<List<String>>(
-              stream: _friendService.friendsOfFriendsStream(UserData.userName),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Text(
-                    'No Recommendations',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      fontFamily: 'DNSans',
-                      color: Color.fromARGB(115, 255, 255, 255),
-                    ),
-                  );
-                } else {
-                  List<String> friendsFriends = snapshot.data!;
-                  if (friendsFriends.isEmpty) {
-                    return const Text(
-                      'No Recommendations',
+          ),
+          StreamBuilder<List<String>>(
+            stream: _friendService.receivedFriendRequestsStream(UserData.userName),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<String> friendRequests = snapshot.data!;
+              if (friendRequests.isEmpty) {
+                  // if no friends
+                  return const Center(
+                    child: Text(
+                      'No Friend Requests',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                         fontFamily: 'DNSans',
                         color: Color.fromARGB(115, 255, 255, 255),
                       ),
-                    );
-                  }
-
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: friendsFriends.length,
-                    itemBuilder: (context, index) {
-                      DocumentReference userDoc = FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(friendsFriends[index]);
-                      ImageProvider imageProviderRecommended;
-
-                      return StreamBuilder<DocumentSnapshot>(
-                        stream: userDoc.snapshots(),
-                        builder: (context, userSnapshot) {
-                          if (userSnapshot.hasData) {
-                            var userFriend = userSnapshot.data!.data() as Map<String, dynamic>;
-                            var profilePicUrl = (userFriend['profile_picture'] ?? '').isEmpty
-                                ? 'lib/assets/default-user.jpg'
-                                : userFriend['profile_picture'];
-                            if (profilePicUrl == 'lib/assets/default-user.jpg') {
-                              imageProviderRecommended = AssetImage(profilePicUrl);
-                            } else {
-                              imageProviderRecommended = NetworkImage(profilePicUrl);
-                            }
-
-                            return ProfileList(
-                              imageProvider: imageProviderRecommended,
-                              userName: friendsFriends[index],
-                            );
-                          }
-                          return const SizedBox(); // Handle case when there's no data yet
-                        },
-                      );
-                    },
+                    ),
                   );
-                }
-              },
-            ),
+                }  
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: friendRequests.length,
+                  itemBuilder: (context, index) {
+                    DocumentReference userDoc = FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(friendRequests[index]);
+                    ImageProvider imageProvider;
+                    
+                    return StreamBuilder<DocumentSnapshot>(
+                      stream: userDoc.snapshots(),
+                      builder: (context, userSnapshot) {
+                        if (userSnapshot.hasData) {
+                          // check if user exists
+                          var userFriend = userSnapshot.data!.data() as Map<String, dynamic>;
+                          // get profile pic
+                          var profilePicUrl = (userFriend['profile_picture'] ?? '').isEmpty ? 'lib/assets/default-user.jpg' : userFriend['profile_picture'];
+                          if (profilePicUrl == 'lib/assets/default-user.jpg') {
+                            imageProvider = AssetImage(profilePicUrl);
+                          } else {
+                            imageProvider = NetworkImage(profilePicUrl);
+                          }
+                          
+                          return ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 16.0),
+                            // Make Profile Pic a button
+                            leading: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MyUserProfilePage(
+                                      title: 'User Profile',
+                                      profileUserName: friendRequests[index],
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16.0),
+                                child: SizedBox(
+                                  width: 60.0,
+                                  height: 60.0,
+                                  child: Image(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              )
+                              ),
+                            // user's username
+                            title: Text(friendRequests[index], 
+                              style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              fontFamily: 'DNSans',
+                              color: Colors.white,
+                            ),
+                            ), 
+                            trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Accept friend button
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                                onPressed: () {
+                                  _friendService.acceptFriendRequest(
+                                    UserData.userName,
+                                    friendRequests[index]);
+                                },
+                              ),
+                              const SizedBox(width: 10.0),
+                              // decline friend button
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.remove,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                                onPressed: () {
+                                  _friendService.cancelFriendRequest(
+                                    UserData.userName,
+                                    friendRequests[index]);
+                                },
+                              ),
+                            ],
+                          ),
+                        );
 
-            const Padding(padding: EdgeInsets.symmetric(vertical: 8.0), 
-              child: Text('The Rest of The World', 
+                        } else {
+                          return ListTile(
+                            title: Text(friendRequests[index]),
+                            subtitle: const CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    );
+                  },
+                );
+              } else if (snapshot.hasError) {
+                return const Center(
+                    child: Text('Error loading friend requests'));
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+          //Recommended text
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              'Recommended',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
                 fontFamily: 'DNSans',
                 color: Colors.white,
-                ),
               ),
-            ), 
-            _buildRandomUserGrid(), 
-        ],
-      ),
-    ),
+            ),
+          ),
+          //Recommendation List
+          StreamBuilder<List<String>>(
+            stream: _friendService.friendsOfFriendsStream(UserData.userName),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (snapshot.connectionState == ConnectionState.done &&
+                  (!snapshot.hasData || snapshot.data!.isEmpty)) {
+                // If no friends
+                return const Text(
+                  'No Recommendations',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    fontFamily: 'DNSans',
+                    color: Color.fromARGB(115, 255, 255, 255),
+                  ),
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator(); // Display a loading indicator while waiting for data
+              } else if (snapshot.connectionState == ConnectionState.done) {
+                List<String> friendsFriends = snapshot.data!;
 
-  );
-  }
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: friendsFriends.length,
+                  itemBuilder: (context, index) {
+                    DocumentReference userDoc = FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(friendsFriends[index]);
+                    ImageProvider imageProviderRecommended;
+
+                    return StreamBuilder<DocumentSnapshot>(
+                      stream: userDoc.snapshots(),
+                      builder: (context, userSnapshot) {
+                        if (userSnapshot.hasData) {
+                          var userFriend =
+                              userSnapshot.data!.data() as Map<String, dynamic>;
+                          // get Profile Pic
+                          var profilePicUrl = (userFriend['profile_picture'] ?? '').isEmpty
+                                  ? 'lib/assets/default-user.jpg'
+                                  : userFriend['profile_picture'];
+                          if (profilePicUrl == 'lib/assets/default-user.jpg') {
+                            imageProviderRecommended =
+                                AssetImage(profilePicUrl);
+                          } else {
+                            imageProviderRecommended =
+                                NetworkImage(profilePicUrl);
+                          }
+                          // Generate the Recommended Profile List
+                          return ProfileList(
+                            imageProvider: imageProviderRecommended,
+                            userName: friendsFriends[index],
+                          );
+                        }
+                        return const SizedBox(); // Handle case when there's no data yet
+                      },
+                    );
+                  },
+                );
+              }
+              else {
+                return const SizedBox();
+              }
+            },
+          ),
+          // The rest of the world text
+          const Padding(padding: EdgeInsets.symmetric(vertical: 8.0), 
+            child: Text('The Rest of The World', 
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              fontFamily: 'DNSans',
+              color: Colors.white,
+              ),
+            ),
+          ), 
+          //Global Post
+        _buildpostGrid(posts), 
+      ],
+    ),
+  ),
+
+);
+}
 }
 
 class ProfileList extends StatelessWidget {
@@ -398,6 +579,7 @@ class ProfileList extends StatelessWidget {
           horizontal: 16.0,
           vertical: 16.0,
         ),
+        // Make Profile Pic a button
         leading: GestureDetector(
           onTap: () {
             Navigator.push(
@@ -422,6 +604,7 @@ class ProfileList extends StatelessWidget {
             ),
           ),
         ),
+        // User's username text
         title: Text(
           userName,
           style: const TextStyle(
@@ -431,6 +614,7 @@ class ProfileList extends StatelessWidget {
             color: Colors.white,
           ),
         ),
+        // Send Friend Request button
         trailing: IconButton(
           icon: const Icon(
             Icons.add,

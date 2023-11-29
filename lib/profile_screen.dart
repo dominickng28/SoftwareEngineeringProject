@@ -11,7 +11,7 @@ import 'home_feed.dart';
 import 'camera_screen.dart';
 import 'friend_service.dart';
 import 'friends_screen.dart';
-import 'search.dart';
+import 'search_screen.dart';
 import 'edit_profile_page.dart';
 
 class MyUserProfilePage extends StatefulWidget {
