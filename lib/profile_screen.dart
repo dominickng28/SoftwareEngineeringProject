@@ -150,12 +150,14 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(248, 0, 0, 0),
+        backgroundColor: Colors.black,
         title: Text(
           title,
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
+            fontFamily: "DNSans",
+            color: Colors.white,
           ),
         ),
         centerTitle: true,
