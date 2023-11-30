@@ -211,15 +211,7 @@ void _setupTimer() {
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                 leading: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Checkbox(
-                    value: checkBoxState[i], 
-                      onChanged: (value) { 
-                        setState(() {
-                          checkBoxState[i] = value!; 
-                        });
-                      }
-                    ), 
+                  children: [ 
                     ClipRRect(
                       borderRadius: BorderRadius.circular(18.0),
                       child: Image.asset(
@@ -229,18 +221,31 @@ void _setupTimer() {
                         fit: BoxFit.cover,
                       ),
                     ),
-                  ],
-                ),
-                
-                // ACTUAL WORD
-                title: Text(
+
+                    const SizedBox(width: 15.0), 
+                    
+                    Text(
                     words[i],
                     style: const TextStyle(
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.bold,
                       fontSize: 26.0,
-                      color: Colors.white)), 
+                      color: Colors.white
+                      )
+                    ),
 
+                    Checkbox(
+                    value: checkBoxState[i], 
+                      onChanged: (value) { 
+                        setState(() {
+                          checkBoxState[i] = value!; 
+                        });
+                      }
+                    ),
+
+                  ],
+                ),
+                
                 // CAMERA ICON       
                 trailing: cameraInitialized
                     ? IconButton(
@@ -261,6 +266,8 @@ void _setupTimer() {
                     ),
               ),
             ),
+
+          const SizedBox(height: 7.5), 
 
           // Scrollable Row of Rectangular Photos
           SizedBox(
@@ -291,7 +298,10 @@ void _setupTimer() {
             margin: const EdgeInsets.all(12.0),
             child: Text(
               'Time Left: ${_formatDuration(durationUntilNextRefresh)}',
-              style: const TextStyle(fontSize: 20.0, color: Colors.white,fontFamily: "DNSans"),
+              style: const TextStyle(
+                fontSize: 20.0, 
+                color: Colors.white, 
+                fontFamily: "DNSans"),
             ),
           ),
         ],
@@ -300,7 +310,6 @@ void _setupTimer() {
   }
 
   // CAMERA CODE
-
   _openCamera(int rowNumber) async {
     try {
       if (cameraInitialized) {
