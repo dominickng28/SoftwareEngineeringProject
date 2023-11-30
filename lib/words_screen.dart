@@ -17,7 +17,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -28,7 +27,6 @@ class MyApp extends StatelessWidget {
 
 class WordsScreen extends StatefulWidget {
   const WordsScreen({super.key});
-
   @override
   _MyScreenState createState() => _MyScreenState();
 }
@@ -47,8 +45,7 @@ class _MyScreenState extends State<WordsScreen> {
     'Cooking.jpeg', 
     'Biking.webp', 
     'Draw.jpeg', 
-    'Explore.jpeg', 
-  ];
+    'Explore.jpeg',];
   List<bool> checkBoxState = [false, false, false, false]; 
 
   late CameraController _cameraController; 
