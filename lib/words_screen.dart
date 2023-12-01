@@ -200,6 +200,7 @@ void _setupTimer() {
                   width: 4.0,
                 ),
                 borderRadius: BorderRadius.circular(100.0),
+                color: checkBoxState[i] ? Colors.green : Colors.black, 
               ),
 
               // WORD PICTURE
