@@ -149,7 +149,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     controller: _usernameController,
                     style: TextStyle(color: Colors.white),
-                    maxLines: null,
                     maxLength: 15,
                     decoration: const InputDecoration(
                       hintText: 'Username',
