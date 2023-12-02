@@ -1,6 +1,7 @@
+// ignore: file_names
 import 'dart:math';
 
-List<String> Activities = [
+List<String> activities = [
   'DIY',
   'Biking',
   'Smile',
@@ -47,7 +48,7 @@ List<String> Activities = [
   'Trade',
 ];
 
-List<String> Activities2 = [
+List<String> activities2 = [
   'DIY',
   'Biking',
   'Smile',
@@ -56,14 +57,15 @@ List<String> Activities2 = [
 // GRABS RANDOM ELEMENT FROM LIST
 
 T getRandomElement<T>(List<T> list) {
-    final random = new Random();
+    final random = Random();
     var i = random.nextInt(list.length);
     return list[i];
 }
 
 void main() {
     // var list = Activities;
-    var list = Activities2;
+    var list = activities2;
     var element = getRandomElement(list);
+    // ignore: avoid_print
     print(element);  
 }

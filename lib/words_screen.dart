@@ -1,9 +1,10 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:async';
 // import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:live4you/Activities.dart';
 
 // import 'home_feed.dart';
 import 'search.dart';
@@ -11,19 +12,21 @@ import 'profile_screen.dart';
 import 'camera_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: WordsScreen(),
     );
   }
 }
 
 class WordsScreen extends StatefulWidget {
+  const WordsScreen({super.key});
   @override
   _MyScreenState createState() => _MyScreenState();
 }
@@ -35,15 +38,14 @@ class _MyScreenState extends State<WordsScreen> {
 
   late Timer _timer;
   late DateTime _nextRefreshTime;
-  late Duration durationUntilNextRefresh = Duration(); 
+  late Duration durationUntilNextRefresh = const Duration(); 
 
   List<String> words = ['Cook', 'Biking', 'Draw', 'Run']; // STORES WORDS
   List<String> wordImages = [
     'Cooking.jpeg', 
     'Biking.webp', 
     'Draw.jpeg', 
-    'Explore.jpeg', 
-  ];
+    'Explore.jpeg',];
   List<bool> checkBoxState = [false, false, false, false]; 
 
   late CameraController _cameraController; 
@@ -58,6 +60,7 @@ class _MyScreenState extends State<WordsScreen> {
   _initializeCamera() async {
   try { 
     cameras = await availableCameras();
+    // ignore: avoid_print
     print("Cameras: $cameras"); // Add this line to check the cameras
     if (cameras.isNotEmpty) {
       _cameraController = CameraController(cameras.first, ResolutionPreset.high);
@@ -67,6 +70,7 @@ class _MyScreenState extends State<WordsScreen> {
       });
     }
   } catch(e) { 
+    // ignore: avoid_print
     print("Error getting camera: $e"); 
   }
 }
@@ -138,7 +142,7 @@ void _setupTimer() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MyUserProfilePage(
+        builder: (context) => const MyUserProfilePage(
           title: 'User Profile',
           // Add any necessary parameters for the profile screen
         ),
@@ -196,31 +200,50 @@ void _setupTimer() {
                   width: 4.0,
                 ),
                 borderRadius: BorderRadius.circular(100.0),
+                color: checkBoxState[i] ? Colors.green : Colors.black, 
               ),
 
               // WORD PICTURE
 
               child: ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(18.0),
-                  child: Image.asset(
-                    'lib/assets/${wordImages[i]}',
-                    width: 93.0,
-                    height: 93.0,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [ 
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(18.0),
+                      child: Image.asset(
+                        'lib/assets/${wordImages[i]}',
+                        width: 93.0,
+                        height: 93.0,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
 
-                // ACTUAL WORD
-                title: Text(
+                    const SizedBox(width: 15.0), 
+                    
+                    Text(
                     words[i],
                     style: const TextStyle(
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.bold,
                       fontSize: 26.0,
-                      color: Colors.white)), 
+                      color: Colors.white
+                      )
+                    ),
 
+                    Checkbox(
+                    value: checkBoxState[i], 
+                      onChanged: (value) { 
+                        setState(() {
+                          checkBoxState[i] = value!; 
+                        });
+                      }
+                    ),
+
+                  ],
+                ),
+                
                 // CAMERA ICON       
                 trailing: cameraInitialized
                     ? IconButton(
@@ -241,6 +264,8 @@ void _setupTimer() {
                     ),
               ),
             ),
+
+          const SizedBox(height: 7.5), 
 
           // Scrollable Row of Rectangular Photos
           SizedBox(
@@ -271,7 +296,10 @@ void _setupTimer() {
             margin: const EdgeInsets.all(12.0),
             child: Text(
               'Time Left: ${_formatDuration(durationUntilNextRefresh)}',
-              style: const TextStyle(fontSize: 20.0, color: Colors.white,fontFamily: "DNSans"),
+              style: const TextStyle(
+                fontSize: 20.0, 
+                color: Colors.white, 
+                fontFamily: "DNSans"),
             ),
           ),
         ],
@@ -280,7 +308,6 @@ void _setupTimer() {
   }
 
   // CAMERA CODE
-
   _openCamera(int rowNumber) async {
     try {
       if (cameraInitialized) {
@@ -294,12 +321,15 @@ void _setupTimer() {
         );
 
         if (result != null) {
+          // ignore: avoid_print
           print('Image captured for Row $rowNumber: $result');
         }
       } else {
+        // ignore: avoid_print
         print('Camera not initialized.');
       }
     } catch (e) {
+      // ignore: avoid_print
       print('Error opening camera: $e');
     }
   }

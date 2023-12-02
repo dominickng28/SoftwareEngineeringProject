@@ -37,6 +37,8 @@ class _MyFeedTest extends State<MyFeed> {
     bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
     print('isFirstTime: $isFirstTime');
     if (isFirstTime) {
+    // if (true) {
+
       _showWelcomeDialog();
       prefs.setBool('isFirstTime', false);
     }
@@ -47,25 +49,35 @@ class _MyFeedTest extends State<MyFeed> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
+          // iconPadding: EdgeInsets.all(10.0),
+          contentPadding: EdgeInsets.all(5.0),
+          // insetPadding: EdgeInsets.zero,
+          // iconPadding: EdgeInsets.zero, 
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
+            borderRadius: BorderRadius.circular(10.0),
+            // borderRadius: BorderRadius.zero,
           ),
+
           content: Container(
+            padding: EdgeInsets.all(20.0),
             decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(15.0),
-              color: Colors.white, // Customize the background color
+              color: Colors.black, // Customize the background color
             ),
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                   children: [
-                    Image.asset(
-                      'Live4youLine.png',
-                      height: 50,
-                      width: 50,
-                    ),
+                    // Image.asset(
+                    //   'Live4youLine.png',
+                    //   height: 5,
+                    //   width: 5,
+                    // ),
                     SizedBox(width: 10),
                     Text(
                       'Welcome to Live4You!',
@@ -73,21 +85,32 @@ class _MyFeedTest extends State<MyFeed> {
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'DMSans',
+                        color: Colors.white,
                       ),
                     ),
                   ],
                 ),
                 SizedBox(height: 10),
+
                 Text(
                   "Live4You is not just another social media app; it's a platform designed to inspire you to live an active and fulfilling life. Each week, we present you with four exciting words/activities. Your mission: turn these words into actions! 🚴‍♂️🏞️\n\nHere's how it works:\n1. Every Monday, discover four new words of the week.\n2. Embark on exciting activities that align with the weekly words. \n3. Capture the moments by sharing photos of your completed activites.\n4. Personalize your profile, connect with friends, and share your journey through your post.\n\nLet Live4You be your guide to a more vibrant and active lifestyle! 🌟",
-                  style: TextStyle(fontSize: 16, fontFamily: 'DNSans'),
+                  style: TextStyle(
+                    fontSize: 18, 
+                    fontFamily: 'DNSans', 
+                    color: Colors.white,),
                 ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Explore'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(Colors.black),  
+              ),
+              child: Text(
+                'Explore', 
+                ),
+
               onPressed: () {
                 Navigator.of(context).pop();
               },
