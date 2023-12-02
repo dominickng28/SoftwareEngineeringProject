@@ -28,8 +28,8 @@ class _CameraScreenState extends State<CameraScreen> {
   String? imagePath;
 
   // List of options for the carousel
-  final List<String> options = ["DIY", "Biking", "Smile", "Run"];
-  String selectedOption = "DIY";
+  final List<String> options = ["Cook", "Biking", "Draw", "Run"];
+  String selectedOption = "Cook";
 
   @override
   void initState() {

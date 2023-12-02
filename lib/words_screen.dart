@@ -1,9 +1,10 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:async';
 // import 'dart:ui';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:live4you/Activities.dart';
 
 // import 'home_feed.dart';
 import 'search.dart';
@@ -11,19 +12,21 @@ import 'profile_screen.dart';
 import 'camera_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: WordsScreen(),
     );
   }
 }
 
 class WordsScreen extends StatefulWidget {
+  const WordsScreen({super.key});
   @override
   _MyScreenState createState() => _MyScreenState();
 }
@@ -138,7 +141,7 @@ class _MyScreenState extends State<WordsScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MyUserProfilePage(
+        builder: (context) => const MyUserProfilePage(
           title: 'User Profile',
           // Add any necessary parameters for the profile screen
         ),
@@ -240,17 +243,25 @@ class _MyScreenState extends State<WordsScreen> {
                         ),
                 ),
               ),
+          const SizedBox(height: 7.5), 
 
-            // Scrollable Row of Rectangular Photos
-            SizedBox(
-              height: 160.0, // Adjust the height as needed
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: EdgeInsets.only(
-                      left: index == 0 ? 0.0 : 8.0,
+          // Scrollable Row of Rectangular Photos
+          SizedBox(
+            height: 160.0, // Adjust the height as needed
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 4,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: EdgeInsets.only(
+                    left: index == 0 ? 0.0 : 8.0,
+                  ),
+                  width: 230.0,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image.asset(
+                    'lib/assets/${wordImages[index]}',
+                      fit: BoxFit.cover,
                     ),
                     width: 230.0,
                     child: ClipRRect(
@@ -281,7 +292,6 @@ class _MyScreenState extends State<WordsScreen> {
   }
 
   // CAMERA CODE
-
   _openCamera(int rowNumber) async {
     try {
       if (cameraInitialized) {
@@ -295,12 +305,15 @@ class _MyScreenState extends State<WordsScreen> {
         );
 
         if (result != null) {
+          // ignore: avoid_print
           print('Image captured for Row $rowNumber: $result');
         }
       } else {
+        // ignore: avoid_print
         print('Camera not initialized.');
       }
     } catch (e) {
+      // ignore: avoid_print
       print('Error opening camera: $e');
     }
   }

@@ -135,6 +135,7 @@ Stream<List<String>> friendsOfFriendsStream(String username) async* {
   for (String friend in friends) {
     List<String> friendFriends = await getFriends(friend);
     if (friendFriends.isNotEmpty) {
+      friendFriends.remove(username);
       friendFriends = friendFriends.toSet().toList(); // Remove duplicates
       friendFriends.shuffle(); // Shuffle the list of friendFriends
       yield friendFriends.take(4).toList(); // Return only 4 random friends
