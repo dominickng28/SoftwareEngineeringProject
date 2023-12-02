@@ -120,8 +120,8 @@ class MySearch extends StatefulWidget {
                         ),
                         onPressed: () {
                           _friendService.cancelFriendRequest(
-                            UserData.userName,
-                            friendRequests[index]);
+                            friendRequests[index],
+                            UserData.userName);
                         },
                       ),
                     ],
