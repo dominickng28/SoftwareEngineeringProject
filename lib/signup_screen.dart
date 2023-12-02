@@ -119,12 +119,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Color.fromARGB(255, 255, 255, 255)),
+                  border: Border.all(color: const Color.fromARGB(255, 255, 255, 255)),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextFormField(
                   controller: _emailController,
-                  style: TextStyle(color: Colors.white,fontFamily: 'DNSans'),
+                  style: const TextStyle(color: Colors.white,fontFamily: 'DNSans'),
                   decoration: const InputDecoration(
                     hintText: 'Email',
                     hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
@@ -138,14 +138,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Color.fromARGB(255, 255, 255, 255)),
+                  border: Border.all(color: const Color.fromARGB(255, 255, 255, 255)),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextFormField(
                   maxLengthEnforcement: MaxLengthEnforcement.enforced, controller: _usernameController,
-                  style: TextStyle(color: Colors.white),
-                  maxLines: null,
-                  maxLength: 15,
+                  style: const TextStyle(color: Colors.white),
+                  maxLength: 12,
                   decoration: const InputDecoration(
                     hintText: 'Username',
                     hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),

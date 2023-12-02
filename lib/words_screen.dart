@@ -7,7 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 // import 'home_feed.dart';
-import 'search.dart';
+import 'search_screen.dart';
 import 'profile_screen.dart';
 import 'camera_screen.dart';
 
@@ -131,7 +131,7 @@ void _setupTimer() {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const MySearch(
+        builder: (context) => MySearch(
           title: 'Search',
         ),
       ),

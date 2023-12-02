@@ -3,22 +3,156 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'profile_screen.dart';
 import 'friend_service.dart';
 import 'user_data.dart';
-import 'friend.dart';
 import 'post.dart';
-import 'user_data.dart';
 import 'home_feed.dart';
 import 'dart:async';
 
 class MySearch extends StatefulWidget {
-  const MySearch({super.key, required this.title});
+  MySearch({super.key, required this.title});
+  final FriendService _friendService = FriendService();
 
   final String title;
+
+  Widget buildFriendRequestsSection() {
+  return StreamBuilder<List<String>>(
+    stream: _friendService.receivedFriendRequestsStream(UserData.userName),
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        List<String> friendRequests = snapshot.data!;
+      if (friendRequests.isEmpty) {
+          // if no friends
+          return const Center(
+            child: Text(
+              'No Friend Requests',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                fontFamily: 'DNSans',
+                color: Color.fromARGB(115, 255, 255, 255),
+              ),
+            ),
+          );
+        }  
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: friendRequests.length,
+          itemBuilder: (context, index) {
+            DocumentReference userDoc = FirebaseFirestore.instance
+                .collection('users')
+                .doc(friendRequests[index]);
+            ImageProvider imageProvider;
+            
+            return StreamBuilder<DocumentSnapshot>(
+              stream: userDoc.snapshots(),
+              builder: (context, userSnapshot) {
+                if (userSnapshot.hasData) {
+                  // check if user exists
+                  var userFriend = userSnapshot.data!.data() as Map<String, dynamic>;
+                  // get profile pic
+                  var profilePicUrl = (userFriend['profile_picture'] ?? '').isEmpty ? 'lib/assets/default-user.jpg' : userFriend['profile_picture'];
+                  if (profilePicUrl == 'lib/assets/default-user.jpg') {
+                    imageProvider = AssetImage(profilePicUrl);
+                  } else {
+                    imageProvider = NetworkImage(profilePicUrl);
+                  }
+                  
+                  return ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 16.0),
+                    // Make Profile Pic a button
+                    leading: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyUserProfilePage(
+                              title: 'User Profile',
+                              profileUserName: friendRequests[index],
+                            ),
+                          ),
+                        );
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: SizedBox(
+                          width: 60.0,
+                          height: 60.0,
+                          child: Image(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
+                      ),
+                    // user's username
+                    title: Text(friendRequests[index], 
+                      style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      fontFamily: 'DNSans',
+                      color: Colors.white,
+                    ),
+                    ), 
+                    trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Accept friend button
+                      IconButton(
+                        icon: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                        onPressed: () {
+                          _friendService.acceptFriendRequest(
+                            UserData.userName,
+                            friendRequests[index]);
+                        },
+                      ),
+                      const SizedBox(width: 10.0),
+                      // decline friend button
+                      IconButton(
+                        icon: const Icon(
+                          Icons.remove,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                        onPressed: () {
+                          _friendService.cancelFriendRequest(
+                            UserData.userName,
+                            friendRequests[index]);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+                } else {
+                  return ListTile(
+                    title: Text(friendRequests[index]),
+                    subtitle: const CircularProgressIndicator(),
+                  );
+                }
+              },
+            );
+          },
+        );
+      } else if (snapshot.hasError) {
+        return const Center(
+            child: Text('Error loading friend requests'));
+      } else {
+        return const Center(child: CircularProgressIndicator());
+      }
+    },
+  );
+  }
 
   @override
   State<MySearch> createState() => _MySearchState();
 }
 
 class _MySearchState extends State<MySearch> {
+  final MySearch mySearch = MySearch(title: 'Title');
   final TextEditingController _searchController = TextEditingController();
   final FriendService _friendService = FriendService();
   final UserData userData = UserData(FirebaseFirestore.instance);
@@ -151,6 +285,7 @@ Future<void> _searchByUsername(String username) async {
     );
   }
 }
+
 
 
 @override
@@ -312,138 +447,7 @@ Widget build(BuildContext context) {
               ),
             ),
           ),
-          StreamBuilder<List<String>>(
-            stream: _friendService.receivedFriendRequestsStream(UserData.userName),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List<String> friendRequests = snapshot.data!;
-              if (friendRequests.isEmpty) {
-                  // if no friends
-                  return const Center(
-                    child: Text(
-                      'No Friend Requests',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        fontFamily: 'DNSans',
-                        color: Color.fromARGB(115, 255, 255, 255),
-                      ),
-                    ),
-                  );
-                }  
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: friendRequests.length,
-                  itemBuilder: (context, index) {
-                    DocumentReference userDoc = FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(friendRequests[index]);
-                    ImageProvider imageProvider;
-                    
-                    return StreamBuilder<DocumentSnapshot>(
-                      stream: userDoc.snapshots(),
-                      builder: (context, userSnapshot) {
-                        if (userSnapshot.hasData) {
-                          // check if user exists
-                          var userFriend = userSnapshot.data!.data() as Map<String, dynamic>;
-                          // get profile pic
-                          var profilePicUrl = (userFriend['profile_picture'] ?? '').isEmpty ? 'lib/assets/default-user.jpg' : userFriend['profile_picture'];
-                          if (profilePicUrl == 'lib/assets/default-user.jpg') {
-                            imageProvider = AssetImage(profilePicUrl);
-                          } else {
-                            imageProvider = NetworkImage(profilePicUrl);
-                          }
-                          
-                          return ListTile(
-                            contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 16.0),
-                            // Make Profile Pic a button
-                            leading: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MyUserProfilePage(
-                                      title: 'User Profile',
-                                      profileUserName: friendRequests[index],
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16.0),
-                                child: SizedBox(
-                                  width: 60.0,
-                                  height: 60.0,
-                                  child: Image(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
-                              ),
-                            // user's username
-                            title: Text(friendRequests[index], 
-                              style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              fontFamily: 'DNSans',
-                              color: Colors.white,
-                            ),
-                            ), 
-                            trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Accept friend button
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: 30,
-                                ),
-                                onPressed: () {
-                                  _friendService.acceptFriendRequest(
-                                    UserData.userName,
-                                    friendRequests[index]);
-                                },
-                              ),
-                              const SizedBox(width: 10.0),
-                              // decline friend button
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.remove,
-                                  color: Colors.white,
-                                  size: 30,
-                                ),
-                                onPressed: () {
-                                  _friendService.cancelFriendRequest(
-                                    UserData.userName,
-                                    friendRequests[index]);
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-
-                        } else {
-                          return ListTile(
-                            title: Text(friendRequests[index]),
-                            subtitle: const CircularProgressIndicator(),
-                          );
-                        }
-                      },
-                    );
-                  },
-                );
-              } else if (snapshot.hasError) {
-                return const Center(
-                    child: Text('Error loading friend requests'));
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
+          mySearch.buildFriendRequestsSection(),
           //Recommended text
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -543,6 +547,7 @@ Widget build(BuildContext context) {
 
 );
 }
+
 }
 
 class ProfileList extends StatelessWidget {
