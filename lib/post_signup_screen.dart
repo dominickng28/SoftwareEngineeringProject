@@ -207,6 +207,7 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
                   child: TextFormField(
                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     controller: _bioController,
+                    maxLength: 1000,
                     style: const TextStyle(
                         color: Colors.white, fontFamily: 'DNSans'),
                     maxLines: null,

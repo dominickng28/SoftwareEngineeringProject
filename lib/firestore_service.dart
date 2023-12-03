@@ -20,7 +20,7 @@ class FirestoreService {
       'friends': emptyarray,
       'post_list': emptyarray,
       'profile_picture': "",
-      'recieved_requests': emptyarray,
+      'received_requests': emptyarray,
       'sent_requests': emptyarray,
       'userbio': "",
     });
