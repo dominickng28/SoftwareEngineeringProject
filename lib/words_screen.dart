@@ -258,19 +258,15 @@ class _MyScreenState extends State<WordsScreen> {
                   ),
                   width: 230.0,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: SizedBox(
+                    width: 230.0,
                     child: Image.asset(
-                    'lib/assets/${wordImages[index]}',
+                      'lib/assets/${wordImages[index]}',
                       fit: BoxFit.cover,
                     ),
-                    width: 230.0,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: Image.asset(
-                        'lib/assets/${wordImages[index]}',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                  ),
+                )
                   );
                 },
               ),
