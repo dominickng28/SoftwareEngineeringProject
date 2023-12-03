@@ -21,7 +21,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
     getCountOfFriendList();    
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Notifications',
           style: TextStyle(
             color: Color.fromARGB(255, 255, 255, 255),
@@ -74,7 +74,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
           buildNotificationSection(
             title: 'Likes',
             notificationCount: likesNotificationCount,
-            titleTextStyle: TextStyle(
+            titleTextStyle: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
               decoration: TextDecoration.underline,
@@ -94,16 +94,6 @@ Future<void> getCountOfFriendList() async {
   });
 }
 
-ImageProvider _buildImageProvider(String profilePicUrl) {
-  ImageProvider imageProvider;
-  if (profilePicUrl == 'lib/assets/default-user.jpg') {
-    imageProvider = AssetImage(profilePicUrl);
-  } else {
-    imageProvider = NetworkImage(profilePicUrl);
-  }
-  return imageProvider;
-}
-
   Widget buildNotificationSection({
     required String title,
     required int notificationCount,
@@ -118,7 +108,7 @@ ImageProvider _buildImageProvider(String profilePicUrl) {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '$title',
+                title,
                 style: titleTextStyle,
               ),
               GestureDetector(
@@ -126,15 +116,15 @@ ImageProvider _buildImageProvider(String profilePicUrl) {
                   showNotificationDropDown(title);
                 },
                 child: Container(
-                  padding: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 255, 255, 255),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     '$notificationCount',
-                    style: TextStyle(
-                      color: const Color.fromARGB(255, 0, 0, 0),
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 0),
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                     ),
@@ -144,9 +134,9 @@ ImageProvider _buildImageProvider(String profilePicUrl) {
             ],
           ),
         ),
-        Divider(
+        const Divider(
           height: 4,
-          color: const Color.fromARGB(255, 255, 255, 255),
+          color: Color.fromARGB(255, 255, 255, 255),
         ),
       ],
     );
@@ -163,8 +153,8 @@ ImageProvider _buildImageProvider(String profilePicUrl) {
 
   Widget buildDropDownContent() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Column(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Remove placeholder text
