@@ -93,7 +93,7 @@ Widget _buildpostGrid(List<Post> postList) {
               return Dialog(
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width *
-                      0.8, // Set the width to 80% of screen width
+                      1.5, // Set the width to 80% of screen width
                   child:
                       PostCard(post: postList[index]),
                 ),
