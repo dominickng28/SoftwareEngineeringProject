@@ -40,7 +40,6 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
   @override
   void initState() {
     super.initState();
-    followerCount = fetchFollowerCount();
     fetchUserData(username: widget.profileUserName);
     fetchUserPostData(username: widget.profileUserName);
   }
@@ -161,13 +160,15 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
           ),
         ),
         centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
 
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             Container(
-              padding: const EdgeInsets.only(top: 0, left: 300),
+              padding: const EdgeInsets.only(top: 0, left: 312),
+              color: Colors.black,
               child: Column(
                 children: <Widget>[
                   Visibility(
@@ -216,18 +217,20 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                               if (userProfile?.receivedRequests
                                       .contains(UserData.userName) ==
                                   true) {
-                                return Colors.white;
+                                return Colors.black;
                               }
                             }
-                            return isFriend ? Colors.white : Colors.white;
+                            return isFriend ? Colors.black : Colors.black;
                           },
                         ),
                       ),
-                      icon: Icon(requestSent
-                          ? Icons.person_outline_rounded
-                          : isFriend
-                              ? Icons.person_remove_rounded
-                              : Icons.person_add_alt_1_rounded),
+                      icon: Icon(
+                          requestSent
+                              ? Icons.person_outline_rounded
+                              : isFriend
+                                  ? Icons.person_remove_rounded
+                                  : Icons.person_add_alt_1_rounded,
+                          color: Colors.white),
                     ),
                   ),
                 ],
@@ -319,7 +322,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const MyFriends(
+                                    builder: (context) => MyFriends(
                                           title: 'Friends',
                                         )),
                               );
@@ -336,7 +339,9 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                           ),
                           SizedBox(width: 8.0),
                           FutureBuilder<int>(
-                            future: followerCount,
+                            future: widget.profileUserName != null
+                                ? fetchFollowerCount(widget.profileUserName!)
+                                : fetchFollowerCount(UserData.userName),
                             builder: (BuildContext context,
                                 AsyncSnapshot<int> snapshot) {
                               if (snapshot.connectionState ==
@@ -453,11 +458,9 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
   }
 }
 
-Future<int> fetchFollowerCount() async {
-  final DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-      .collection('users')
-      .doc(UserData.userName)
-      .get();
+Future<int> fetchFollowerCount(String username) async {
+  final DocumentSnapshot userSnapshot =
+      await FirebaseFirestore.instance.collection('users').doc(username).get();
 
   if (userSnapshot.exists) {
     final userData = userSnapshot.data() as Map<String, dynamic>?;

@@ -32,94 +32,93 @@ class WordsScreen extends StatefulWidget {
 }
 
 class _MyScreenState extends State<WordsScreen> {
-
   late List<CameraDescription> cameras;
   bool cameraInitialized = false;
 
   late Timer _timer;
   late DateTime _nextRefreshTime;
-  late Duration durationUntilNextRefresh = const Duration(); 
+  late Duration durationUntilNextRefresh = Duration();
 
   List<String> words = ['Cook', 'Biking', 'Draw', 'Run']; // STORES WORDS
   List<String> wordImages = [
-    'Cooking.jpeg', 
-    'Biking.webp', 
-    'Draw.jpeg', 
-    'Explore.jpeg',];
-  List<bool> checkBoxState = [false, false, false, false]; 
+    'Cooking.jpeg',
+    'Biking.webp',
+    'Draw.jpeg',
+    'Explore.jpeg',
+  ];
+  List<bool> checkBoxState = [false, false, false, false];
 
-  late CameraController _cameraController; 
+  late CameraController _cameraController;
 
   @override
   void initState() {
     super.initState();
     _initializeCamera();
-    _setupTimer(); 
+    _setupTimer();
   }
 
   _initializeCamera() async {
-  try { 
-    cameras = await availableCameras();
-    // ignore: avoid_print
-    print("Cameras: $cameras"); // Add this line to check the cameras
-    if (cameras.isNotEmpty) {
-      _cameraController = CameraController(cameras.first, ResolutionPreset.high);
-      await _cameraController.initialize();
-      setState(() {
-        cameraInitialized = true;
-      });
+    try {
+      cameras = await availableCameras();
+      print("Cameras: $cameras"); // Add this line to check the cameras
+      if (cameras.isNotEmpty) {
+        _cameraController =
+            CameraController(cameras.first, ResolutionPreset.high);
+        await _cameraController.initialize();
+        setState(() {
+          cameraInitialized = true;
+        });
+      }
+    } catch (e) {
+      print("Error getting camera: $e");
     }
-  } catch(e) { 
-    // ignore: avoid_print
-    print("Error getting camera: $e"); 
   }
-}
 
 // TIMER CODE
 
-void _setupTimer() {
-  // Find the next Monday from the current date
-  DateTime now = DateTime.now();
-  DateTime nextMonday = DateTime(
-    now.year,
-    now.month,
-    now.day + (DateTime.monday - now.weekday + 7) % 7,
-    12, // Set the hour to noon (12 PM)
-    0,
-    0,
-  );
+  void _setupTimer() {
+    // Find the next Monday from the current date
+    DateTime now = DateTime.now();
+    DateTime nextMonday = DateTime(
+      now.year,
+      now.month,
+      now.day + (DateTime.monday - now.weekday + 7) % 7,
+      12, // Set the hour to noon (12 PM)
+      0,
+      0,
+    );
 
-  // Set the time to noon
-  _nextRefreshTime = nextMonday;
+    // Set the time to noon
+    _nextRefreshTime = nextMonday;
 
-  // If the next refresh time has already passed for this week, set it for the next week
-  if (_nextRefreshTime.isBefore(now)) {
-    _nextRefreshTime = _nextRefreshTime.add(const Duration(days: 7));
+    // If the next refresh time has already passed for this week, set it for the next week
+    if (_nextRefreshTime.isBefore(now)) {
+      _nextRefreshTime = _nextRefreshTime.add(const Duration(days: 7));
+    }
+
+    // Initialize durationUntilNextRefresh to the initial calculated duration
+    durationUntilNextRefresh = _nextRefreshTime.difference(now);
+
+    // Create a timer that refreshes once, counting down to the next Monday at noon
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        // Recalculate the duration until the next refresh time
+        durationUntilNextRefresh = _nextRefreshTime.difference(DateTime.now());
+      });
+
+      // Check if the timer should be canceled
+      if (durationUntilNextRefresh.isNegative) {
+        timer.cancel();
+      }
+    });
   }
 
-  // Initialize durationUntilNextRefresh to the initial calculated duration
-  durationUntilNextRefresh = _nextRefreshTime.difference(now);
-
-  // Create a timer that refreshes once, counting down to the next Monday at noon
-  _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-    setState(() {
-      // Recalculate the duration until the next refresh time
-      durationUntilNextRefresh = _nextRefreshTime.difference(DateTime.now());
-    });
-
-    // Check if the timer should be canceled
-    if (durationUntilNextRefresh.isNegative) {
-      timer.cancel();
-    }
-  });
-}
-
   String _formatDuration(Duration duration) {
-  String twoDigits(int n) => n.toString().padLeft(2, '0');
-  String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-  return '${duration.inDays}d ${twoDigits(duration.inHours.remainder(24))}h ${twoDigitMinutes}m ${twoDigitSeconds}s';
-}
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return '${duration.inDays}d ${twoDigits(duration.inHours.remainder(24))}h ${twoDigitMinutes}m ${twoDigitSeconds}s';
+  }
 
   @override
   void dispose() {
@@ -172,10 +171,9 @@ void _setupTimer() {
             icon: const Icon(Icons.search, color: Colors.white),
             onPressed: _navigateToMySearch,
           ),
-
           IconButton(
-          icon: const Icon(Icons.account_circle, color: Colors.white),
-          onPressed: _navigateToMyUserProfilePage,
+            icon: const Icon(Icons.account_circle, color: Colors.white),
+            onPressed: _navigateToMyUserProfilePage,
           ),
         ],
       ),
@@ -185,86 +183,66 @@ void _setupTimer() {
 
       // WORD BOXES
 
-      body: Column(
-        children: <Widget>[
-          
-          // Existing Rows
-          for (int i = 0; i < 4; i++)
-
-            Container(
-              constraints: const BoxConstraints(minWidth: 500, maxWidth: 500),
-              margin: const EdgeInsets.all(5), // SPACE BETWEEN EACH ROW
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.white,
-                  width: 4.0,
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            // Existing Rows
+            for (int i = 0; i < 4; i++)
+              Container(
+                constraints: const BoxConstraints(minWidth: 500, maxWidth: 500),
+                margin: const EdgeInsets.all(5), // SPACE BETWEEN EACH ROW
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.white,
+                    width: 4.0,
+                  ),
+                  borderRadius: BorderRadius.circular(100.0),
                 ),
-                borderRadius: BorderRadius.circular(100.0),
-                color: checkBoxState[i] ? Colors.green : Colors.black, 
-              ),
 
-              // WORD PICTURE
+                // WORD PICTURE
 
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                leading: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [ 
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(18.0),
-                      child: Image.asset(
-                        'lib/assets/${wordImages[i]}',
-                        width: 93.0,
-                        height: 93.0,
-                        fit: BoxFit.cover,
-                      ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 16.0),
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(18.0),
+                    child: Image.asset(
+                      'lib/assets/${wordImages[i]}',
+                      width: 93.0,
+                      height: 93.0,
+                      fit: BoxFit.cover,
                     ),
+                  ),
 
-                    const SizedBox(width: 15.0), 
-                    
-                    Text(
-                    words[i],
-                    style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 26.0,
-                      color: Colors.white
-                      )
-                    ),
+                  // ACTUAL WORD
+                  title: Text(words[i],
+                      style: const TextStyle(
+                          fontFamily: 'DMSans',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 26.0,
+                          color: Colors.white)),
 
-                    Checkbox(
-                    value: checkBoxState[i], 
-                      onChanged: (value) { 
-                        setState(() {
-                          checkBoxState[i] = value!; 
-                        });
-                      }
-                    ),
-
-                  ],
-                ),
-                
-                // CAMERA ICON       
-                trailing: cameraInitialized
-                    ? IconButton(
-                        // width: 30.0,
-                        // height: 30.0,
-                        // child: IconButton(
+                  // CAMERA ICON
+                  trailing: cameraInitialized
+                      ? IconButton(
+                          // width: 30.0,
+                          // height: 30.0,
+                          // child: IconButton(
                           icon: const Icon(
-                            Icons.camera_alt, 
-                            color: Colors.white, 
+                            Icons.camera_alt,
+                            color: Colors.white,
                             size: 30,
                           ),
-                        onPressed: () {
-                          _openCamera(i);
-                        },
-                      )
-                    : const CircularProgressIndicator.adaptive(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
+                          onPressed: () {
+                            _openCamera(i);
+                          },
+                        )
+                      : const CircularProgressIndicator.adaptive(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                ),
               ),
-            ),
-
           const SizedBox(height: 7.5), 
 
           // Scrollable Row of Rectangular Photos
@@ -285,24 +263,30 @@ void _setupTimer() {
                     'lib/assets/${wordImages[index]}',
                       fit: BoxFit.cover,
                     ),
-                  ),
-                );
-              },
+                    width: 230.0,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Image.asset(
+                        'lib/assets/${wordImages[index]}',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
 
-          // Live Time Timer
-          Container(
-            margin: const EdgeInsets.all(12.0),
-            child: Text(
-              'Time Left: ${_formatDuration(durationUntilNextRefresh)}',
-              style: const TextStyle(
-                fontSize: 20.0, 
-                color: Colors.white, 
-                fontFamily: "DNSans"),
+            // Live Time Timer
+            Container(
+              margin: const EdgeInsets.all(12.0),
+              child: Text(
+                'Time Left: ${_formatDuration(durationUntilNextRefresh)}',
+                style: const TextStyle(
+                    fontSize: 20.0, color: Colors.white, fontFamily: "DNSans"),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -333,6 +317,4 @@ void _setupTimer() {
       print('Error opening camera: $e');
     }
   }
-
 }
-

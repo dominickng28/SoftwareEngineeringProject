@@ -95,11 +95,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         title: const Text(
           'Sign Up',
           style: TextStyle(
-            color: Colors.white, // Set text color to white
-            fontWeight: FontWeight.bold, // Set text to bold
-            fontSize: 24,
-            fontFamily: 'DNSans' // Set font size to a larger value
-          ),
+              color: Colors.white, // Set text color to white
+              fontWeight: FontWeight.bold, // Set text to bold
+              fontSize: 24,
+              fontFamily: 'DNSans' // Set font size to a larger value
+              ),
         ),
         backgroundColor: Color.fromARGB(251, 17, 18, 18),
       ),
@@ -107,117 +107,125 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image.asset(
-                'lib/assets/Live4youWhite.png',
-                width: 300, // Adjust the width as needed
-                height: 250, // Adjust the height as needed
-              ),
-              const SizedBox(height: 20.0),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Color.fromARGB(255, 255, 255, 255)),
-                  borderRadius: BorderRadius.circular(12),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(
+                  'lib/assets/Live4youWhite.png',
+                  width: 300, // Adjust the width as needed
+                  height: 250, // Adjust the height as needed
                 ),
-                child: TextFormField(
-                  controller: _emailController,
-                  style: TextStyle(color: Colors.white,fontFamily: 'DNSans'),
-                  decoration: const InputDecoration(
-                    hintText: 'Email',
-                    hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
-                    border: InputBorder.none,
-                    prefixIcon: Icon(Icons.email,
-                        color: Colors.white), // Add an icon as the prefix
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Color.fromARGB(255, 255, 255, 255)),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: TextFormField(
-                  maxLengthEnforcement: MaxLengthEnforcement.enforced, controller: _usernameController,
-                  style: TextStyle(color: Colors.white),
-                  maxLines: null,
-                  maxLength: 15,
-                  decoration: const InputDecoration(
-                    hintText: 'Username',
-                    hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
-                    border: InputBorder.none,
-                    prefixIcon: Icon(Icons.person,
-                        color: Colors.white), // Add an icon as the prefix
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16), // Add an icon as the prefix
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                        color: const Color.fromARGB(255, 255, 255, 255))),
-                child: TextFormField(
-                  controller: _passwordController,
-                  style: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    hintText: 'Password',
-                    hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
-                    border: InputBorder.none,
-                    prefixIcon: Icon(Icons.lock,
-                        color: Colors.white), // Add an icon as the prefix
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16), // Add an icon as the prefix
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                        color: const Color.fromARGB(255, 255, 255, 255))),
-                child: TextFormField(
-                  controller: _confirmPasswordController,
-                  style: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    hintText: 'Confirm Password',
-                    hintStyle: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
-                    border: InputBorder.none,
-                    prefixIcon: Icon(Icons.lock,
-                        color: Colors.white), // Add an icon as the prefix
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: () => _signUp(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(
-                      255, 255, 255, 255), // Change button color
-                  padding: const EdgeInsets.all(16),
-                  shape: RoundedRectangleBorder(
+                const SizedBox(height: 20.0),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    border:
+                        Border.all(color: Color.fromARGB(255, 255, 255, 255)),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                ),
-                child: const Text(
-                  "Sign Up",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'DNSans',
-                    color: Color.fromARGB(255, 0, 0, 0),
+                  child: TextFormField(
+                    controller: _emailController,
+                    style: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                    decoration: const InputDecoration(
+                      hintText: 'Email',
+                      hintStyle:
+                          TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                      border: InputBorder.none,
+                      prefixIcon: Icon(Icons.email,
+                          color: Colors.white), // Add an icon as the prefix
+                    ),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 20.0),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    border:
+                        Border.all(color: Color.fromARGB(255, 255, 255, 255)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: TextFormField(
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                    controller: _usernameController,
+                    style: TextStyle(color: Colors.white),
+                    maxLength: 15,
+                    decoration: const InputDecoration(
+                      hintText: 'Username',
+                      hintStyle:
+                          TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                      border: InputBorder.none,
+                      prefixIcon: Icon(Icons.person,
+                          color: Colors.white), // Add an icon as the prefix
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16), // Add an icon as the prefix
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 255, 255, 255))),
+                  child: TextFormField(
+                    controller: _passwordController,
+                    style: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      hintText: 'Password',
+                      hintStyle:
+                          TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                      border: InputBorder.none,
+                      prefixIcon: Icon(Icons.lock,
+                          color: Colors.white), // Add an icon as the prefix
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16), // Add an icon as the prefix
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                          color: const Color.fromARGB(255, 255, 255, 255))),
+                  child: TextFormField(
+                    controller: _confirmPasswordController,
+                    style: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      hintText: 'Confirm Password',
+                      hintStyle:
+                          TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                      border: InputBorder.none,
+                      prefixIcon: Icon(Icons.lock,
+                          color: Colors.white), // Add an icon as the prefix
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                ElevatedButton(
+                  onPressed: () => _signUp(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(
+                        255, 255, 255, 255), // Change button color
+                    padding: const EdgeInsets.all(16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    "Sign Up",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'DNSans',
+                      color: Color.fromARGB(255, 0, 0, 0),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
