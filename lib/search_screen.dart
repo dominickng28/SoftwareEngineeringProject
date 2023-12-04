@@ -148,15 +148,15 @@ class MySearch extends StatefulWidget {
   }
 
   @override
-  State<MySearch> createState() => _MySearchState();
+  State<MySearch> createState() => MySearchState();
 }
 
-class _MySearchState extends State<MySearch> {
+class MySearchState extends State<MySearch> {
   final MySearch mySearch = MySearch(title: 'Title');
   final TextEditingController _searchController = TextEditingController();
   final FriendService _friendService = FriendService();
   final UserData userData = UserData(FirebaseFirestore.instance);
-  final StreamController<List<String>> _usernameStream = StreamController<List<String>>();
+  final StreamController<List<String>> usernameStream = StreamController<List<String>>();
   // posts list for "the rest of the world" portion
   List<Post> posts = [];
 
@@ -167,11 +167,11 @@ class _MySearchState extends State<MySearch> {
   }
 
 StreamController<List<String>> usernameStreamController = StreamController<List<String>>();
-@override
-void dispose() {
-  usernameStreamController.close();
-  super.dispose();
-}
+  @override
+  void dispose() {
+    usernameStreamController.close();
+    super.dispose();
+  }
 
 void fetchMostLikedPostData() async {
     // Fetch friends list
@@ -267,7 +267,7 @@ Widget _buildpostGrid(List<Post> postList) {
   );
 }
 
-Future<void> _searchByUsername(String username) async {
+Future<void> searchByUsername(String username) async {
   DocumentSnapshot userDoc = await FirebaseFirestore.instance
       .collection('users')
       .doc(username)
@@ -275,7 +275,7 @@ Future<void> _searchByUsername(String username) async {
   
   if (userDoc.exists) {
     List<String> usernames = [username];
-    _usernameStream.add(usernames);
+    usernameStream.add(usernames);
   } else {
     // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(
@@ -314,7 +314,7 @@ Widget build(BuildContext context) {
               controller: _searchController,
               onSubmitted: (String value) async {
                 // Perform the search when Enter key is pressed
-                await _searchByUsername(value);
+                await searchByUsername(value);
               },
               decoration: InputDecoration(
                 labelText: "Search for a username",
@@ -322,7 +322,7 @@ Widget build(BuildContext context) {
                 suffixIcon: IconButton(
                   onPressed: () async {
                     // add the searched username to a list to generate the profile list
-                    await _searchByUsername(_searchController.text);
+                    await searchByUsername(_searchController.text);
                   },
                   icon: const Icon(Icons.search, color: Colors.white),
                 ),
@@ -332,7 +332,7 @@ Widget build(BuildContext context) {
           ),
           // Generate searched user profile list
           StreamBuilder<List<String>>(
-            stream: _usernameStream.stream,
+            stream: usernameStream.stream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 List<String> userSearch = snapshot.data!;
