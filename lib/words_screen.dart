@@ -186,6 +186,7 @@ class _MyScreenState extends State<WordsScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+
             // Existing Rows
             for (int i = 0; i < 4; i++)
               Container(
@@ -197,6 +198,7 @@ class _MyScreenState extends State<WordsScreen> {
                     width: 4.0,
                   ),
                   borderRadius: BorderRadius.circular(100.0),
+                  color: checkBoxState[i] ? Colors.green : null, 
                 ),
 
                 // WORD PICTURE
@@ -215,12 +217,30 @@ class _MyScreenState extends State<WordsScreen> {
                   ),
 
                   // ACTUAL WORD
-                  title: Text(words[i],
-                      style: const TextStyle(
-                          fontFamily: 'DMSans',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 26.0,
-                          color: Colors.white)),
+                  title: Row(
+                    children: [
+                      Text(words[i],
+                        style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 26.0,
+                            color: Colors.white
+                        )
+                      ),
+
+                  SizedBox(width: 8.0), 
+
+                  Checkbox(
+                    value: checkBoxState[i],
+                    onChanged: (bool? value) {
+                      setState(() {
+                        checkBoxState[i] = value!;
+                      });
+                    },
+                    activeColor: Colors.white,
+                  ),
+                ]
+              ), 
 
                   // CAMERA ICON
                   trailing: cameraInitialized
