@@ -10,21 +10,23 @@ class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  SignUpScreenState createState() => SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  BuildContext? _scaffoldContext;
 
   Future<void> _signUp() async {
     final email = _emailController.text;
     final username = _usernameController.text;
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
+    _scaffoldContext = context;
 
     if (password == confirmPassword) {
       try {
@@ -60,29 +62,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 .addUserToFirestore(username, email, user.uid, Timestamp.now());
             // Navigate to the PostSignUpScreen to set the bio etc.
             Navigator.push(
-              context,
+              _scaffoldContext!,
               MaterialPageRoute(
-                builder: (context) => PostSignUpScreen(),
+                builder: (context) => const PostSignUpScreen(),
               ),
             );
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Email is already in use.')),
+            ScaffoldMessenger.of(_scaffoldContext!).showSnackBar(
+              const SnackBar(content: Text('Email is already in use.')),
             );
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Username is already in use.')),
+          ScaffoldMessenger.of(_scaffoldContext!).showSnackBar(
+            const SnackBar(content: Text('Username is already in use.')),
           );
         }
       } on FirebaseAuthException catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(_scaffoldContext!).showSnackBar(
           SnackBar(content: Text(e.message ?? 'An error occurred.')),
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Passwords do not match.')),
+        const SnackBar(content: Text('Passwords do not match.')),
       );
     }
   }
@@ -101,9 +103,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               fontFamily: 'DNSans' // Set font size to a larger value
               ),
         ),
-        backgroundColor: Color.fromARGB(251, 17, 18, 18),
+        backgroundColor:const Color.fromARGB(251, 17, 18, 18),
       ),
-      backgroundColor: Color.fromARGB(251, 17, 18, 18),
+      backgroundColor:const Color.fromARGB(251, 17, 18, 18),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -121,12 +123,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
                     border:
-                        Border.all(color: Color.fromARGB(255, 255, 255, 255)),
+                        Border.all(color:const Color.fromARGB(255, 255, 255, 255)),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: TextFormField(
                     controller: _emailController,
-                    style: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                    style: const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                     decoration: const InputDecoration(
                       hintText: 'Email',
                       hintStyle:
@@ -142,13 +144,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
                     border:
-                        Border.all(color: Color.fromARGB(255, 255, 255, 255)),
+                        Border.all(color: const Color.fromARGB(255, 255, 255, 255)),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: TextFormField(
                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     controller: _usernameController,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                     maxLength: 15,
                     decoration: const InputDecoration(
                       hintText: 'Username',
@@ -170,7 +172,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           color: const Color.fromARGB(255, 255, 255, 255))),
                   child: TextFormField(
                     controller: _passwordController,
-                    style: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                    style: const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                     obscureText: true,
                     decoration: const InputDecoration(
                       hintText: 'Password',
@@ -192,7 +194,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           color: const Color.fromARGB(255, 255, 255, 255))),
                   child: TextFormField(
                     controller: _confirmPasswordController,
-                    style: TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                    style: const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                     obscureText: true,
                     decoration: const InputDecoration(
                       hintText: 'Confirm Password',

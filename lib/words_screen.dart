@@ -37,7 +37,7 @@ class _MyScreenState extends State<WordsScreen> {
 
   late Timer _timer;
   late DateTime _nextRefreshTime;
-  late Duration durationUntilNextRefresh = Duration();
+  late Duration durationUntilNextRefresh = const Duration();
 
   List<String> words = ['Cook', 'Biking', 'Draw', 'Run']; // STORES WORDS
   List<String> wordImages = [
@@ -60,7 +60,7 @@ class _MyScreenState extends State<WordsScreen> {
   _initializeCamera() async {
     try {
       cameras = await availableCameras();
-      print("Cameras: $cameras"); // Add this line to check the cameras
+      //print("Cameras: $cameras"); // Add this line to check the cameras
       if (cameras.isNotEmpty) {
         _cameraController =
             CameraController(cameras.first, ResolutionPreset.high);
@@ -70,7 +70,7 @@ class _MyScreenState extends State<WordsScreen> {
         });
       }
     } catch (e) {
-      print("Error getting camera: $e");
+      //print("Error getting camera: $e");
     }
   }
 
