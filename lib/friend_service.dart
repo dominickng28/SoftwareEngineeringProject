@@ -1,7 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:async/async.dart';
-import 'dart:math';
 
 class FriendService {
   Future<void> sendFriendRequest(
@@ -125,9 +122,19 @@ class FriendService {
         .doc(username)
         .get();
 
-    List<String> friends = List<String>.from((snapshot.data() as Map<String, dynamic>)?['friends'] ?? []);
+    List<String> friends = List<String>.from((snapshot.data() as Map<String, dynamic>)['friends'] ?? []);
     return friends;
   }
+
+  Future<List<String>> getFriendRequest(String username) async {
+  DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(username)
+      .get();
+
+  List<String> friendRequest = List<String>.from((snapshot.data() as Map<String, dynamic>)['received_requests'] ?? []);
+  return friendRequest;
+}
 
 Stream<List<String>> friendsOfFriendsStream(String username) async* {
   List<String> friends = await getFriends(username);
@@ -135,9 +142,9 @@ Stream<List<String>> friendsOfFriendsStream(String username) async* {
   for (String friend in friends) {
     List<String> friendFriends = await getFriends(friend);
     if (friendFriends.isNotEmpty) {
-      friendFriends.remove(username);
       friendFriends = friendFriends.toSet().toList(); // Remove duplicates
       friendFriends.shuffle(); // Shuffle the list of friendFriends
+      friendFriends.remove(username);
       yield friendFriends.take(4).toList(); // Return only 4 random friends
     }
   }

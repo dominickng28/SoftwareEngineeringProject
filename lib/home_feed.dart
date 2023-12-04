@@ -49,7 +49,7 @@ class _MyFeedTest extends State<MyFeed> {
         return AlertDialog(
           backgroundColor: Colors.white,
           // iconPadding: EdgeInsets.all(10.0),
-          contentPadding: EdgeInsets.all(5.0),
+          contentPadding: const EdgeInsets.all(5.0),
           // insetPadding: EdgeInsets.zero,
           // iconPadding: EdgeInsets.zero, 
           shape: RoundedRectangleBorder(
@@ -58,7 +58,7 @@ class _MyFeedTest extends State<MyFeed> {
           ),
 
           content: Container(
-            padding: EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(20.0),
             decoration: BoxDecoration(
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(15.0),
@@ -147,7 +147,7 @@ class _MyFeedTest extends State<MyFeed> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const MySearch(
+        builder: (context) => MySearch(
           title: 'Search',
         ),
       ),
@@ -182,7 +182,7 @@ class _MyFeedTest extends State<MyFeed> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => NotificationsScreen(),
+              builder: (context) => const NotificationsScreen(),
             ),
           );
         },

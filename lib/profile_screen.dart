@@ -128,7 +128,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const MySearch(
+        builder: (context) => MySearch(
           title: 'Search',
         ),
       ),
