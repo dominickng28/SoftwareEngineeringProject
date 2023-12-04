@@ -2,41 +2,43 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+//import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:live4you/main.dart';
 import 'package:live4you/user_data.dart';
-import 'firestore_service.dart';
-import 'package:live4you/home_feed.dart';
+//import 'firestore_service.dart';
+//import 'package:live4you/home_feed.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'friend_service.dart'; // Import the FriendService
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
-final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-final FirestoreService _service = FirestoreService();
+//final FirebaseAuth _auth = FirebaseAuth.instance;
+//final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+//final FirestoreService _service = FirestoreService();
 final CollectionReference usersCollection =
     FirebaseFirestore.instance.collection('users');
 
 class PostSignUpScreen extends StatefulWidget {
-  const PostSignUpScreen({Key? key}) : super(key: key);
+  const PostSignUpScreen({super.key});
 
   @override
-  _PostSignUpScreenState createState() => _PostSignUpScreenState();
+  PostSignUpScreenState createState() => PostSignUpScreenState();
 }
 
-class _PostSignUpScreenState extends State<PostSignUpScreen> {
+class PostSignUpScreenState extends State<PostSignUpScreen> {
   final TextEditingController _bioController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
+  //final TextEditingController _usernameController = TextEditingController();
   File? _imageFile; // Change to File? to allow null
   final picker = ImagePicker();
-  final _firestoreService = FirestoreService();
+  //final _firestoreService = FirestoreService();
   String profilePictureUrl = '';
   final FriendService friendService = FriendService(); // Add the FriendService
+  BuildContext? _scaffoldContext;
 
   Future<void> _addUser(String bio) async {
     List<String> lines = bio.split('\n');
+    _scaffoldContext = context;
     if (lines.length > 4) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Bio should not exceed 4 lines')),
@@ -60,11 +62,11 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
         });
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(_scaffoldContext!).showSnackBar(
         const SnackBar(content: Text('Account Updated Successfully')),
       );
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => MainScreen()),
+      Navigator.of(_scaffoldContext!).pushReplacement(
+        MaterialPageRoute(builder: (context) => const MainScreen()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -75,7 +77,7 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
 
   Future<void> _getImage() async {
     final pickedFile =
-        await ImagePicker().getImage(source: ImageSource.gallery);
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
@@ -88,7 +90,7 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
   Future uploadImage(String username) async {
     try {
       if (_imageFile == null) {
-        print('No image file selected.');
+        //print('No image file selected.');
         return;
       }
 
@@ -112,7 +114,7 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
         profilePictureUrl = imageUrl;
       });
     } catch (error) {
-      print('An error occurred while uploading the image: $error');
+      //print('An error occurred while uploading the image: $error');
     }
   }
 
@@ -141,7 +143,7 @@ class _PostSignUpScreenState extends State<PostSignUpScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 // Profile Picture
-                SizedBox(
+                const SizedBox(
                   height: 60.0,
                 ),
                 GestureDetector(

@@ -1,12 +1,12 @@
 class PostPicture{
 
-  var pic;
+  var pic = '';
   PostPicture(this.pic);
 }
 
 class ProfilePicture{
 
-  var pic;
+  var pic = '';
   ProfilePicture(this.pic);
 }
 

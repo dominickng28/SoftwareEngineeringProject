@@ -352,29 +352,29 @@ class PostCardState extends State<PostCard> {
               ),
             ),
             trailing: Container(
-  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-  child: Transform(
-    transform: Matrix4.skewX(-0.05), // Adjust the skew factor as needed
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), // Adjust the padding values
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        widget.post.word, // Placeholder for your word
-        style: const TextStyle(
-          fontFamily: 'DMSans',
-          fontSize: 22, // Adjust the font size as needed
-          fontWeight: FontWeight.w900, // Adjust the fontWeight for thicker letters
-          fontStyle: FontStyle.italic,
-          decoration: TextDecoration.underline,
-          color: Colors.white,
-        ),
-      ),
-    ),
-  ),
-)
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            child: Transform(
+              transform: Matrix4.skewX(-0.05), // Adjust the skew factor as needed
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), // Adjust the padding values
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  widget.post.word, // Placeholder for your word
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    fontSize: 22, // Adjust the font size as needed
+                    fontWeight: FontWeight.w900, // Adjust the fontWeight for thicker letters
+                    fontStyle: FontStyle.italic,
+                    decoration: TextDecoration.underline,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          )
 
 
           ),

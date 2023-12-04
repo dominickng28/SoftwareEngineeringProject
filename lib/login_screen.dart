@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:live4you/firestore_service.dart';
-import 'package:live4you/home_feed.dart';
 import 'package:live4you/signup_screen.dart';
 import 'package:live4you/user_data.dart';
 import 'main.dart';
@@ -10,15 +9,15 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _usernameController = TextEditingController();
+class LoginScreenState extends State<LoginScreen> {
+  //final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final FirestoreService firestoreService = FirestoreService();
-
+  BuildContext? _scaffoldContext;
   void _login() async {
     try {
       // Get a reference to the auth service
@@ -33,21 +32,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // If the sign in was successful, navigate to the home screen
       if (userCredential.user != null) {
-        UserData.userName = (await firestoreService
-            .getUsernameFromEmail(_emailController.text))!;
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => MainScreen()),
+        UserData.userName = (await firestoreService.getUsernameFromEmail(_emailController.text))!;
+        Navigator.of(_scaffoldContext!).pushReplacement( // Use the stored Scaffold context here
+          MaterialPageRoute(builder: (context) => const MainScreen()),
         );
       } else {
-        // If the user is not signed in, show a message
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(_scaffoldContext!).showSnackBar( // Use the stored Scaffold context here
           const SnackBar(content: Text('Unable to sign in. Please try again.')),
         );
       }
     } catch (e) {
-      // If an error occurs, show an error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error error: ${e.toString()}')),
+      ScaffoldMessenger.of(_scaffoldContext!).showSnackBar( // Use the stored Scaffold context here
+        SnackBar(content: Text('Error: ${e.toString()}')),
       );
     }
   }
@@ -56,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             'Login',
             style: TextStyle(
               color: Colors.white, // Set text color to white
@@ -65,11 +61,14 @@ class _LoginScreenState extends State<LoginScreen> {
               fontFamily: 'DMSans',
             ),
           ),
-          backgroundColor: Color.fromARGB(251, 17, 18, 18),
+          backgroundColor: const Color.fromARGB(251, 17, 18, 18),
         ),
-        backgroundColor: Color.fromARGB(251, 17, 18, 18),
-        body: Center(
-          child: Padding(
+        backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+      body: Builder(
+        builder: (BuildContext context) {
+          _scaffoldContext = context; // Store Scaffold context
+          return Center(
+            child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: SingleChildScrollView(
               child: Column(
@@ -86,13 +85,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                       border:
-                          Border.all(color: Color.fromARGB(255, 255, 255, 255)),
+                          Border.all(color: const Color.fromARGB(255, 255, 255, 255)),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: TextFormField(
                       controller: _emailController,
                       style:
-                          TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                          const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                       decoration: const InputDecoration(
                         hintText: 'Username',
                         hintStyle: TextStyle(
@@ -114,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: TextFormField(
                       controller: _passwordController,
                       style:
-                          TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                          const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
                       obscureText: true,
                       decoration: const InputDecoration(
                         hintText: 'Password',
@@ -162,13 +161,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontFamily: 'DNSans',
                         color: Color.fromARGB(248, 255, 255,
                             255), // Change this to your preferred color
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              )
             ),
-          ),
-        ));
+          );
+        },
+      ),
+    );
   }
 }

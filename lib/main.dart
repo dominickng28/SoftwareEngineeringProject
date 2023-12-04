@@ -15,7 +15,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}); // Fix constructor definition
+  const MyApp({super.key}); // Fix constructor definition
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       title: 'LIVE4YOU',
       theme: ThemeData(
         colorScheme:
-            ColorScheme.fromSeed(seedColor: Color.fromARGB(144, 10, 231, 139)),
+            ColorScheme.fromSeed(seedColor:const Color.fromARGB(144, 10, 231, 139)),
         useMaterial3: true,
       ),
       initialRoute: '/login',
@@ -36,13 +36,13 @@ class MyApp extends StatelessWidget {
 }
 
 class MainScreen extends StatefulWidget {
-  MainScreen({Key? key}) : super(key: key);
+  const MainScreen({super.key});
 
   @override
-  _MainScreenState createState() => _MainScreenState();
+  MainScreenState createState() => MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
   late List<Widget> _children; // Define _children here
@@ -52,14 +52,14 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
 
     _children = [
-      MyFeed(
+      const MyFeed(
         title: 'Home Feed',
       ),
-      WordsScreen(),
+      const WordsScreen(),
       MySearch(
         title: 'Search',
       ),
-      MyUserProfilePage(
+      const MyUserProfilePage(
         title: 'User Profile',
       ),
     ];
@@ -76,7 +76,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Color.fromARGB(248, 255, 255, 255),
+        selectedItemColor: const Color.fromARGB(248, 255, 255, 255),
         unselectedItemColor: const Color.fromARGB(248, 255, 255, 255),
         onTap: onTabTapped,
         currentIndex: _currentIndex,
