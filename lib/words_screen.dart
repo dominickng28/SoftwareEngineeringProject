@@ -243,31 +243,30 @@ class _MyScreenState extends State<WordsScreen> {
                         ),
                 ),
               ),
-          const SizedBox(height: 7.5), 
+            const SizedBox(height: 7.5),
 
-          // Scrollable Row of Rectangular Photos
-          SizedBox(
-            height: 160.0, // Adjust the height as needed
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: EdgeInsets.only(
-                    left: index == 0 ? 0.0 : 8.0,
-                  ),
-                  width: 230.0,
-                  child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: SizedBox(
-                    width: 230.0,
-                    child: Image.asset(
-                      'lib/assets/${wordImages[index]}',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                )
-                  );
+            // Scrollable Row of Rectangular Photos
+            SizedBox(
+              height: 160.0, // Adjust the height as needed
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 4,
+                itemBuilder: (context, index) {
+                  return Container(
+                      margin: EdgeInsets.only(
+                        left: index == 0 ? 0.0 : 8.0,
+                      ),
+                      width: 230.0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: SizedBox(
+                          width: 230.0,
+                          child: Image.asset(
+                            'lib/assets/${wordImages[index]}',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ));
                 },
               ),
             ),

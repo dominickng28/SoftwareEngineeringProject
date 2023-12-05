@@ -5,6 +5,8 @@ import 'package:live4you/firestore_service.dart';
 import 'package:flutter/services.dart';
 import 'package:live4you/user_data.dart';
 import 'post_signup_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'main.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -19,7 +21,75 @@ class SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirestoreService firestoreService = FirestoreService();
   BuildContext? _scaffoldContext;
+
+  Future<void> _createAccountWithGoogle(BuildContext context) async {
+    try {
+      // Sign out the current user
+      await _googleSignIn.signOut();
+
+      // Now call signIn()
+      GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser!.authentication;
+
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithCredential(credential);
+        User? user = userCredential.user;
+
+        // Check if the user is new or existing
+        if (userCredential.additionalUserInfo!.isNewUser) {
+          // This is a new user, so you need to set up their account
+
+          // Get the current timestamp
+          Timestamp joinedTimestamp = Timestamp.now();
+
+          // Here you might want to ask the user for a username or other info
+          // For now, let's just use the part of their email before '@' as a default username
+          String defaultUsername = user!.email!.split('@')[0];
+
+          // Add the user to Firestore
+          await firestoreService.addUserToFirestore(
+            defaultUsername,
+            user.email!,
+            user.uid,
+            joinedTimestamp,
+          );
+
+          UserData.userName = defaultUsername;
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const PostSignUpScreen()),
+          );
+        } else {
+          // This is an existing user, fetch their username from Firestore
+          String? username =
+              await firestoreService.getUsernameFromEmail(user!.email!);
+
+          UserData.userName = username!;
+          Navigator.of(context!).pushReplacement(
+            MaterialPageRoute(builder: (context) => const MainScreen()),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context!).showSnackBar(
+          const SnackBar(content: Text('Google Sign-In was cancelled.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context!).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
 
   Future<void> _signUp() async {
     final email = _emailController.text;
@@ -103,9 +173,9 @@ class SignUpScreenState extends State<SignUpScreen> {
               fontFamily: 'DNSans' // Set font size to a larger value
               ),
         ),
-        backgroundColor:const Color.fromARGB(251, 17, 18, 18),
+        backgroundColor: const Color.fromARGB(251, 17, 18, 18),
       ),
-      backgroundColor:const Color.fromARGB(251, 17, 18, 18),
+      backgroundColor: const Color.fromARGB(251, 17, 18, 18),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -122,13 +192,14 @@ class SignUpScreenState extends State<SignUpScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color:const Color.fromARGB(255, 255, 255, 255)),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 255, 255, 255)),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: TextFormField(
                     controller: _emailController,
-                    style: const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                    style: const TextStyle(
+                        color: Colors.white, fontFamily: 'DNSans'),
                     decoration: const InputDecoration(
                       hintText: 'Email',
                       hintStyle:
@@ -143,8 +214,8 @@ class SignUpScreenState extends State<SignUpScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color: const Color.fromARGB(255, 255, 255, 255)),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 255, 255, 255)),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: TextFormField(
@@ -172,7 +243,8 @@ class SignUpScreenState extends State<SignUpScreen> {
                           color: const Color.fromARGB(255, 255, 255, 255))),
                   child: TextFormField(
                     controller: _passwordController,
-                    style: const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                    style: const TextStyle(
+                        color: Colors.white, fontFamily: 'DNSans'),
                     obscureText: true,
                     decoration: const InputDecoration(
                       hintText: 'Password',
@@ -194,7 +266,8 @@ class SignUpScreenState extends State<SignUpScreen> {
                           color: const Color.fromARGB(255, 255, 255, 255))),
                   child: TextFormField(
                     controller: _confirmPasswordController,
-                    style: const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                    style: const TextStyle(
+                        color: Colors.white, fontFamily: 'DNSans'),
                     obscureText: true,
                     decoration: const InputDecoration(
                       hintText: 'Confirm Password',
@@ -226,6 +299,26 @@ class SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 3.0),
+                /*ElevatedButton(
+                  onPressed: () => _createAccountWithGoogle(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(
+                        255, 255, 255, 255), // Change button color
+                    padding: const EdgeInsets.all(16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    "Sign Up with Google",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'DNSans',
+                      color: Color.fromARGB(255, 0, 0, 0),
+                    ),
+                  ),
+                ),*/
               ],
             ),
           ),
