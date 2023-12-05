@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'LIVE4YOU',
       theme: ThemeData(
-        colorScheme:
-            ColorScheme.fromSeed(seedColor:const Color.fromARGB(144, 10, 231, 139)),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(144, 10, 231, 139)),
         useMaterial3: true,
       ),
       initialRoute: '/login',
