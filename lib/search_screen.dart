@@ -291,10 +291,10 @@ Future<void> _searchByUsername(String username) async {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please enter a usename.') 
-        ),
-      );
-    }
+      ),
+    );
   }
+}
 
 
 
