@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -127,13 +128,13 @@ class EditProfilePageState extends State<EditProfilePage> {
   }
 
   //ImageProvider? _displayProfileImage() {
-    //if (_imageFile != null) {
-      //return FileImage(_imageFile!);
-    //} else if (profilePictureUrl != null && profilePictureUrl!.isNotEmpty) {
-     // return NetworkImage(profilePictureUrl!);
-    //} else {
-    //  return const AssetImage('lib/assets/default-user.jpg');
-    //}
+  //if (_imageFile != null) {
+  //return FileImage(_imageFile!);
+  //} else if (profilePictureUrl != null && profilePictureUrl!.isNotEmpty) {
+  // return NetworkImage(profilePictureUrl!);
+  //} else {
+  //  return const AssetImage('lib/assets/default-user.jpg');
+  //}
 //}
 
   @override
@@ -150,9 +151,9 @@ class EditProfilePageState extends State<EditProfilePage> {
             fontFamily: 'DMSans',
           ),
         ),
-        backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       ),
-      backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
@@ -193,12 +194,15 @@ class EditProfilePageState extends State<EditProfilePage> {
                           const SizedBox(height: 20.0),
                           // Display the username
                           TextFormField(
+                            maxLengthEnforcement: MaxLengthEnforcement.enforced,
                             controller: _usernameController,
+                            textAlign: TextAlign.center,
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 60,
                                 fontFamily: 'DMSans'),
+                            maxLength: 15,
                             decoration: const InputDecoration(
                               hintText: 'Username',
                               hintStyle: TextStyle(
@@ -237,10 +241,13 @@ class EditProfilePageState extends State<EditProfilePage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: TextFormField(
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     controller: _bioController,
+                    maxLength: 1000,
                     style: const TextStyle(
                         color: Colors.white, fontFamily: 'DNSans'),
                     maxLines: null,
+                    textAlignVertical: TextAlignVertical.center,
                     decoration: const InputDecoration(
                       hintText: 'Bio',
                       hintStyle:

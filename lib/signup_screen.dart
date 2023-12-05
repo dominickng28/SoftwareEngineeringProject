@@ -103,9 +103,9 @@ class SignUpScreenState extends State<SignUpScreen> {
               fontFamily: 'DNSans' // Set font size to a larger value
               ),
         ),
-        backgroundColor:const Color.fromARGB(251, 17, 18, 18),
+        backgroundColor: const Color.fromARGB(251, 0, 0, 0),
       ),
-      backgroundColor:const Color.fromARGB(251, 17, 18, 18),
+      backgroundColor: const Color.fromARGB(251, 0, 0, 0),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -122,13 +122,14 @@ class SignUpScreenState extends State<SignUpScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color:const Color.fromARGB(255, 255, 255, 255)),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 255, 255, 255)),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: TextFormField(
                     controller: _emailController,
-                    style: const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                    style: const TextStyle(
+                        color: Colors.white, fontFamily: 'DNSans'),
                     decoration: const InputDecoration(
                       hintText: 'Email',
                       hintStyle:
@@ -143,8 +144,8 @@ class SignUpScreenState extends State<SignUpScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
-                    border:
-                        Border.all(color: const Color.fromARGB(255, 255, 255, 255)),
+                    border: Border.all(
+                        color: const Color.fromARGB(255, 255, 255, 255)),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: TextFormField(
@@ -172,7 +173,8 @@ class SignUpScreenState extends State<SignUpScreen> {
                           color: const Color.fromARGB(255, 255, 255, 255))),
                   child: TextFormField(
                     controller: _passwordController,
-                    style: const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                    style: const TextStyle(
+                        color: Colors.white, fontFamily: 'DNSans'),
                     obscureText: true,
                     decoration: const InputDecoration(
                       hintText: 'Password',
@@ -194,7 +196,8 @@ class SignUpScreenState extends State<SignUpScreen> {
                           color: const Color.fromARGB(255, 255, 255, 255))),
                   child: TextFormField(
                     controller: _confirmPasswordController,
-                    style: const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
+                    style: const TextStyle(
+                        color: Colors.white, fontFamily: 'DNSans'),
                     obscureText: true,
                     decoration: const InputDecoration(
                       hintText: 'Confirm Password',

@@ -32,17 +32,21 @@ class LoginScreenState extends State<LoginScreen> {
 
       // If the sign in was successful, navigate to the home screen
       if (userCredential.user != null) {
-        UserData.userName = (await firestoreService.getUsernameFromEmail(_emailController.text))!;
-        Navigator.of(_scaffoldContext!).pushReplacement( // Use the stored Scaffold context here
+        UserData.userName = (await firestoreService
+            .getUsernameFromEmail(_emailController.text))!;
+        Navigator.of(_scaffoldContext!).pushReplacement(
+          // Use the stored Scaffold context here
           MaterialPageRoute(builder: (context) => const MainScreen()),
         );
       } else {
-        ScaffoldMessenger.of(_scaffoldContext!).showSnackBar( // Use the stored Scaffold context here
+        ScaffoldMessenger.of(_scaffoldContext!).showSnackBar(
+          // Use the stored Scaffold context here
           const SnackBar(content: Text('Unable to sign in. Please try again.')),
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(_scaffoldContext!).showSnackBar( // Use the stored Scaffold context here
+      ScaffoldMessenger.of(_scaffoldContext!).showSnackBar(
+        // Use the stored Scaffold context here
         SnackBar(content: Text('Error: ${e.toString()}')),
       );
     }
@@ -51,123 +55,124 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Login',
-            style: TextStyle(
-              color: Colors.white, // Set text color to white
-              fontWeight: FontWeight.bold, // Set text to bold
-              fontSize: 24, // Set font size to a larger value
-              fontFamily: 'DMSans',
-            ),
+      appBar: AppBar(
+        title: const Text(
+          'Login',
+          style: TextStyle(
+            color: Colors.white, // Set text color to white
+            fontWeight: FontWeight.bold, // Set text to bold
+            fontSize: 24, // Set font size to a larger value
+            fontFamily: 'DMSans',
           ),
-          backgroundColor: const Color.fromARGB(251, 17, 18, 18),
         ),
-        backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+        backgroundColor: const Color.fromARGB(251, 0, 0, 0),
+      ),
+      backgroundColor: const Color.fromARGB(251, 0, 0, 0),
       body: Builder(
         builder: (BuildContext context) {
           _scaffoldContext = context; // Store Scaffold context
           return Center(
             child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  // Logo Image
-                  Image.asset(
-                    'lib/assets/Live4youWhite.png',
-                    width: 350, // Adjust the width as needed
-                    height: 350, // Adjust the height as needed
-                  ),
-                  const SizedBox(height: 20.0),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      border:
-                          Border.all(color: const Color.fromARGB(255, 255, 255, 255)),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextFormField(
-                      controller: _emailController,
-                      style:
-                          const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
-                      decoration: const InputDecoration(
-                        hintText: 'Username',
-                        hintStyle: TextStyle(
-                            color: Colors.white, fontFamily: 'DNSans'),
-                        border: InputBorder.none,
-                        prefixIcon: Icon(Icons.person,
-                            color: Colors.white), // Add an icon as the prefix
+                padding: const EdgeInsets.all(20.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      // Logo Image
+                      Image.asset(
+                        'lib/assets/Live4youWhite.png',
+                        width: 350, // Adjust the width as needed
+                        height: 350, // Adjust the height as needed
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 20.0),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: const Color.fromARGB(255, 255, 255, 255)),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextFormField(
-                      controller: _passwordController,
-                      style:
-                          const TextStyle(color: Colors.white, fontFamily: 'DNSans'),
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        hintText: 'Password',
-                        hintStyle: TextStyle(
-                            color: Colors.white, fontFamily: 'DNSans'),
-                        border: InputBorder.none,
-                        prefixIcon: Icon(Icons.lock,
-                            color: Colors.white), // Add an icon as the prefix
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 12.0),
-                  ElevatedButton(
-                    onPressed: _login,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white, // Change button color
-                      padding: const EdgeInsets.all(16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      "Login",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontFamily: 'DNSans',
-                        color: Color.fromARGB(255, 0, 0, 0),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignUpScreen()),
-                      );
-                    },
-                    child: const Text(
-                      "Don't have an account? Sign Up",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontFamily: 'DNSans',
-                        color: Color.fromARGB(248, 255, 255,
-                            255), // Change this to your preferred color
+                      const SizedBox(height: 10.0),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 255, 255, 255)),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: TextFormField(
+                          controller: _emailController,
+                          style: const TextStyle(
+                              color: Colors.white, fontFamily: 'DNSans'),
+                          decoration: const InputDecoration(
+                            hintText: 'Username',
+                            hintStyle: TextStyle(
+                                color: Colors.white, fontFamily: 'DNSans'),
+                            border: InputBorder.none,
+                            prefixIcon: Icon(Icons.person,
+                                color:
+                                    Colors.white), // Add an icon as the prefix
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              )
-            ),
+                      const SizedBox(height: 20.0),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: const Color.fromARGB(255, 255, 255, 255)),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: TextFormField(
+                          controller: _passwordController,
+                          style: const TextStyle(
+                              color: Colors.white, fontFamily: 'DNSans'),
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            hintText: 'Password',
+                            hintStyle: TextStyle(
+                                color: Colors.white, fontFamily: 'DNSans'),
+                            border: InputBorder.none,
+                            prefixIcon: Icon(Icons.lock,
+                                color:
+                                    Colors.white), // Add an icon as the prefix
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 12.0),
+                      ElevatedButton(
+                        onPressed: _login,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white, // Change button color
+                          padding: const EdgeInsets.all(16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          "Login",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'DNSans',
+                            color: Color.fromARGB(255, 0, 0, 0),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignUpScreen()),
+                          );
+                        },
+                        child: const Text(
+                          "Don't have an account? Sign Up",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'DNSans',
+                            color: Color.fromARGB(248, 255, 255,
+                                255), // Change this to your preferred color
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
           );
         },
       ),
