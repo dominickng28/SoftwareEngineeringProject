@@ -149,10 +149,10 @@ class MySearch extends StatefulWidget {
   }
 
   @override
-  State<MySearch> createState() => _MySearchState();
+  State<MySearch> createState() => MySearchState();
 }
 
-class _MySearchState extends State<MySearch> {
+class MySearchState extends State<MySearch> {
   final MySearch mySearch = MySearch(title: 'Title');
   final TextEditingController _searchController = TextEditingController();
   final FriendService _friendService = FriendService();
@@ -337,6 +337,7 @@ Future<void> _searchByUsername(String username) async {
         iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
       ),
+
       backgroundColor: const Color.fromARGB(248, 0, 0, 0),
       body: SingleChildScrollView(
         child: Column(
