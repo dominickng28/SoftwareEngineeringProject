@@ -26,6 +26,13 @@ Once the sim device is running, either use the in IDE terminal and type the comm
 ![image](https://github.com/UNCW-CSC-450/csc450-fa23-project-team-4/assets/96816207/6fc8a2d3-12bb-4410-9574-0b1a71c9d5c2)
 
 
+BLACK BOX TESTING
+Testing if the navigation from the original login screen takes you to the sign up screen. When you press the sign up button you should be navigated to the next screen. <-- Testing that
+
+Run flutter test in the terminal of the navigation_test.dart file
+
+If it passes then you know the navigation from the login screen is correct. 
+
 ## Created by...
 * Yusuf Qureshi
 * Nick Palmieri

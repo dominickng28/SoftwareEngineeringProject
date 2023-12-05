@@ -30,6 +30,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
           ),
         ),
         backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       backgroundColor: Colors.black,
       body: Column(

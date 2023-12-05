@@ -25,7 +25,7 @@ class MySearch extends StatefulWidget {
             child: Text(
               'No Friend Requests',
               style: TextStyle(
-                fontWeight: FontWeight.bold,
+                // fontWeight: FontWeight.bold,
                 fontSize: 18,
                 fontFamily: 'DNSans',
                 color: Color.fromARGB(115, 255, 255, 255),
@@ -268,19 +268,29 @@ Widget _buildpostGrid(List<Post> postList) {
 }
 
 Future<void> _searchByUsername(String username) async {
+  //Check if textbox is empty
+  if (username.isNotEmpty){
   DocumentSnapshot userDoc = await FirebaseFirestore.instance
       .collection('users')
       .doc(username)
       .get();
   
-  if (userDoc.exists) {
-    List<String> usernames = [username];
-    _usernameStream.add(usernames);
+    if (userDoc.exists) {
+      List<String> usernames = [username];
+      _usernameStream.add(usernames);
+    } else {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No user found with the username $username'),
+        ),
+      );
+    }
+    //If the field is empty
   } else {
-    // ignore: use_build_context_synchronously
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('No user found with the username $username'),
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a usename.') 
       ),
     );
   }
@@ -301,6 +311,7 @@ Widget build(BuildContext context) {
         ),
       ),
       backgroundColor: const Color.fromARGB(251, 0, 0, 0),
+      iconTheme: IconThemeData(color: Colors.white),
       centerTitle: true,
     ),
     backgroundColor: const Color.fromARGB(248, 0, 0, 0),
@@ -435,19 +446,19 @@ Widget build(BuildContext context) {
           ),
 
           //Generate Friend Request List
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              'Friend Requests',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-                fontFamily: 'DNSans',
-                color: Colors.white,
-              ),
-            ),
-          ),
-          mySearch.buildFriendRequestsSection(),
+          // const Padding(
+          //   padding: EdgeInsets.symmetric(vertical: 8.0),
+          //   child: Text(
+          //     'Friend Requests',
+          //     style: TextStyle(
+          //       fontWeight: FontWeight.bold,
+          //       fontSize: 18,
+          //       fontFamily: 'DNSans',
+          //       color: Colors.white,
+          //     ),
+          //   ),
+          // ),
+          // mySearch.buildFriendRequestsSection(),
           //Recommended text
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -455,7 +466,7 @@ Widget build(BuildContext context) {
               'Recommended',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: 20,
                 fontFamily: 'DNSans',
                 color: Colors.white,
               ),
@@ -474,7 +485,7 @@ Widget build(BuildContext context) {
                   'No Recommendations',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                    fontSize: 20,
                     fontFamily: 'DNSans',
                     color: Color.fromARGB(115, 255, 255, 255),
                   ),
@@ -530,10 +541,10 @@ Widget build(BuildContext context) {
           ),
           // The rest of the world text
           const Padding(padding: EdgeInsets.symmetric(vertical: 8.0), 
-            child: Text('The Rest of The World', 
+            child: Text('Discover', 
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 20,
               fontFamily: 'DNSans',
               color: Colors.white,
               ),
