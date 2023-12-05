@@ -22,8 +22,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'LIVE4YOU',
       theme: ThemeData(
+
         colorScheme:
             ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 255, 255, 255)),
+
         useMaterial3: true,
       ),
       initialRoute: '/login',
@@ -43,25 +45,18 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
+  int _currentIndex = 1; // Set initial index to 1 (Home)
 
-  late List<Widget> _children; // Define _children here
+  late List<Widget> _children;
 
   @override
   void initState() {
     super.initState();
 
     _children = [
-      const MyFeed(
-        title: 'Home Feed',
-      ),
-      const WordsScreen(),
-      MySearch(
-        title: 'Search',
-      ),
-      const MyUserProfilePage(
-        title: 'User Profile',
-      ),
+      const WordsScreen(), // Words tab on the left
+      const MyFeed(title: 'Home Feed'), // Home tab in the middle
+      const MyUserProfilePage(title: 'User Profile'), // Profile tab on the right
     ];
   }
 
@@ -80,46 +75,31 @@ class MainScreenState extends State<MainScreen> {
         unselectedItemColor: const Color.fromARGB(248, 255, 255, 255),
         onTap: onTabTapped,
         currentIndex: _currentIndex,
-        items: const [
+        backgroundColor: Color.fromARGB(251, 0, 0, 0), // Set background color here
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.looks_4),
+            activeIcon: Icon(
+              Icons.looks_4,
+              color: Color.fromARGB(248, 255, 255, 255),
+            ),
+            label: _currentIndex == 0 ? 'Words' : '', // Show label only when selected
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             activeIcon: Icon(
               Icons.home,
               color: Color.fromARGB(248, 255, 255, 255),
             ),
-            backgroundColor: Color.fromARGB(251, 0, 0, 0),
-            // activeIcon: Icon(Icons.home, color: Color.fromARGB(248, 136, 0, 255), ),
-            // backgroundColor: const Color.fromRGBO(0, 45, 107, 0.992),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.looks_4),
-            // icon: Icon(Icons.beach_access),
-            activeIcon: Icon(
-              Icons.looks_4,
-              color: Color.fromARGB(248, 255, 255, 255),
-            ),
-            backgroundColor: Color.fromARGB(251, 0, 0, 0),
-            label: 'Words',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            activeIcon: Icon(
-              Icons.search,
-              color: Color.fromARGB(248, 255, 255, 255),
-            ),
-            backgroundColor: Color.fromARGB(251, 0, 0, 0),
-            label: 'Search',
+            label: _currentIndex == 1 ? 'Home' : '',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             activeIcon: Icon(
-              Icons.home,
+              Icons.person,
               color: Color.fromARGB(248, 255, 255, 255),
             ),
-            // activeIcon: Icon(Icons.person, color: const Color.fromARGB(249, 253, 208, 149)),
-            backgroundColor: Color.fromARGB(251, 0, 0, 0),
-            label: 'Profile',
+            label: _currentIndex == 2 ? 'Profile' : '',
           ),
         ],
       ),

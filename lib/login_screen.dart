@@ -138,9 +138,11 @@ class LoginScreenState extends State<LoginScreen> {
             fontFamily: 'DMSans',
           ),
         ),
+
         backgroundColor: const Color.fromARGB(251, 17, 18, 18),
       ),
       backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+
       body: Builder(
         builder: (BuildContext context) {
           _scaffoldContext = context; // Store Scaffold context
@@ -157,7 +159,9 @@ class LoginScreenState extends State<LoginScreen> {
                         width: 350, // Adjust the width as needed
                         height: 350, // Adjust the height as needed
                       ),
+
                       const SizedBox(height: 20.0),
+
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         decoration: BoxDecoration(
@@ -166,7 +170,9 @@ class LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: TextFormField(
+
                           key: Key('emailField'),
+
                           controller: _emailController,
                           style: const TextStyle(
                               color: Colors.white, fontFamily: 'DNSans'),
@@ -232,6 +238,7 @@ class LoginScreenState extends State<LoginScreen> {
                       ElevatedButton(
                         key: Key("loginGoogleButton"),
                         onPressed: _loginWithGoogle,
+
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white, // Change button color
                           padding: const EdgeInsets.all(16),
@@ -240,7 +247,9 @@ class LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         child: const Text(
+
                           "Login with Google",
+
                           style: TextStyle(
                             fontSize: 16,
                             fontFamily: 'DNSans',
@@ -254,7 +263,9 @@ class LoginScreenState extends State<LoginScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
+
                                 builder: (context) => SignUpScreen()),
+
                           );
                         },
                         child: const Text(

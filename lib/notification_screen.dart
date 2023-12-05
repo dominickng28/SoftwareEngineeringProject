@@ -18,7 +18,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    getCountOfFriendList();    
+    getCountOfFriendList();
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -30,18 +30,23 @@ class NotificationsScreenState extends State<NotificationsScreen> {
           ),
         ),
         backgroundColor: Colors.black,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       backgroundColor: Colors.black,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Divider(height: 4, color: Color.fromARGB(255, 255, 255, 255),),
+          const Divider(
+            height: 4,
+            color: Color.fromARGB(255, 255, 255, 255),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Friend Requests',
+                const Text(
+                  'Friend Requests',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -68,9 +73,15 @@ class NotificationsScreenState extends State<NotificationsScreen> {
               ],
             ),
           ),
-          const Divider(height: 4, color: Color.fromARGB(255, 255, 255, 255),),
+          const Divider(
+            height: 4,
+            color: Color.fromARGB(255, 255, 255, 255),
+          ),
           _mySearch.buildFriendRequestsSection(),
-          const Divider(height: 4, color: Color.fromARGB(255, 255, 255, 255),),
+          const Divider(
+            height: 4,
+            color: Color.fromARGB(255, 255, 255, 255),
+          ),
           buildNotificationSection(
             title: 'Likes',
             notificationCount: likesNotificationCount,
@@ -85,14 +96,15 @@ class NotificationsScreenState extends State<NotificationsScreen> {
         ],
       ),
     );
-  } 
+  }
 
-Future<void> getCountOfFriendList() async {
-  List<String> friends = await _friendService.getFriendRequest(UserData.userName);
-  setState(() {
-    friendRequestsNotificationCount = friends.length;
-  });
-}
+  Future<void> getCountOfFriendList() async {
+    List<String> friends =
+        await _friendService.getFriendRequest(UserData.userName);
+    setState(() {
+      friendRequestsNotificationCount = friends.length;
+    });
+  }
 
   Widget buildNotificationSection({
     required String title,
@@ -162,5 +174,4 @@ Future<void> getCountOfFriendList() async {
       ),
     );
   }
-  
 }

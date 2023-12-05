@@ -122,6 +122,7 @@ class PostSignUpScreenState extends State<PostSignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Account Info',
@@ -132,9 +133,9 @@ class PostSignUpScreenState extends State<PostSignUpScreen> {
             fontFamily: 'DMSans',
           ),
         ),
-        backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+        backgroundColor: const Color.fromARGB(251, 0, 0, 0),
       ),
-      backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+      backgroundColor: const Color.fromARGB(251, 0, 0, 0),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
@@ -217,6 +218,7 @@ class PostSignUpScreenState extends State<PostSignUpScreen> {
                     style: const TextStyle(
                         color: Colors.white, fontFamily: 'DNSans'),
                     maxLines: null,
+                    textAlignVertical: TextAlignVertical.center,
                     decoration: const InputDecoration(
                       hintText: 'Bio',
                       hintStyle:

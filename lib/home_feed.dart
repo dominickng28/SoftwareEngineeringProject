@@ -185,25 +185,31 @@ class _MyFeedTest extends State<MyFeed> {
       appBar: AppBar(
         backgroundColor: Color.fromARGB(251, 0, 0, 0),
         leading: IconButton(
+
           icon: Icon(Icons.notifications, color: Colors.white), // Bell icon
+
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
+
                 builder: (context) => NotificationsScreen(),
+
               ),
             );
           },
         ),
         flexibleSpace: Padding(
+
           padding: EdgeInsets.only(
               top: 60.0), // Adjust the top padding value to lower the image
+
           child: Center(
             child: Image.asset(
-              'lib/assets/Live4youWhite.png', // Replace 'lib/assets/Live4youWhite.png' with your image path
-              height: 120, // Adjust the height of the image
-              width: 130, // Adjust the width of the image
-            ),
+                'lib/assets/Live4youWhite.png', // Replace 'lib/assets/Live4youWhite.png' with your image path
+                height: 120, // Adjust the height of the image
+                width: 130, // Adjust the width of the image
+                fit: BoxFit.contain),
           ),
         ),
         actions: [
@@ -222,7 +228,9 @@ class _MyFeedTest extends State<MyFeed> {
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
         child: posts.isEmpty
+
             ? Center(
+
                 child: Text("No posts..."),
               )
             : ListView.builder(
@@ -251,6 +259,8 @@ class _MyFeedTest extends State<MyFeed> {
       ),
     );
   }
+
+
 }
 
 class PostCard extends StatefulWidget {
@@ -340,7 +350,9 @@ class _PostCardState extends State<PostCard> {
               ),
               title: Text(
                 widget.post.username,
+
                 style: TextStyle(
+
                   fontFamily: 'DMSans',
                   fontSize: 23,
                   color: Colors.white,
@@ -349,7 +361,9 @@ class _PostCardState extends State<PostCard> {
               ),
               subtitle: Text(
                 widget.post.caption,
+
                 style: TextStyle(
+
                   fontFamily: 'DMSans',
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -357,12 +371,15 @@ class _PostCardState extends State<PostCard> {
                 ),
               ),
               trailing: Container(
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+
+
                 child: Transform(
                   transform:
                       Matrix4.skewX(-0.05), // Adjust the skew factor as needed
                   child: Container(
+
                     padding: EdgeInsets.symmetric(
+
                         horizontal: 10,
                         vertical: 6), // Adjust the padding values
                     decoration: BoxDecoration(
@@ -371,7 +388,9 @@ class _PostCardState extends State<PostCard> {
                     ),
                     child: Text(
                       widget.post.word, // Placeholder for your word
+
                       style: TextStyle(
+
                         fontFamily: 'DMSans',
                         fontSize: 22, // Adjust the font size as needed
                         fontWeight: FontWeight
@@ -424,8 +443,10 @@ class _PostCardState extends State<PostCard> {
                       ),
                       if (widget.post.username == UserData.userName)
                         IconButton(
+
                           icon: Icon(Icons.delete_forever),
                           color: Colors.blueGrey,
+
                           onPressed: () => deletePost(context),
                         ),
                     ],
@@ -479,6 +500,7 @@ class _PostCardState extends State<PostCard> {
             ],
           );
         });
+
   }
 
   Future<void> removeFromPostList() async {

@@ -173,9 +173,11 @@ class SignUpScreenState extends State<SignUpScreen> {
               fontFamily: 'DNSans' // Set font size to a larger value
               ),
         ),
+
         backgroundColor: const Color.fromARGB(251, 17, 18, 18),
       ),
       backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
