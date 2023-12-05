@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:live4you/friend.dart';
+//import 'package:firebase_storage/firebase_storage.dart';
+//import 'package:live4you/friend.dart';
 import 'package:live4you/home_feed.dart';
 import 'user.dart';
 import 'user_data.dart';
 import 'post.dart';
-import 'home_feed.dart';
+//import 'home_feed.dart';
 import 'camera_screen.dart';
 import 'friend_service.dart';
 import 'friends_screen.dart';
-import 'search_screen.dart';
+//import 'search_screen.dart';
 import 'edit_profile_page.dart';
 
 class MyUserProfilePage extends StatefulWidget {
@@ -36,6 +36,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
   final FriendService _friendService = FriendService();
   late Future<int> followerCount;
   String? userBio;
+  BuildContext? _scaffoldContext;
 
   @override
   void initState() {
@@ -124,16 +125,16 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
     return allPostData;
   }
 
-  void _navigateToMySearch() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MySearch(
-          title: 'Search',
-        ),
-      ),
-    );
-  }
+  //void _navigateToMySearch() {
+    //Navigator.push(
+      //context,
+      //MaterialPageRoute(
+        //builder: (context) => MySearch(
+          //title: 'Search',
+        //),
+      //),
+    //);
+  //}
 
   void refreshProfile() {
     setState(() {
@@ -146,13 +147,14 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
   Widget build(BuildContext context) {
     // Display a default title if the profileUserName is null
     String title = widget.profileUserName ?? 'Profile';
+    _scaffoldContext = context;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             fontFamily: "DNSans",
@@ -160,7 +162,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
           ),
         ),
         centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
 
       body: SingleChildScrollView(
@@ -238,7 +240,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
             ),
             // Code for the Profile Banner
             Container(
-              color: Color.fromARGB(248, 0, 0, 0),
+              color: const Color.fromARGB(248, 0, 0, 0),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
@@ -290,7 +292,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontFamily: 'DMSans',
                                   fontSize: 23,
                                   color: Colors.white,
@@ -301,7 +303,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                             Text(
                               userBio ??
                                   '', // Display the user's bio if available
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: 'DMSans',
                                 fontSize: 14,
                                 color: Colors.white,
@@ -313,7 +315,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                       ),
                     ),
                     Container(
-                      color: Color.fromARGB(248, 0, 0, 0),
+                      color: const Color.fromARGB(248, 0, 0, 0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -322,7 +324,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => MyFriends(
+                                    builder: (context) => const MyFriends(
                                           title: 'Friends',
                                         )),
                               );
@@ -337,7 +339,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                               ),
                             ),
                           ),
-                          SizedBox(width: 8.0),
+                          const SizedBox(width: 8.0),
                           FutureBuilder<int>(
                             future: widget.profileUserName != null
                                 ? fetchFollowerCount(widget.profileUserName!)
@@ -346,13 +348,13 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                                 AsyncSnapshot<int> snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return CircularProgressIndicator();
+                                return const CircularProgressIndicator();
                               } else if (snapshot.hasError) {
                                 return Text('Error: ${snapshot.error}');
                               } else {
                                 return Text(
                                   snapshot.data.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontFamily: 'DMSans',
                                     fontSize: 12,
                                     color: Colors.white,
@@ -363,10 +365,12 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                             },
                           ),
                         ],
+                        
                       ),
                     ),
                   ],
                 ),
+                
               ),
             ),
 
@@ -379,7 +383,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                 builder:
                     (BuildContext context, AsyncSnapshot<List<Post>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else {
@@ -387,7 +391,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                       padding: const EdgeInsets.all(
                           8.0), // Add padding around the grid
                       child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
                           mainAxisSpacing: 8.0, // Increase main axis spacing
                           crossAxisSpacing: 8.0, // Increase cross axis spacing
@@ -400,9 +404,10 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return Dialog(
-                                    child: Container(
+                                    child: SizedBox(
                                       width: MediaQuery.of(context).size.width *
-                                          0.8, // Set the width to 80% of screen width
+                                          0.7, // Set the width to 80% of screen width
+                                      height: MediaQuery.of(context).size.height*0.8, 
                                       child:
                                           PostCard(post: snapshot.data![index]),
                                     ),
@@ -441,7 +446,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                 final firstCamera = cameras.first;
 
                 final didCreatePost = await Navigator.push(
-                  context,
+                  _scaffoldContext!,
                   MaterialPageRoute(
                     builder: (context) => CameraScreen(camera: firstCamera),
                   ),
@@ -477,7 +482,7 @@ Future<int> fetchFollowerCount(String username) async {
     }
   } else {
     // User document doesn't exist
-    print('Error: User document does not exist.');
+    //print('Error: User document does not exist.');
     return 0;
   }
   return 0;
