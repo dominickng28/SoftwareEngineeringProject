@@ -22,8 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'LIVE4YOU',
       theme: ThemeData(
-        colorScheme:
-            ColorScheme.fromSeed(seedColor:const Color.fromARGB(144, 10, 231, 139)),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
       ),
       initialRoute: '/login',
@@ -114,7 +113,7 @@ class MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             activeIcon: Icon(
-              Icons.home,
+              Icons.person,
               color: Color.fromARGB(248, 255, 255, 255),
             ),
             // activeIcon: Icon(Icons.person, color: const Color.fromARGB(249, 253, 208, 149)),
