@@ -37,7 +37,7 @@ class _MyScreenState extends State<WordsScreen> {
 
   late Timer _timer;
   late DateTime _nextRefreshTime;
-  late Duration durationUntilNextRefresh = Duration();
+  late Duration durationUntilNextRefresh = const Duration();
 
   List<String> words = ['Cook', 'Biking', 'Draw', 'Run']; // STORES WORDS
   List<String> wordImages = [
@@ -60,6 +60,7 @@ class _MyScreenState extends State<WordsScreen> {
   _initializeCamera() async {
     try {
       cameras = await availableCameras();
+      // ignore: avoid_print
       print("Cameras: $cameras"); // Add this line to check the cameras
       if (cameras.isNotEmpty) {
         _cameraController =
@@ -70,6 +71,7 @@ class _MyScreenState extends State<WordsScreen> {
         });
       }
     } catch (e) {
+      // ignore: avoid_print
       print("Error getting camera: $e");
     }
   }
@@ -222,7 +224,9 @@ class _MyScreenState extends State<WordsScreen> {
                               color: Colors.white,
                             ),
                           ),
-                          SizedBox(width: 8.0),
+
+                          const SizedBox(width: 8.0),
+                          
                           Checkbox(
                             value: checkBoxState[i],
                             onChanged: (bool? value) {
@@ -254,7 +258,7 @@ class _MyScreenState extends State<WordsScreen> {
                     ),
 
                     // Divider
-                    Divider(
+                    const Divider(
                       color: Colors.transparent, // Transparent divider
                       thickness: 0.5,
                       indent: 16.0,
