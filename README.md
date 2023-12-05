@@ -40,3 +40,18 @@ If it passes then you know the navigation from the login screen is correct.
 * Daniel Ruiz Valencia 
 * Kenneth Dearstine
 * Nate Smith
+
+
+
+Testing Friends List:
+
+The user can tap the 'friends' button to view everyone currently following them:
+Step 1: Create a new account through the sign up page
+Step 2: Sign out of this account
+Step 3: Create a second new account through the sign up page
+Step 4: Search for the first account you created and send them a friend request
+Step 5: Sign out of this account
+Step 6: Sign in to the first account
+Step 7: Accept the friend request from the second account
+Step 8: Go your profile page
+Step 9: Press the friends button underneath
