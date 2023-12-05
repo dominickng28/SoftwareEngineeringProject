@@ -5,26 +5,26 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:live4you/user_data.dart';
-import 'package:path/path.dart' show join;
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
+//import 'package:path/path.dart' show join;
+//import 'package:path_provider/path_provider.dart';
+//import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class CameraScreen extends StatefulWidget {
   final CameraDescription camera;
 
   const CameraScreen({
-    Key? key,
+    super.key,
     required this.camera,
-  }) : super(key: key);
+  });
 
   @override
-  _CameraScreenState createState() => _CameraScreenState();
+  CameraScreenState createState() => CameraScreenState();
 }
 
-class _CameraScreenState extends State<CameraScreen> {
+class CameraScreenState extends State<CameraScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
-  final TextEditingController _captionController = TextEditingController();
+  //final TextEditingController _captionController = TextEditingController();
   String? imagePath;
 
   // List of options for the carousel
@@ -46,10 +46,12 @@ class _CameraScreenState extends State<CameraScreen> {
     _controller.dispose();
     super.dispose();
   }
+  BuildContext? _scaffoldContext;
 
   Future<void> _takePicture() async {
     try {
       await _initializeControllerFuture;
+      _scaffoldContext = context;
 
       final XFile photo = await _controller.takePicture();
 
@@ -62,16 +64,16 @@ class _CameraScreenState extends State<CameraScreen> {
       await compressedFile.writeAsBytes(compressedPic);
 
       Navigator.push(
-        context,
+        _scaffoldContext!,
         MaterialPageRoute(
-          builder: (context) => PreviewPostCard(
+          builder: (scaffoldContext) => PreviewPostCard(
             imagePath: compressedFile.path,
             selectedOption: selectedOption,
           ),
         ),
       );
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -93,7 +95,7 @@ class _CameraScreenState extends State<CameraScreen> {
               if (snapshot.connectionState == ConnectionState.done) {
                 return CameraPreview(_controller);
               } else {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
             },
           ),
@@ -102,9 +104,9 @@ class _CameraScreenState extends State<CameraScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Transform.translate(
-                offset: Offset(0, -250), // Move the carousel up
+                offset: const Offset(0, -250), // Move the carousel up
                 child: DefaultTextStyle(
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 30, 
                     color: Colors.black, 
                     fontWeight: FontWeight.bold), // Increase the font size
@@ -128,8 +130,8 @@ class _CameraScreenState extends State<CameraScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: FloatingActionButton(
-                child: Icon(Icons.camera_alt),
                 onPressed: _takePicture,
+                child: const Icon(Icons.camera_alt),
               ),
             ),
           ),
@@ -143,18 +145,20 @@ class PreviewPostCard extends StatefulWidget {
   final String imagePath;
   final String selectedOption;
 
-  PreviewPostCard({required this.imagePath, required this.selectedOption});
+  const PreviewPostCard({super.key, required this.imagePath, required this.selectedOption});
 
   @override
-  _PreviewPostCardState createState() => _PreviewPostCardState();
+  PreviewPostCardState createState() => PreviewPostCardState();
 }
 
-class _PreviewPostCardState extends State<PreviewPostCard> {
+class PreviewPostCardState extends State<PreviewPostCard> {
   final TextEditingController _captionController = TextEditingController();
+  BuildContext? _scaffoldContext;
 
   Future<void> _savePicture() async {
     try {
       final String fileName = widget.imagePath.split('/').last;
+      _scaffoldContext = context;
       Reference firebaseStorageRef =
           FirebaseStorage.instance.ref().child('posts/$fileName');
 
@@ -202,29 +206,29 @@ class _PreviewPostCardState extends State<PreviewPostCard> {
         }
       }
 
-      Navigator.pop(context, true);
+      Navigator.pop(_scaffoldContext!, true);
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add a caption')),
+      appBar: AppBar(title: const Text('Add a caption')),
       body: SingleChildScrollView(
         child: Container(
-          color: Color.fromARGB(248, 0, 0, 0),
+          color:const Color.fromARGB(248, 0, 0, 0),
           child: Column(
             children: [
               ListTile(
-                leading: CircleAvatar(
+                leading: const CircleAvatar(
                   backgroundImage: AssetImage(
                       'lib/assets/default-user.jpg'), // Replace with your placeholder image
                 ),
                 title: Text(
                   UserData.userName, // Replace with the username
-                  style: TextStyle(
+                  style:const TextStyle(
                     fontFamily: 'DMSans',
                     fontSize: 23,
                     color: Colors.white,
@@ -232,14 +236,14 @@ class _PreviewPostCardState extends State<PreviewPostCard> {
                   ),
                 ),
                 trailing: Container(
-                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.teal,
                   ),
                   child: Text(
                     widget.selectedOption, // Display the selected option
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'DMSans',
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -256,14 +260,14 @@ class _PreviewPostCardState extends State<PreviewPostCard> {
                 ),
               ),
               TextField(
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 controller: _captionController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: 'Caption', fillColor: Colors.white),
               ),
               ElevatedButton(
                 onPressed: _savePicture,
-                child: Text('Post'),
+                child: const Text('Post'),
               ),
             ],
           ),
@@ -277,22 +281,24 @@ class CaptionScreen extends StatefulWidget {
   final String imagePath;
   final String selectedOption;
 
-  CaptionScreen({
-    Key? key,
+  const CaptionScreen({
+    super.key,
     required this.imagePath,
     required this.selectedOption,
-  }) : super(key: key);
+  });
 
   @override
-  _CaptionScreenState createState() => _CaptionScreenState();
+  CaptionScreenState createState() => CaptionScreenState();
 }
 
-class _CaptionScreenState extends State<CaptionScreen> {
+class CaptionScreenState extends State<CaptionScreen> {
   final TextEditingController _captionController = TextEditingController();
+  BuildContext? _scaffoldContext;
 
   Future<void> _savePicture() async {
     try {
       final String fileName = widget.imagePath.split('/').last;
+      _scaffoldContext = context; 
       Reference firebaseStorageRef =
           FirebaseStorage.instance.ref().child('posts/$fileName');
 
@@ -340,29 +346,29 @@ class _CaptionScreenState extends State<CaptionScreen> {
         }
       }
 
-      Navigator.pop(context, true);
+      Navigator.pop(_scaffoldContext!, true);
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add a caption')),
+      appBar: AppBar(title: const Text('Add a caption')),
       body: SingleChildScrollView(
         // Add this
         child: Column(
           children: [
             Image.file(File(widget.imagePath)),
             TextField(
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
               controller: _captionController,
-              decoration: InputDecoration(labelText: 'Caption'),
+              decoration: const InputDecoration(labelText: 'Caption'),
             ),
             ElevatedButton(
               onPressed: _savePicture,
-              child: Text('Post'),
+              child: const Text('Post'),
             ),
           ],
         ),

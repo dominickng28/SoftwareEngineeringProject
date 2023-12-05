@@ -1,9 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'post.dart';
-import 'user.dart';
 import 'user_data.dart';
 import 'camera_screen.dart';
 import 'search_screen.dart';
@@ -35,7 +33,7 @@ class _MyFeedTest extends State<MyFeed> {
   void _checkIfFirstTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
-    print('isFirstTime: $isFirstTime');
+    //print('isFirstTime: $isFirstTime');
     if (isFirstTime) {
     // if (true) {
 
@@ -51,7 +49,7 @@ class _MyFeedTest extends State<MyFeed> {
         return AlertDialog(
           backgroundColor: Colors.white,
           // iconPadding: EdgeInsets.all(10.0),
-          contentPadding: EdgeInsets.all(5.0),
+          contentPadding: const EdgeInsets.all(5.0),
           // insetPadding: EdgeInsets.zero,
           // iconPadding: EdgeInsets.zero, 
           shape: RoundedRectangleBorder(
@@ -60,7 +58,7 @@ class _MyFeedTest extends State<MyFeed> {
           ),
 
           content: Container(
-            padding: EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(20.0),
             decoration: BoxDecoration(
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(15.0),
@@ -73,13 +71,13 @@ class _MyFeedTest extends State<MyFeed> {
               children: [
                 Row(
                   children: [
-                    // Image.asset(
-                    //   'Live4youLine.png',
-                    //   height: 5,
-                    //   width: 5,
-                    // ),
-                    SizedBox(width: 10),
-                    Text(
+                    Image.asset(
+                      'Live4youLine.png',
+                      height: 50,
+                      width: 50,
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
                       'Welcome to Live4You!',
                       style: TextStyle(
                         fontSize: 18,
@@ -90,9 +88,8 @@ class _MyFeedTest extends State<MyFeed> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
-
-                Text(
+                const SizedBox(height: 10),
+                const Text(
                   "Live4You is not just another social media app; it's a platform designed to inspire you to live an active and fulfilling life. Each week, we present you with four exciting words/activities. Your mission: turn these words into actions! 🚴‍♂️🏞️\n\nHere's how it works:\n1. Every Monday, discover four new words of the week.\n2. Embark on exciting activities that align with the weekly words. \n3. Capture the moments by sharing photos of your completed activites.\n4. Personalize your profile, connect with friends, and share your journey through your post.\n\nLet Live4You be your guide to a more vibrant and active lifestyle! 🌟",
                   style: TextStyle(
                     fontSize: 18, 
@@ -104,13 +101,7 @@ class _MyFeedTest extends State<MyFeed> {
           ),
           actions: <Widget>[
             TextButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.black),  
-              ),
-              child: Text(
-                'Explore', 
-                ),
-
+              child: const Text('Explore'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -167,7 +158,7 @@ class _MyFeedTest extends State<MyFeed> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MyUserProfilePage(
+        builder: (context) => const MyUserProfilePage(
           title: 'User Profile',
           // Add any necessary parameters for the profile screen
         ),
@@ -184,20 +175,20 @@ class _MyFeedTest extends State<MyFeed> {
     _checkIfFirstTime();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(251, 0, 0, 0),
+        backgroundColor: const Color.fromARGB(251, 0, 0, 0),
         leading: IconButton(
-        icon: Icon(Icons.notifications, color: Colors.white), // Bell icon
+        icon: const Icon(Icons.notifications, color: Colors.white), // Bell icon
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => NotificationsScreen(),
+              builder: (context) => const NotificationsScreen(),
             ),
           );
         },
       ),
         flexibleSpace: Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
               top: 60.0), // Adjust the top padding value to lower the image
           child: Center(
             child: Image.asset(
@@ -213,17 +204,17 @@ class _MyFeedTest extends State<MyFeed> {
             onPressed: _navigateToMySearch,
           ),
           IconButton(
-            icon: Icon(Icons.account_circle, color: Colors.white),
+            icon: const Icon(Icons.account_circle, color: Colors.white),
             onPressed: _navigateToMyUserProfilePage,
           ),
         ],
       ),
-      backgroundColor: Color.fromARGB(248, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(248, 0, 0, 0),
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
         child: posts.isEmpty
-          ? Center(
+          ? const Center(
               child: Text("No posts..."),
             )
           : ListView.builder(
@@ -234,38 +225,42 @@ class _MyFeedTest extends State<MyFeed> {
             ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final cameras = await availableCameras();
-          final firstCamera = cameras.first;
-
-          final didCreatePost = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CameraScreen(camera: firstCamera),
-            ),
-          );
-
-          if (didCreatePost == true) {
-            fetchAllPostData(); // Refresh the feed if a new post was created
-          }
-        },
+        onPressed: () => _navigateToCameraScreen(context),
         tooltip: 'Camera',
         child: const Icon(Icons.camera_alt),
       ),
     );
   }
+  void _navigateToCameraScreen(BuildContext context) async {
+  final cameras = await availableCameras();
+  final firstCamera = cameras.first;
+
+  if (mounted) {
+    final didCreatePost = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CameraScreen(camera: firstCamera),
+      ),
+    );
+
+    if (didCreatePost == true) {
+      fetchAllPostData(); // Refresh the feed if a new post was created
+    }
+  }
 }
+}
+
 
 class PostCard extends StatefulWidget {
   final Post post;
 
-  PostCard({required this.post});
+  const PostCard({required this.post, super.key});
 
   @override
-  _PostCardState createState() => _PostCardState();
+  PostCardState createState() => PostCardState();
 }
 
-class _PostCardState extends State<PostCard> {
+class PostCardState extends State<PostCard> {
   final FriendService friendService = FriendService();
 
   bool isLiked = false; // Track whether the post is liked
@@ -290,11 +285,10 @@ class _PostCardState extends State<PostCard> {
     //checking which post is made by the user
     isLiked = widget.post.likes?.contains(UserData.userName) ?? false;
 
-    bool isPoster = widget.post.username == UserData.userName;
     double screenWidth = MediaQuery.of(context).size.width;
     double cutOffValue = 0.95;
     return Container(
-      color: Color.fromARGB(248, 0, 0, 0),
+      color: const Color.fromARGB(248, 0, 0, 0),
       child: Column(
         children: [
           ListTile(
@@ -341,7 +335,7 @@ class _PostCardState extends State<PostCard> {
             ),
             title: Text(
               widget.post.username,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'DMSans',
                 fontSize: 23,
                 color: Colors.white,
@@ -350,7 +344,7 @@ class _PostCardState extends State<PostCard> {
             ),
             subtitle: Text(
               widget.post.caption,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'DMSans',
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
@@ -358,29 +352,29 @@ class _PostCardState extends State<PostCard> {
               ),
             ),
             trailing: Container(
-  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-  child: Transform(
-    transform: Matrix4.skewX(-0.05), // Adjust the skew factor as needed
-    child: Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6), // Adjust the padding values
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        widget.post.word, // Placeholder for your word
-        style: TextStyle(
-          fontFamily: 'DMSans',
-          fontSize: 22, // Adjust the font size as needed
-          fontWeight: FontWeight.w900, // Adjust the fontWeight for thicker letters
-          fontStyle: FontStyle.italic,
-          decoration: TextDecoration.underline,
-          color: Colors.white,
-        ),
-      ),
-    ),
-  ),
-)
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            child: Transform(
+              transform: Matrix4.skewX(-0.05), // Adjust the skew factor as needed
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), // Adjust the padding values
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  widget.post.word, // Placeholder for your word
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    fontSize: 22, // Adjust the font size as needed
+                    fontWeight: FontWeight.w900, // Adjust the fontWeight for thicker letters
+                    fontStyle: FontStyle.italic,
+                    decoration: TextDecoration.underline,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          )
 
 
           ),
@@ -406,16 +400,16 @@ class _PostCardState extends State<PostCard> {
                     fontWeight: FontWeight.bold,
                     fontFamily: 'DMSans'),
               ),
-              Spacer(),
+              const Spacer(),
               Flexible(
                 child: Padding(
-                  padding: EdgeInsets.only(right: 16.0),
+                  padding: const EdgeInsets.only(right: 16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
                         timeAgo(widget.post.date),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 12,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -424,7 +418,7 @@ class _PostCardState extends State<PostCard> {
                       ),
                       if (widget.post.username == UserData.userName)
                         IconButton(
-                          icon: Icon(Icons.delete_forever),
+                          icon: const Icon(Icons.delete_forever),
                           color: Colors.blueGrey,
                           onPressed: () => deletePost(context),
                         ),
@@ -437,49 +431,50 @@ class _PostCardState extends State<PostCard> {
           Container(
               height: 2.0,
               width: screenWidth * cutOffValue,
-              color: Color.fromARGB(248, 35, 36, 44)),
+              color: const Color.fromARGB(248, 35, 36, 44)),
         ],
       ),
     );
   }
 
   Future<void> deletePost(BuildContext parentContext) async {
-    return showDialog(
-        context: parentContext,
-        builder: (conext) {
-          return SimpleDialog(
-            title: Text("Delete post?"),
-            children: <Widget>[
-              SimpleDialogOption(
-                onPressed: () async {
-                  //removes post from Firebase and user postList
-                  Navigator.pop(conext);
-                  await removeFromPostList();
-                  FirebaseFirestore.instance
-                      .collection('posts')
-                      .doc(widget.post.getPostID())
-                      .delete();
-                  if (mounted) {
-                    setState(() {});
-                  }
-
-                  ScaffoldMessenger.of(parentContext).showSnackBar(SnackBar(
+  return showDialog(
+    context: parentContext,
+    builder: (context) {
+      return SimpleDialog(
+        title: const Text("Delete post?"),
+        children: <Widget>[
+          SimpleDialogOption(
+            onPressed: () async {
+              Navigator.pop(context);
+              await removeFromPostList();
+              FirebaseFirestore.instance
+                  .collection('posts')
+                  .doc(widget.post.getPostID())
+                  .delete();
+              if (mounted) {
+                ScaffoldMessenger.of(parentContext).showSnackBar(
+                  const SnackBar(
                     content: Text('Post has been deleted'),
-                  ));
-                },
-                child: Text(
-                  'Delete',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-              SimpleDialogOption(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
-              )
-            ],
-          );
-        });
-  }
+                  ),
+                );
+              }
+              setState(() {});
+            },
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          )
+        ],
+      );
+    },
+  );
+}
 
   Future<void> removeFromPostList() async {
     final firestoreInstance = FirebaseFirestore.instance;

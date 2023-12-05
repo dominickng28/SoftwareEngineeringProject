@@ -1,31 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'profile_screen.dart';
 import 'friend_service.dart';
 import 'user_data.dart';
-
-// import 'user.dart';
-
-// import 'main.dart';
-
-
-
+import 'search_screen.dart';
 
 class NotificationsScreen extends StatefulWidget {
+  const NotificationsScreen({super.key});
+
   @override
-  _NotificationsScreenState createState() => _NotificationsScreenState();
+  NotificationsScreenState createState() => NotificationsScreenState();
 }
 
-class _NotificationsScreenState extends State<NotificationsScreen> {
+class NotificationsScreenState extends State<NotificationsScreen> {
+  final FriendService _friendService = FriendService();
+  final MySearch _mySearch = MySearch(title: "Search");
   int likesNotificationCount = 0;
   int friendRequestsNotificationCount = 0;
-  final FriendService _friendService = FriendService();
 
   @override
   Widget build(BuildContext context) {
+    getCountOfFriendList();    
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Notifications',
           style: TextStyle(
             color: Color.fromARGB(255, 255, 255, 255),
@@ -39,15 +35,46 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildFriendRequestsSection(),
-          Divider(
-            height: 4,
-            color: const Color.fromARGB(255, 255, 255, 255),
+          const Divider(height: 4, color: Color.fromARGB(255, 255, 255, 255),),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Friend Requests',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    fontFamily: 'DMSans',
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '$friendRequestsNotificationCount',
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
+          const Divider(height: 4, color: Color.fromARGB(255, 255, 255, 255),),
+          _mySearch.buildFriendRequestsSection(),
+          const Divider(height: 4, color: Color.fromARGB(255, 255, 255, 255),),
           buildNotificationSection(
             title: 'Likes',
             notificationCount: likesNotificationCount,
-            titleTextStyle: TextStyle(
+            titleTextStyle: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
               decoration: TextDecoration.underline,
@@ -58,161 +85,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         ],
       ),
     );
-  }
+  } 
 
-  Widget buildFriendRequestsSection() {
-    return StreamBuilder<List<String>>(
-      stream: _friendService.receivedFriendRequestsStream(UserData.userName),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          List<String> friendRequests = snapshot.data!;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              buildNotificationSection(
-                title: 'Friend Requests',
-                notificationCount: friendRequests.length,
-                titleTextStyle: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
-                  color: Color.fromARGB(255, 255, 255, 255),
-                  fontFamily: 'DMSans',
-                ),
-              ),
-              // Inside the buildFriendRequestsSection method
-for (int index = 0; index < friendRequests.length; index++)
-  Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(friendRequests[index])
-                  .snapshots(),
-              builder: (context, userSnapshot) {
-                if (userSnapshot.hasData) {
-                  var userFriend = userSnapshot.data!.data()
-                      as Map<String, dynamic>;
-                  var profilePicUrl =
-                      userFriend['profile_picture'] ?? 'lib/assets/default-user.jpg';
-                  return ListTile(
-                    leading: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MyUserProfilePage(
-                              title: 'User Profile',
-                              profileUserName: friendRequests[index],
-                            ),
-                          ),
-                        );
-                      },
-                      child: CircleAvatar(
-                        backgroundImage: _buildImageProvider(profilePicUrl),
-                        radius: 25.0,
-                      ),
-                    ),
-                    title: Text(
-                      friendRequests[index],
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontFamily: 'DMSans',
-                      ),
-                    ),
-                  );
-                } else {
-                  return ListTile(
-                    title: Text(friendRequests[index]),
-                    subtitle: const CircularProgressIndicator(),
-                  );
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-  Container(
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.white), // Add border
-      borderRadius: BorderRadius.circular(8), // Add border radius
-    ),
-    child: ElevatedButton(
-      onPressed: () {
-        _friendService.acceptFriendRequest(
-            UserData.userName, friendRequests[index]);
-      },
-      style: ElevatedButton.styleFrom(
-        primary: Colors.transparent, // Make the button transparent
-        onPrimary: Colors.white,
-      ),
-      child: Text(
-        'Accept',
-        style: TextStyle(fontSize: 13, fontFamily: 'DNSans'),
-      ),
-    ),
-  ),
-  Container(
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.white), // Add border
-      borderRadius: BorderRadius.circular(5), // Add border radius
-    ),
-    child: ElevatedButton(
-      onPressed: () {
-        _friendService.cancelFriendRequest(
-            friendRequests[index], UserData.userName);
-      },
-      style: ElevatedButton.styleFrom(
-        primary: const Color.fromARGB(0, 255, 255, 255), // Make the button transparent
-        onPrimary: const Color.fromARGB(255, 255, 255, 255),
-      ),
-      child: Text(
-        'Ew, No',
-        style: TextStyle(fontSize: 13, fontFamily: 'DNSans'),
-      ),
-    ),
-  ),
-  SizedBox(height: 5),
-],
-
-      ),
-      SizedBox(height: 5),
-    ],
-  ),
-
-            ],
-          );
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error loading friend requests'));
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-    );
-  }
-
-ImageProvider _buildImageProvider(String profilePicUrl) {
-  ImageProvider imageProvider;
-  if (profilePicUrl == 'lib/assets/default-user.jpg') {
-    imageProvider = AssetImage(profilePicUrl);
-  } else {
-    imageProvider = NetworkImage(profilePicUrl);
-  }
-  return imageProvider;
+Future<void> getCountOfFriendList() async {
+  List<String> friends = await _friendService.getFriendRequest(UserData.userName);
+  setState(() {
+    friendRequestsNotificationCount = friends.length;
+  });
 }
 
   Widget buildNotificationSection({
@@ -229,7 +108,7 @@ ImageProvider _buildImageProvider(String profilePicUrl) {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '$title',
+                title,
                 style: titleTextStyle,
               ),
               GestureDetector(
@@ -237,15 +116,15 @@ ImageProvider _buildImageProvider(String profilePicUrl) {
                   showNotificationDropDown(title);
                 },
                 child: Container(
-                  padding: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 255, 255, 255),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     '$notificationCount',
-                    style: TextStyle(
-                      color: const Color.fromARGB(255, 0, 0, 0),
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 0),
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
                     ),
@@ -255,9 +134,9 @@ ImageProvider _buildImageProvider(String profilePicUrl) {
             ],
           ),
         ),
-        Divider(
+        const Divider(
           height: 4,
-          color: const Color.fromARGB(255, 255, 255, 255),
+          color: Color.fromARGB(255, 255, 255, 255),
         ),
       ],
     );
@@ -274,8 +153,8 @@ ImageProvider _buildImageProvider(String profilePicUrl) {
 
   Widget buildDropDownContent() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Column(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Remove placeholder text
@@ -283,4 +162,5 @@ ImageProvider _buildImageProvider(String profilePicUrl) {
       ),
     );
   }
+  
 }

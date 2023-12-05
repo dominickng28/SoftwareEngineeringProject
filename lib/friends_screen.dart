@@ -1,13 +1,13 @@
-import 'package:camera/camera.dart';
+//import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+//import 'package:firebase_storage/firebase_storage.dart';
 import 'package:live4you/friend.dart';
 import 'package:live4you/friend_service.dart';
-import 'post.dart';
-import 'user.dart';
+//import 'post.dart';
+//import 'user.dart';
 import 'user_data.dart';
-import 'camera_screen.dart';
+//import 'camera_screen.dart';
 import 'package:live4you/profile_screen.dart';
 
 class MyFriends extends StatelessWidget {
@@ -45,19 +45,20 @@ class MyFriends extends StatelessWidget {
         ),
       ),
       backgroundColor: const Color.fromARGB(248, 0, 0, 0),
-      body: MyFriendsList(),
+      body: const MyFriendsList(),
     );
   }
 }
 
 class MyFriendsList extends StatefulWidget {
+  const MyFriendsList({super.key});
   @override
-  _MyFriendsListState createState() => _MyFriendsListState();
+  MyFriendsListState createState() => MyFriendsListState();
 }
 
-class _MyFriendsListState extends State<MyFriendsList> {
+class MyFriendsListState extends State<MyFriendsList> {
   final UserData userData = UserData(FirebaseFirestore.instance);
-  final FriendService _friendService = FriendService();
+  //final FriendService _friendService = FriendService();
   List<Friend> friendsList = [];
   bool isLoading = true;
 
@@ -90,7 +91,7 @@ class _MyFriendsListState extends State<MyFriendsList> {
         isLoading = false;
       });
     } catch (error) {
-      print('Error fetching friends: $error');
+      //print('Error fetching friends: $error');
       setState(() {
         isLoading = false;
       });
@@ -100,11 +101,11 @@ class _MyFriendsListState extends State<MyFriendsList> {
   @override
   Widget build(BuildContext context) {
     return isLoading
-        ? Center(
+        ? const Center(
             child:
                 CircularProgressIndicator()) // Show loader while fetching data
         : friendsList.isEmpty
-            ? Center(
+            ? const Center(
                 child: Text(
                 "No friends yet...",
                 style: TextStyle(
@@ -127,7 +128,7 @@ class FriendBar extends StatelessWidget {
   final Friend friend;
   final FriendService friendService = FriendService(); // Add the FriendService
 
-  FriendBar({required this.friend});
+  FriendBar({super.key, required this.friend});
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +180,7 @@ class FriendBar extends StatelessWidget {
                 ),
                 title: Text(
                   friend.username,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'DMSans',
                     fontSize: 23,
                     color: Colors.white,
@@ -187,7 +188,7 @@ class FriendBar extends StatelessWidget {
                   ),
                 ),
               ),
-              Container(height: 2.0, color: Color.fromARGB(248, 0, 0, 0)),
+              Container(height: 2.0, color: const Color.fromARGB(248, 0, 0, 0)),
             ],
           ),
         ));

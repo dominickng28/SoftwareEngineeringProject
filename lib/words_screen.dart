@@ -7,7 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 // import 'home_feed.dart';
-import 'search.dart';
+import 'search_screen.dart';
 import 'profile_screen.dart';
 import 'camera_screen.dart';
 
@@ -71,7 +71,6 @@ class _MyScreenState extends State<WordsScreen> {
         });
       }
     } catch (e) {
-      // ignore: avoid_print
       print("Error getting camera: $e");
     }
   }
@@ -132,7 +131,7 @@ class _MyScreenState extends State<WordsScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const MySearch(
+        builder: (context) => MySearch(
           title: 'Search',
         ),
       ),

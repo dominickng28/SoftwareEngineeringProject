@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:live4you/user_data.dart';
-import 'package:intl/intl.dart';
+//import 'package:intl/intl.dart';
 import 'firestore_service.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'dart:async';
@@ -17,26 +17,28 @@ class EditProfilePage extends StatefulWidget {
   final ValueNotifier<String> usernameNotifier;
   final VoidCallback onProfileUpdated;
 
-  EditProfilePage(
-      {this.profilePictureUrl,
+  const EditProfilePage(
+      {super.key,
+      this.profilePictureUrl,
       this.onUsernameChanged,
       required this.usernameNotifier,
       required this.onProfileUpdated});
   @override
-  _EditProfilePageState createState() => _EditProfilePageState();
+  EditProfilePageState createState() => EditProfilePageState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
+class EditProfilePageState extends State<EditProfilePage> {
   User? user = FirebaseAuth.instance.currentUser;
   String username = UserData.userName;
   File? _imageFile;
   String? profilePictureUrl;
   final ValueNotifier<String?> profilePictureUrlNotifier = ValueNotifier(null);
+  BuildContext? _scaffoldContext;
 
   DateTime? joinedDate;
 
   final picker = ImagePicker();
-  final _firestoreService = FirestoreService();
+  //final _firestoreService = FirestoreService();
   final FriendService friendService = FriendService(); // Add the FriendService
 
   final _usernameController = TextEditingController(text: UserData.userName);
@@ -88,14 +90,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
         }
       }
     } catch (e) {
-      print('Error picking image: $e');
+      //print('Error picking image: $e');
     }
   }
 
   Future uploadImage(String username) async {
     try {
       if (_imageFile == null) {
-        print('No image file selected.');
+        //print('No image file selected.');
         return;
       }
 
@@ -120,19 +122,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
         profilePictureUrlNotifier.value = imageUrl; // Update the ValueNotifier
       });
     } catch (error) {
-      print('An error occurred while uploading the image: $error');
+      //print('An error occurred while uploading the image: $error');
     }
   }
 
-  ImageProvider? _displayProfileImage() {
-    if (_imageFile != null) {
-      return FileImage(_imageFile!);
-    } else if (profilePictureUrl != null && profilePictureUrl!.isNotEmpty) {
-      return NetworkImage(profilePictureUrl!);
-    } else {
-      return const AssetImage('lib/assets/default-user.jpg');
-    }
-  }
+  //ImageProvider? _displayProfileImage() {
+    //if (_imageFile != null) {
+      //return FileImage(_imageFile!);
+    //} else if (profilePictureUrl != null && profilePictureUrl!.isNotEmpty) {
+     // return NetworkImage(profilePictureUrl!);
+    //} else {
+    //  return const AssetImage('lib/assets/default-user.jpg');
+    //}
+//}
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +161,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 // Profile Picture
-                SizedBox(
+                const SizedBox(
                   height: 60.0,
                 ),
                 GestureDetector(
@@ -197,7 +199,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 60,
                                 fontFamily: 'DMSans'),
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: 'Username',
                               hintStyle: TextStyle(
                                   color: Colors.white, fontFamily: 'DNSans'),
@@ -262,6 +264,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           // Save the changes
                           String newUsername = _usernameController.text.trim();
                           String newBio = _bioController.text.trim();
+                          _scaffoldContext = context;
 
                           // Store the bio under userdata.username.bio
                           await FirebaseFirestore.instance
@@ -341,10 +344,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               }
                             }
                             widget.onProfileUpdated();
-                            Navigator.pop(context, newUsername);
+                            Navigator.pop(_scaffoldContext!, newUsername);
                           } else {
                             // Return to the profile page
-                            Navigator.pop(context);
+                            Navigator.pop(_scaffoldContext!);
                           }
                         }
                       : null,
@@ -352,7 +355,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     _isUsernameAvailable && !_isSaving
                         ? "Save"
                         : "Username Unavailable",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       fontFamily: 'DNSans',
                       color: Color.fromARGB(255, 0, 0, 0),
@@ -360,7 +363,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                 ),
                 if (!_isUsernameAvailable)
-                  Text(
+                  const Text(
                     "Username Unavailable",
                     style: TextStyle(
                       fontSize: 16,
