@@ -15,8 +15,9 @@ void main() {
   testWidgets('Like and Unlike a Post', (WidgetTester tester) async {
   // Create a mock post
   Post mockPost = Post(
-    // Populate the mock post with necessary data
-    // ...
+    'woolly', 'lib/assets/default-user.jpg', 'IFVJ7s8mhsbt1n7I2d5D', '', 'Run', 'run run run', '', DateTime(2023,11, 28, 10, 40, 28), 1, ['woolly'], 
+    'https://firebasestorage.googleapis.com/v0/b/live-4-you.appspot.com/o/posts%2FCAP6097955994966011154.jpg?alt=media&token=4f6a7573-66d6-4593-96fa-1f803cf218e8'
+    
   );
 
   await tester.runAsync(() async {
