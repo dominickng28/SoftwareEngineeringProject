@@ -419,7 +419,7 @@ class PostCardState extends State<PostCard> {
                       if (widget.post.username == UserData.userName)
                         IconButton(
                           icon: const Icon(Icons.delete_forever),
-                          color: Colors.blueGrey,
+                          color: const Color.fromARGB(255, 255, 255, 255),
                           onPressed: () => deletePost(context),
                         ),
                     ],
