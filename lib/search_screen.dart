@@ -149,10 +149,10 @@ class MySearch extends StatefulWidget {
   }
 
   @override
-  State<MySearch> createState() => MySearchState();
+  State<MySearch> createState() => _MySearchState();
 }
 
-class MySearchState extends State<MySearch> {
+class _MySearchState extends State<MySearch> {
   final MySearch mySearch = MySearch(title: 'Title');
   final TextEditingController _searchController = TextEditingController();
   final FriendService _friendService = FriendService();
@@ -267,38 +267,6 @@ class MySearchState extends State<MySearch> {
           ),
         );
       },
-
-        ),
-      );
-    },
-  );
-}
-
-Future<void> _searchByUsername(String username) async {
-  //Check if textbox is empty
-  if (username.isNotEmpty){
-  DocumentSnapshot userDoc = await FirebaseFirestore.instance
-      .collection('users')
-      .doc(username)
-      .get();
-  
-    if (userDoc.exists) {
-      List<String> usernames = [username];
-      _usernameStream.add(usernames);
-    } else {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('No user found with the username $username'),
-        ),
-      );
-    }
-    //If the field is empty
-  } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a usename.') 
-      ),
     );
   }
 
@@ -334,10 +302,8 @@ Future<void> _searchByUsername(String username) async {
           ),
         ),
         backgroundColor: const Color.fromARGB(251, 0, 0, 0),
-        iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
       ),
-
       backgroundColor: const Color.fromARGB(248, 0, 0, 0),
       body: SingleChildScrollView(
         child: Column(
