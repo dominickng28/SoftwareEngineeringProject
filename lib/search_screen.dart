@@ -267,6 +267,38 @@ class _MySearchState extends State<MySearch> {
           ),
         );
       },
+
+        ),
+      );
+    },
+  );
+}
+
+Future<void> _searchByUsername(String username) async {
+  //Check if textbox is empty
+  if (username.isNotEmpty){
+  DocumentSnapshot userDoc = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(username)
+      .get();
+  
+    if (userDoc.exists) {
+      List<String> usernames = [username];
+      _usernameStream.add(usernames);
+    } else {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No user found with the username $username'),
+        ),
+      );
+    }
+    //If the field is empty
+  } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a usename.') 
+      ),
     );
   }
 
