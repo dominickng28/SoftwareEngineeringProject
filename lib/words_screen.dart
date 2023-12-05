@@ -118,8 +118,10 @@ class _MyScreenState extends State<WordsScreen> {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    return '${duration.inDays}d ${twoDigits(duration.inHours.remainder(24))}h ${twoDigitMinutes}m ${twoDigitSeconds}s';
+    return '${duration.inDays}d ${twoDigits(duration.inHours.remainder(24))}h';
   }
+
+  // ${twoDigitMinutes}m ${twoDigitSeconds}s
 
   @override
   void dispose() {
@@ -266,34 +268,35 @@ class _MyScreenState extends State<WordsScreen> {
                   ],
                 ),
               ),
+            ],
 
-            const SizedBox(height: 7.5),
+            const SizedBox(height: 4.0),
 
             // Scrollable Row of Rectangular Photos
-            SizedBox(
-              height: 160.0, // Adjust the height as needed
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return Container(
+            Scrollbar(
+              thumbVisibility: false,
+              controller: ScrollController(),
+              child: SizedBox(
+                height: 160.0, // Adjust the height as needed
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 4,
+                  itemBuilder: (context, index) {
+                    return Container(
                       margin: EdgeInsets.only(
                         left: index == 0 ? 0.0 : 8.0,
                       ),
                       width: 230.0,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10.0),
-
-                        child: SizedBox(
-                          width: 230.0,
-                          child: Image.asset(
-                            'lib/assets/${wordImages[index]}',
-                            fit: BoxFit.cover,
-                          ),
+                        child: Image.asset(
+                          'lib/assets/${wordImages[index]}',
+                          fit: BoxFit.cover,
                         ),
-                      ));
-                },
-
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
 
@@ -306,7 +309,8 @@ class _MyScreenState extends State<WordsScreen> {
                     fontSize: 20.0, color: Colors.white, fontFamily: "DNSans"),
               ),
             ),
-          ],
+            
+          ] //RIGHT HERE 
         ),
       ),
     );

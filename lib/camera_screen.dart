@@ -309,12 +309,11 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                   child: const Icon(Icons.send),
                 ),
               ],
-
             ),
           ),
         ),
-        Container(height: 300, color: Colors.black),
-      ]),
+        // Container(height: 300, color: Colors.black),
+      ),
     );
   }
 }
