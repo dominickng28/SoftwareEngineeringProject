@@ -126,14 +126,14 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
   }
 
   //void _navigateToMySearch() {
-    //Navigator.push(
-      //context,
-      //MaterialPageRoute(
-        //builder: (context) => MySearch(
-          //title: 'Search',
-        //),
-      //),
-    //);
+  //Navigator.push(
+  //context,
+  //MaterialPageRoute(
+  //builder: (context) => MySearch(
+  //title: 'Search',
+  //),
+  //),
+  //);
   //}
 
   void refreshProfile() {
@@ -301,8 +301,9 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                                 userProfile?.username ?? "Loading User"),
                             const SizedBox(height: 10),
                             Text(
-                              userBio ??
-                                  '', // Display the user's bio if available
+                              userBio ?? '',
+                              textAlign: TextAlign.center,
+                              // Display the user's bio if available
                               style: const TextStyle(
                                 fontFamily: 'DMSans',
                                 fontSize: 14,
@@ -391,7 +392,8 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                       padding: const EdgeInsets.all(
                           8.0), // Add padding around the grid
                       child: GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
                           mainAxisSpacing: 8.0, // Increase main axis spacing
                           crossAxisSpacing: 8.0, // Increase cross axis spacing
@@ -407,7 +409,9 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                                     child: SizedBox(
                                       width: MediaQuery.of(context).size.width *
                                           0.7, // Set the width to 80% of screen width
-                                      height: MediaQuery.of(context).size.height*0.8, 
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.8,
                                       child:
                                           PostCard(post: snapshot.data![index]),
                                     ),
