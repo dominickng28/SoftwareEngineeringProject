@@ -25,7 +25,7 @@ class MySearch extends StatefulWidget {
             child: Text(
               'No Friend Requests',
               style: TextStyle(
-                fontWeight: FontWeight.bold,
+                // fontWeight: FontWeight.bold,
                 fontSize: 18,
                 fontFamily: 'DNSans',
                 color: Color.fromARGB(115, 255, 255, 255),
@@ -311,6 +311,7 @@ Widget build(BuildContext context) {
         ),
       ),
       backgroundColor: const Color.fromARGB(251, 0, 0, 0),
+      iconTheme: IconThemeData(color: Colors.white),
       centerTitle: true,
     ),
     backgroundColor: const Color.fromARGB(248, 0, 0, 0),
@@ -445,19 +446,19 @@ Widget build(BuildContext context) {
           ),
 
           //Generate Friend Request List
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              'Friend Requests',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-                fontFamily: 'DNSans',
-                color: Colors.white,
-              ),
-            ),
-          ),
-          mySearch.buildFriendRequestsSection(),
+          // const Padding(
+          //   padding: EdgeInsets.symmetric(vertical: 8.0),
+          //   child: Text(
+          //     'Friend Requests',
+          //     style: TextStyle(
+          //       fontWeight: FontWeight.bold,
+          //       fontSize: 18,
+          //       fontFamily: 'DNSans',
+          //       color: Colors.white,
+          //     ),
+          //   ),
+          // ),
+          // mySearch.buildFriendRequestsSection(),
           //Recommended text
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -465,7 +466,7 @@ Widget build(BuildContext context) {
               'Recommended',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: 20,
                 fontFamily: 'DNSans',
                 color: Colors.white,
               ),
@@ -484,7 +485,7 @@ Widget build(BuildContext context) {
                   'No Recommendations',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                    fontSize: 20,
                     fontFamily: 'DNSans',
                     color: Color.fromARGB(115, 255, 255, 255),
                   ),
@@ -540,10 +541,10 @@ Widget build(BuildContext context) {
           ),
           // The rest of the world text
           const Padding(padding: EdgeInsets.symmetric(vertical: 8.0), 
-            child: Text('The Rest of The World', 
+            child: Text('Discover', 
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 20,
               fontFamily: 'DNSans',
               color: Colors.white,
               ),
