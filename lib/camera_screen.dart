@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:live4you/user_data.dart';
 //import 'package:path/path.dart' show join;
@@ -46,6 +47,7 @@ class CameraScreenState extends State<CameraScreen> {
     _controller.dispose();
     super.dispose();
   }
+
   BuildContext? _scaffoldContext;
 
   Future<void> _takePicture() async {
@@ -82,11 +84,13 @@ class CameraScreenState extends State<CameraScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-        'Take a picture', 
-        style: TextStyle(
-          fontWeight: FontWeight.bold, 
-        ),), 
-        centerTitle: true,),
+          'Take a picture',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: Stack(
         children: [
           FutureBuilder<void>(
@@ -107,9 +111,9 @@ class CameraScreenState extends State<CameraScreen> {
                 offset: const Offset(0, -250), // Move the carousel up
                 child: DefaultTextStyle(
                   style: const TextStyle(
-                    fontSize: 30, 
-                    color: Colors.black, 
-                    fontWeight: FontWeight.bold), // Increase the font size
+                      fontSize: 30,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold), // Increase the font size
                   child: PageView.builder(
                     itemCount: options.length,
                     onPageChanged: (int index) {
@@ -145,7 +149,8 @@ class PreviewPostCard extends StatefulWidget {
   final String imagePath;
   final String selectedOption;
 
-  const PreviewPostCard({super.key, required this.imagePath, required this.selectedOption});
+  const PreviewPostCard(
+      {super.key, required this.imagePath, required this.selectedOption});
 
   @override
   PreviewPostCardState createState() => PreviewPostCardState();
@@ -215,10 +220,19 @@ class PreviewPostCardState extends State<PreviewPostCard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add a caption')),
+      appBar: AppBar(
+          backgroundColor: Colors.black,
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: const Text(
+            'Add a caption',
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          )),
       body: SingleChildScrollView(
         child: Container(
-          color:const Color.fromARGB(248, 0, 0, 0),
+          height: 680,
+          color: const Color.fromARGB(248, 0, 0, 0),
           child: Column(
             children: [
               ListTile(
@@ -228,7 +242,7 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                 ),
                 title: Text(
                   UserData.userName, // Replace with the username
-                  style:const TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'DMSans',
                     fontSize: 23,
                     color: Colors.white,
@@ -236,10 +250,11 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                   ),
                 ),
                 trailing: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                   decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white),
                     borderRadius: BorderRadius.circular(10),
-                    color: Colors.teal,
                   ),
                   child: Text(
                     widget.selectedOption, // Display the selected option
@@ -247,6 +262,7 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                       fontFamily: 'DMSans',
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
                       color: Colors.white,
                     ),
                   ),
@@ -260,10 +276,16 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                 ),
               ),
               TextField(
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
                 style: const TextStyle(color: Colors.white),
                 controller: _captionController,
+                maxLength: 250,
+                maxLines: null,
+                textAlignVertical: TextAlignVertical.center,
                 decoration: const InputDecoration(
-                    labelText: 'Caption', fillColor: Colors.white),
+                    labelText: 'Caption',
+                    alignLabelWithHint: true,
+                    fillColor: Colors.white),
               ),
               ElevatedButton(
                 onPressed: _savePicture,
@@ -298,7 +320,7 @@ class CaptionScreenState extends State<CaptionScreen> {
   Future<void> _savePicture() async {
     try {
       final String fileName = widget.imagePath.split('/').last;
-      _scaffoldContext = context; 
+      _scaffoldContext = context;
       Reference firebaseStorageRef =
           FirebaseStorage.instance.ref().child('posts/$fileName');
 
@@ -356,15 +378,24 @@ class CaptionScreenState extends State<CaptionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Add a caption')),
-      body: SingleChildScrollView(
-        // Add this
-        child: Column(
+      body: ListView(children: [
+        Column(
           children: [
             Image.file(File(widget.imagePath)),
-            TextField(
-              style: const TextStyle(color: Colors.white),
-              controller: _captionController,
-              decoration: const InputDecoration(labelText: 'Caption'),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                style: const TextStyle(color: Colors.white),
+                controller: _captionController,
+                maxLength: 250,
+                maxLines: null,
+                textAlignVertical: TextAlignVertical.center,
+                decoration: const InputDecoration(
+                  labelText: 'Caption',
+                  alignLabelWithHint: true,
+                ),
+              ),
             ),
             ElevatedButton(
               onPressed: _savePicture,
@@ -372,7 +403,8 @@ class CaptionScreenState extends State<CaptionScreen> {
             ),
           ],
         ),
-      ),
+        Container(height: 300, color: Colors.black),
+      ]),
     );
   }
 }
