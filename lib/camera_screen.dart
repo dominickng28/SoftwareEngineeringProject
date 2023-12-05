@@ -9,6 +9,7 @@ import 'package:live4you/user_data.dart';
 //import 'package:path/path.dart' show join;
 //import 'package:path_provider/path_provider.dart';
 //import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 
 class CameraScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -57,9 +58,26 @@ class CameraScreenState extends State<CameraScreen> {
 
       final XFile photo = await _controller.takePicture();
 
-      //Compress image and saving it
+      // Get the dimensions of the image
+      ImageProperties properties =
+          await FlutterNativeImage.getImageProperties(photo.path);
+
+      // Calculate the width and height for the cropped image
+      int width = properties.width!;
+      int height = (properties.width! * 2) ~/ 3;
+
+      // Crop the image
+      File croppedFile = await FlutterNativeImage.cropImage(
+        photo.path,
+        0,
+        (properties.height! - height) ~/ 2,
+        width,
+        height,
+      );
+
+      // Compress image and saving it
       List<int> compressedPic = await FlutterImageCompress.compressWithList(
-        File(photo.path).readAsBytesSync(),
+        croppedFile.readAsBytesSync(),
         quality: 60,
       );
       File compressedFile = File(photo.path);
@@ -82,15 +100,8 @@ class CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Take a picture',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
+
+
       body: Stack(
         children: [
           FutureBuilder<void>(
@@ -212,162 +223,6 @@ class PreviewPostCardState extends State<PreviewPostCard> {
       }
 
       Navigator.pop(_scaffoldContext!, true);
-    } catch (e) {
-      //print(e);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Colors.black,
-          iconTheme: const IconThemeData(color: Colors.white),
-          title: const Text(
-            'Add a caption',
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          )),
-      body: SingleChildScrollView(
-        child: Container(
-          height: 680,
-          color: const Color.fromARGB(248, 0, 0, 0),
-          child: Column(
-            children: [
-              ListTile(
-                leading: const CircleAvatar(
-                  backgroundImage: AssetImage(
-                      'lib/assets/default-user.jpg'), // Replace with your placeholder image
-                ),
-                title: Text(
-                  UserData.userName, // Replace with the username
-                  style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    fontSize: 23,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                trailing: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    widget.selectedOption, // Display the selected option
-                    style: const TextStyle(
-                      fontFamily: 'DMSans',
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: Image.file(
-                  File(widget.imagePath),
-                  fit: BoxFit.fill,
-                ),
-              ),
-              TextField(
-                maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                style: const TextStyle(color: Colors.white),
-                controller: _captionController,
-                maxLength: 250,
-                maxLines: null,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: const InputDecoration(
-                    labelText: 'Caption',
-                    alignLabelWithHint: true,
-                    fillColor: Colors.white),
-              ),
-              ElevatedButton(
-                onPressed: _savePicture,
-                child: const Text('Post'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class CaptionScreen extends StatefulWidget {
-  final String imagePath;
-  final String selectedOption;
-
-  const CaptionScreen({
-    super.key,
-    required this.imagePath,
-    required this.selectedOption,
-  });
-
-  @override
-  CaptionScreenState createState() => CaptionScreenState();
-}
-
-class CaptionScreenState extends State<CaptionScreen> {
-  final TextEditingController _captionController = TextEditingController();
-  BuildContext? _scaffoldContext;
-
-  Future<void> _savePicture() async {
-    try {
-      final String fileName = widget.imagePath.split('/').last;
-      _scaffoldContext = context;
-      Reference firebaseStorageRef =
-          FirebaseStorage.instance.ref().child('posts/$fileName');
-
-      UploadTask uploadTask =
-          firebaseStorageRef.putFile(File(widget.imagePath));
-      TaskSnapshot taskSnapshot = await uploadTask;
-
-      String imageUrl = await taskSnapshot.ref.getDownloadURL();
-
-      CollectionReference posts =
-          FirebaseFirestore.instance.collection('posts');
-
-      DocumentReference docRef = await posts.add({
-        'imageUrl': imageUrl,
-        'caption': _captionController.text,
-        'likecount': 0,
-        'username': UserData.userName,
-        'timestamp': FieldValue.serverTimestamp(),
-        'pfp': null,
-        'userID': "",
-        'embed': '',
-        'likes': [],
-        'word': widget.selectedOption, // Save the selected option with the post
-      });
-
-      // Update the post with the post ID
-      await docRef.update({
-        'postid': docRef.id,
-      });
-
-      DocumentReference userDoc =
-          FirebaseFirestore.instance.collection('users').doc(UserData.userName);
-      DocumentSnapshot userSnapshot = await userDoc.get();
-
-      if (userSnapshot.exists) {
-        var data = userSnapshot.data() as Map<String, dynamic>;
-        if (!data.containsKey('post_list')) {
-          userDoc.set({
-            'post_list': [docRef.id],
-          }, SetOptions(merge: true));
-        } else {
-          List<String> currentList = List.from(data['post_list']);
-          currentList.add(docRef.id);
-          userDoc.update({'post_list': currentList});
-        }
-      }
-
       Navigator.pop(_scaffoldContext!, true);
     } catch (e) {
       //print(e);
@@ -377,31 +232,86 @@ class CaptionScreenState extends State<CaptionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add a caption')),
-      body: ListView(children: [
-        Column(
-          children: [
-            Image.file(File(widget.imagePath)),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                style: const TextStyle(color: Colors.white),
-                controller: _captionController,
-                maxLength: 250,
-                maxLines: null,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: const InputDecoration(
-                  labelText: 'Caption',
-                  alignLabelWithHint: true,
+
+      body: SingleChildScrollView(
+        child: Container(
+          color: const Color.fromARGB(248, 0, 0, 0),
+          child: Padding(
+            // Add Padding widget
+            padding: const EdgeInsets.only(top: 100.0, bottom: 300),
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const CircleAvatar(
+                    backgroundImage: AssetImage(
+                        'lib/assets/default-user.jpg'), // Replace with your placeholder image
+
+                  ),
+                  title: Text(
+                    UserData.userName, // Replace with the username
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      fontSize: 23,
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      fontWeight: FontWeight.bold,
+
+                    ),
+                  ),
+                  trailing: Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Color.fromARGB(255, 255, 255, 255),
+                    ),
+                    child: Text(
+                      widget.selectedOption, // Display the selected option
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 0, 0, 0),
+                      ),
+
+                    ),
+                  ),
                 ),
-              ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.file(
+                    File(widget.imagePath),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: TextField(
+                    style: const TextStyle(color: Colors.white),
+                    controller: _captionController,
+                    decoration: const InputDecoration(
+                      labelText: 'Caption',
+                      labelStyle: TextStyle(color: Colors.white),
+                      fillColor: Colors.white,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(100, 255, 255, 255),
+                            width: 1.0),
+                      ),
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: _savePicture,
+                  child: const Icon(Icons.send),
+                ),
+              ],
+
             ),
-            ElevatedButton(
-              onPressed: _savePicture,
-              child: const Text('Post'),
-            ),
-          ],
+          ),
         ),
         Container(height: 300, color: Colors.black),
       ]),

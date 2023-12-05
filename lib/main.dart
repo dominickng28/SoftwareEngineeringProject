@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:live4you/search_screen.dart';
 import 'package:live4you/words_screen.dart';
 import 'package:live4you/firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,20 +17,21 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key}); // Fix constructor definition
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'LIVE4YOU',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(144, 10, 231, 139)),
+
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 255, 255, 255)),
+
         useMaterial3: true,
       ),
       initialRoute: '/login',
       routes: {
-        '/login': (context) => const LoginScreen(),
-        '/signup': (context) => const SignUpScreen(),
+        '/login': (context) => LoginScreen(auth: FirebaseAuth.instance),
+        '/signup': (context) => SignUpScreen(),
       },
     );
   }

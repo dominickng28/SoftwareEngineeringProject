@@ -1,7 +1,9 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'post.dart';
+import 'user.dart';
 import 'user_data.dart';
 import 'camera_screen.dart';
 import 'search_screen.dart';
@@ -34,7 +36,7 @@ class _MyFeedTest extends State<MyFeed> {
   void _checkIfFirstTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
-    //print('isFirstTime: $isFirstTime');
+    print('isFirstTime: $isFirstTime');
     if (isFirstTime) {
       // if (true) {
 
@@ -50,7 +52,7 @@ class _MyFeedTest extends State<MyFeed> {
         return AlertDialog(
           backgroundColor: Colors.white,
           // iconPadding: EdgeInsets.all(10.0),
-          contentPadding: const EdgeInsets.all(5.0),
+          contentPadding: EdgeInsets.all(5.0),
           // insetPadding: EdgeInsets.zero,
           // iconPadding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
@@ -59,7 +61,7 @@ class _MyFeedTest extends State<MyFeed> {
           ),
 
           content: Container(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(20.0),
             decoration: BoxDecoration(
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(15.0),
@@ -71,13 +73,13 @@ class _MyFeedTest extends State<MyFeed> {
               children: [
                 Row(
                   children: [
-                    Image.asset(
-                      'Live4youLine.png',
-                      height: 50,
-                      width: 50,
-                    ),
-                    const SizedBox(width: 10),
-                    const Text(
+                    // Image.asset(
+                    //   'Live4youLine.png',
+                    //   height: 5,
+                    //   width: 5,
+                    // ),
+                    SizedBox(width: 10),
+                    Text(
                       'Welcome to Live4You!',
                       style: TextStyle(
                         fontSize: 18,
@@ -88,8 +90,8 @@ class _MyFeedTest extends State<MyFeed> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                const Text(
+                SizedBox(height: 10),
+                Text(
                   "Live4You is not just another social media app; it's a platform designed to inspire you to live an active and fulfilling life. Each week, we present you with four exciting words/activities. Your mission: turn these words into actions! 🚴‍♂️🏞️\n\nHere's how it works:\n1. Every Monday, discover four new words of the week.\n2. Embark on exciting activities that align with the weekly words. \n3. Capture the moments by sharing photos of your completed activites.\n4. Personalize your profile, connect with friends, and share your journey through your post.\n\nLet Live4You be your guide to a more vibrant and active lifestyle! 🌟",
                   style: TextStyle(
                     fontSize: 18,
@@ -102,7 +104,12 @@ class _MyFeedTest extends State<MyFeed> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Explore'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(Colors.black),
+              ),
+              child: Text(
+                'Explore',
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -159,7 +166,7 @@ class _MyFeedTest extends State<MyFeed> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const MyUserProfilePage(
+        builder: (context) => MyUserProfilePage(
           title: 'User Profile',
           // Add any necessary parameters for the profile screen
         ),
@@ -176,22 +183,27 @@ class _MyFeedTest extends State<MyFeed> {
     _checkIfFirstTime();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(251, 0, 0, 0),
+        backgroundColor: Color.fromARGB(251, 0, 0, 0),
         leading: IconButton(
-          icon:
-              const Icon(Icons.notifications, color: Colors.white), // Bell icon
+
+          icon: Icon(Icons.notifications, color: Colors.white), // Bell icon
+
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const NotificationsScreen(),
+
+                builder: (context) => NotificationsScreen(),
+
               ),
             );
           },
         ),
         flexibleSpace: Padding(
-          padding: const EdgeInsets.only(
-              top: 10.0), // Adjust the top padding value to lower the image
+
+          padding: EdgeInsets.only(
+              top: 60.0), // Adjust the top padding value to lower the image
+
           child: Center(
             child: Image.asset(
                 'lib/assets/Live4youWhite.png', // Replace 'lib/assets/Live4youWhite.png' with your image path
@@ -206,17 +218,19 @@ class _MyFeedTest extends State<MyFeed> {
             onPressed: _navigateToMySearch,
           ),
           IconButton(
-            icon: const Icon(Icons.account_circle, color: Colors.white),
+            icon: Icon(Icons.account_circle, color: Colors.white),
             onPressed: _navigateToMyUserProfilePage,
           ),
         ],
       ),
-      backgroundColor: const Color.fromARGB(248, 0, 0, 0),
+      backgroundColor: Color.fromARGB(248, 0, 0, 0),
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
         child: posts.isEmpty
-            ? const Center(
+
+            ? Center(
+
                 child: Text("No posts..."),
               )
             : ListView.builder(
@@ -227,42 +241,38 @@ class _MyFeedTest extends State<MyFeed> {
               ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateToCameraScreen(context),
+        onPressed: () async {
+          final cameras = await availableCameras();
+          final firstCamera = cameras.first;
+
+          final didCreatePost = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CameraScreen(camera: firstCamera),
+            ),
+          );
+
+          fetchAllPostData(); // Refresh the feed when MyFeed is displayed
+        },
         tooltip: 'Camera',
         child: const Icon(Icons.camera_alt),
       ),
     );
   }
 
-  void _navigateToCameraScreen(BuildContext context) async {
-    final cameras = await availableCameras();
-    final firstCamera = cameras.first;
 
-    if (mounted) {
-      final didCreatePost = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CameraScreen(camera: firstCamera),
-        ),
-      );
-
-      if (didCreatePost == true) {
-        fetchAllPostData(); // Refresh the feed if a new post was created
-      }
-    }
-  }
 }
 
 class PostCard extends StatefulWidget {
   final Post post;
 
-  const PostCard({required this.post, super.key});
+  PostCard({required this.post});
 
   @override
-  PostCardState createState() => PostCardState();
+  _PostCardState createState() => _PostCardState();
 }
 
-class PostCardState extends State<PostCard> {
+class _PostCardState extends State<PostCard> {
   final FriendService friendService = FriendService();
 
   bool isLiked = false; // Track whether the post is liked
@@ -287,10 +297,11 @@ class PostCardState extends State<PostCard> {
     //checking which post is made by the user
     isLiked = widget.post.likes?.contains(UserData.userName) ?? false;
 
+    bool isPoster = widget.post.username == UserData.userName;
     double screenWidth = MediaQuery.of(context).size.width;
     double cutOffValue = 0.95;
     return Container(
-      color: const Color.fromARGB(248, 0, 0, 0),
+      color: Color.fromARGB(248, 0, 0, 0),
       child: Column(
         children: [
           ListTile(
@@ -339,7 +350,9 @@ class PostCardState extends State<PostCard> {
               ),
               title: Text(
                 widget.post.username,
-                style: const TextStyle(
+
+                style: TextStyle(
+
                   fontFamily: 'DMSans',
                   fontSize: 23,
                   color: Colors.white,
@@ -348,7 +361,9 @@ class PostCardState extends State<PostCard> {
               ),
               subtitle: Text(
                 widget.post.caption,
-                style: const TextStyle(
+
+                style: TextStyle(
+
                   fontFamily: 'DMSans',
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
@@ -356,12 +371,15 @@ class PostCardState extends State<PostCard> {
                 ),
               ),
               trailing: Container(
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+
+
                 child: Transform(
                   transform:
                       Matrix4.skewX(-0.05), // Adjust the skew factor as needed
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
+
+                    padding: EdgeInsets.symmetric(
+
                         horizontal: 10,
                         vertical: 6), // Adjust the padding values
                     decoration: BoxDecoration(
@@ -370,7 +388,9 @@ class PostCardState extends State<PostCard> {
                     ),
                     child: Text(
                       widget.post.word, // Placeholder for your word
-                      style: const TextStyle(
+
+                      style: TextStyle(
+
                         fontFamily: 'DMSans',
                         fontSize: 22, // Adjust the font size as needed
                         fontWeight: FontWeight
@@ -405,16 +425,16 @@ class PostCardState extends State<PostCard> {
                     fontWeight: FontWeight.bold,
                     fontFamily: 'DMSans'),
               ),
-              const Spacer(),
+              Spacer(),
               Flexible(
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
+                  padding: EdgeInsets.only(right: 16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
                         timeAgo(widget.post.date),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -423,8 +443,10 @@ class PostCardState extends State<PostCard> {
                       ),
                       if (widget.post.username == UserData.userName)
                         IconButton(
-                          icon: const Icon(Icons.delete_forever),
-                          color: const Color.fromARGB(255, 255, 255, 255),
+
+                          icon: Icon(Icons.delete_forever),
+                          color: Colors.blueGrey,
+
                           onPressed: () => deletePost(context),
                         ),
                     ],
@@ -436,7 +458,7 @@ class PostCardState extends State<PostCard> {
           Container(
               height: 2.0,
               width: screenWidth * cutOffValue,
-              color: const Color.fromARGB(248, 35, 36, 44)),
+              color: Color.fromARGB(248, 35, 36, 44)),
         ],
       ),
     );
@@ -444,41 +466,41 @@ class PostCardState extends State<PostCard> {
 
   Future<void> deletePost(BuildContext parentContext) async {
     return showDialog(
-      context: parentContext,
-      builder: (context) {
-        return SimpleDialog(
-          title: const Text("Delete post?"),
-          children: <Widget>[
-            SimpleDialogOption(
-              onPressed: () async {
-                Navigator.pop(context);
-                await removeFromPostList();
-                FirebaseFirestore.instance
-                    .collection('posts')
-                    .doc(widget.post.getPostID())
-                    .delete();
-                if (mounted) {
-                  ScaffoldMessenger.of(parentContext).showSnackBar(
-                    const SnackBar(
-                      content: Text('Post has been deleted'),
-                    ),
-                  );
-                }
-                setState(() {});
-              },
-              child: const Text(
-                'Delete',
-                style: TextStyle(color: Colors.red),
+        context: parentContext,
+        builder: (conext) {
+          return SimpleDialog(
+            title: Text("Delete post?"),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () async {
+                  //removes post from Firebase and user postList
+                  Navigator.pop(conext);
+                  await removeFromPostList();
+                  FirebaseFirestore.instance
+                      .collection('posts')
+                      .doc(widget.post.getPostID())
+                      .delete();
+                  if (mounted) {
+                    setState(() {});
+                  }
+
+                  ScaffoldMessenger.of(parentContext).showSnackBar(SnackBar(
+                    content: Text('Post has been deleted'),
+                  ));
+                },
+                child: Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.red),
+                ),
               ),
-            ),
-            SimpleDialogOption(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            )
-          ],
-        );
-      },
-    );
+              SimpleDialogOption(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              )
+            ],
+          );
+        });
+
   }
 
   Future<void> removeFromPostList() async {

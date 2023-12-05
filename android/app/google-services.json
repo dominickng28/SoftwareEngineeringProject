@@ -12,7 +12,20 @@
           "package_name": "com.example.live4you"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1059373163425-k7pcpmpc7m0r7mtnbopvhhbqqcq1h7vd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.live4you",
+            "certificate_hash": "0775b2b24879d0392129d4ab8a9500920760c912"
+          }
+        },
+        {
+          "client_id": "1059373163425-aoqtb7r03r9fr82ceh5rgcm6ndq8upqj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCOQUGU-ipH5jA1p0HHJr5NoZqkliD2cDk"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1059373163425-aoqtb7r03r9fr82ceh5rgcm6ndq8upqj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1059373163425-49nb6pigsj9ks49aog9hg75h8g9dlh4g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.live4you"
+              }
+            }
+          ]
         }
       }
     }
