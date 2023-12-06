@@ -232,7 +232,10 @@ class _MyScreenState extends State<WordsScreen> {
                               checkBoxState[i] = value!;
                             });
                           },
-                          activeColor: Colors.white,
+                          activeColor: Colors.transparent,
+                          checkColor: Colors.white,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
                         ),
                       ],
                     ),

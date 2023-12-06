@@ -100,8 +100,6 @@ class CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-
       body: Stack(
         children: [
           FutureBuilder<void>(
@@ -232,7 +230,6 @@ class PreviewPostCardState extends State<PreviewPostCard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: SingleChildScrollView(
         child: Container(
           color: const Color.fromARGB(248, 0, 0, 0),
@@ -245,7 +242,6 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                   leading: const CircleAvatar(
                     backgroundImage: AssetImage(
                         'lib/assets/default-user.jpg'), // Replace with your placeholder image
-
                   ),
                   title: Text(
                     UserData.userName, // Replace with the username
@@ -254,7 +250,6 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                       fontSize: 23,
                       color: Color.fromARGB(255, 255, 255, 255),
                       fontWeight: FontWeight.bold,
-
                     ),
                   ),
                   trailing: Container(
@@ -272,7 +267,6 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                         fontWeight: FontWeight.bold,
                         color: Color.fromARGB(255, 0, 0, 0),
                       ),
-
                     ),
                   ),
                 ),
@@ -283,7 +277,6 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                     fit: BoxFit.fill,
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
                   child: TextField(
