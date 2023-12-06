@@ -117,8 +117,8 @@ class _MyScreenState extends State<WordsScreen> {
   String _formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    return '${duration.inDays}d ${twoDigits(duration.inHours.remainder(24))}h';
+    // String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return '${duration.inDays}d ${twoDigits(duration.inHours.remainder(24))}h ${twoDigitMinutes}m ';
   }
 
   // ${twoDigitMinutes}m ${twoDigitSeconds}s
@@ -187,131 +187,137 @@ class _MyScreenState extends State<WordsScreen> {
       // WORD BOXES
 
       body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            // Existing Rows
-            for (int i = 0; i < 4; i++) ...[
-              Container(
-                constraints: const BoxConstraints(minWidth: 500, maxWidth: 500),
-                margin: const EdgeInsets.all(5), // SPACE BETWEEN EACH ROW
-                color: checkBoxState[i] ? Colors.green : null,
-                child: Column(
-                  children: [
-                    // WORD PICTURE
-                    ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 10.0,
-                        vertical: 10.0,
-                      ),
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(18.0),
-                        child: Image.asset(
-                          'lib/assets/${wordImages[i]}',
-                          width: 93.0,
-                          height: 93.0,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-
-                      // ACTUAL WORD
-                      title: Row(
-                        children: [
-                          Text(
-                            words[i],
-                            style: const TextStyle(
-                              fontFamily: 'DMSans',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 26.0,
-                              color: Colors.white,
-                            ),
-                          ),
-
-                          const SizedBox(width: 8.0),
-                          
-                          Checkbox(
-                            value: checkBoxState[i],
-                            onChanged: (bool? value) {
-                              setState(() {
-                                checkBoxState[i] = value!;
-                              });
-                            },
-                            activeColor: Colors.white,
-                          ),
-                        ],
-                      ),
-
-                      // CAMERA ICON
-                      trailing: cameraInitialized
-                          ? IconButton(
-                              icon: const Icon(
-                                Icons.camera_alt,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                              onPressed: () {
-                                _openCamera(i);
-                              },
-                            )
-                          : const CircularProgressIndicator.adaptive(
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                    ),
-
-                    // Divider
-                    const Divider(
-                      color: Colors.transparent, // Transparent divider
-                      thickness: 0.5,
-                      indent: 16.0,
-                      endIndent: 16.0,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-
-            const SizedBox(height: 4.0),
-
-            // Scrollable Row of Rectangular Photos
-            Scrollbar(
-              thumbVisibility: false,
-              controller: ScrollController(),
-              child: SizedBox(
-                height: 160.0, // Adjust the height as needed
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 4,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: EdgeInsets.only(
-                        left: index == 0 ? 0.0 : 8.0,
-                      ),
-                      width: 230.0,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Image.asset(
-                          'lib/assets/${wordImages[index]}',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-
-            // Live Time Timer
+        child: Column(children: <Widget>[
+          // Existing Rows
+          for (int i = 0; i < 4; i++) ...[
             Container(
-              margin: const EdgeInsets.all(12.0),
-              child: Text(
-                'Time Left: ${_formatDuration(durationUntilNextRefresh)}',
-                style: const TextStyle(
-                    fontSize: 20.0, color: Colors.white, fontFamily: "DNSans"),
+              constraints: const BoxConstraints(minWidth: 500, maxWidth: 500),
+              margin: const EdgeInsets.all(1), // SPACE BETWEEN EACH ROW
+              color: checkBoxState[i] ? Colors.green : null,
+              child: Column(
+                children: [
+                  // WORD PICTURE
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 20.0, // HEIGHT OF ROWS
+                    ),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(18.0),
+                      child: Image.asset(
+                        'lib/assets/${wordImages[i]}',
+                        width: 93.0,
+                        height: 93.0,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+
+                    // ACTUAL WORD
+                    title: Row(
+                      children: [
+                        Text(
+                          words[i],
+                          style: const TextStyle(
+                            fontFamily: 'DMSans',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 26.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(width: 8.0),
+                        Checkbox(
+                          value: checkBoxState[i],
+                          onChanged: (bool? value) {
+                            setState(() {
+                              checkBoxState[i] = value!;
+                            });
+                          },
+                          activeColor: Colors.white,
+                        ),
+                      ],
+                    ),
+
+                    // CAMERA ICON
+                    trailing: cameraInitialized
+                        ? IconButton(
+                            icon: const Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                            onPressed: () {
+                              _openCamera(i);
+                            },
+                          )
+                        : OutlinedButton(
+                            onPressed: null,
+                            style: OutlinedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              side: const BorderSide(color: Colors.transparent),
+                            ),
+                            child: const Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                          ),
+                  ),
+
+                  // Divider
+                  const Divider(
+                    color: Colors.transparent, // Transparent divider
+                    thickness: 0.1,
+                    indent: 16.0,
+                    endIndent: 16.0,
+                  ),
+                ],
               ),
             ),
-            
-          ] //RIGHT HERE 
-        ),
+          ],
+
+          const SizedBox(height: 5.0),
+
+          // Scrollable Row of Rectangular Photos
+          Scrollbar(
+            thumbVisibility: false,
+            controller: ScrollController(),
+            child: SizedBox(
+              height: 140.0, // Adjust the height as needed
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 4,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: EdgeInsets.only(
+                      left: index == 0 ? 0.0 : 8.0,
+                    ),
+                    width: 230.0,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Image.asset(
+                        'lib/assets/${wordImages[index]}',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+
+          // Live Time Timer
+          Container(
+            margin: const EdgeInsets.all(12.0),
+            child: Text(
+              'Time Left: ${_formatDuration(durationUntilNextRefresh)}',
+              style: const TextStyle(
+                  fontSize: 20.0, color: Colors.white, fontFamily: "DNSans"),
+            ),
+          ),
+        ] //RIGHT HERE
+            ),
       ),
     );
   }
