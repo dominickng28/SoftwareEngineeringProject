@@ -178,7 +178,7 @@ class _MySearchState extends State<MySearch> {
 
   void fetchMostLikedPostData() async {
     // Fetch friends list
-    await userData.populateFriendsList();
+    await userData.populateFriendsList(UserData.userName);
     List<String>? userAndFriendList = UserData.friends;
 
     // Add the current user's username to the list
