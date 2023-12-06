@@ -22,10 +22,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'LIVE4YOU',
       theme: ThemeData(
-
         colorScheme:
             ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 255, 255, 255)),
-
         useMaterial3: true,
       ),
       initialRoute: '/login',
@@ -45,7 +43,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen> {
-  int _currentIndex = 1; // Set initial index to 1 (Home)
+  int _currentIndex = 0; // Set initial index to 0 (Home Feed)
 
   late List<Widget> _children;
 
@@ -54,8 +52,8 @@ class MainScreenState extends State<MainScreen> {
     super.initState();
 
     _children = [
-      const WordsScreen(), // Words tab on the left
-      const MyFeed(title: 'Home Feed'), // Home tab in the middle
+      const MyFeed(title: 'Home Feed'), // Home Feed tab on the left
+      const WordsScreen(), // Words tab in the middle
       const MyUserProfilePage(title: 'User Profile'), // Profile tab on the right
     ];
   }
@@ -78,20 +76,20 @@ class MainScreenState extends State<MainScreen> {
         backgroundColor: Color.fromARGB(251, 0, 0, 0), // Set background color here
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.looks_4),
-            activeIcon: Icon(
-              Icons.looks_4,
-              color: Color.fromARGB(248, 255, 255, 255),
-            ),
-            label: _currentIndex == 0 ? 'Words' : '', // Show label only when selected
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.home),
             activeIcon: Icon(
               Icons.home,
               color: Color.fromARGB(248, 255, 255, 255),
             ),
-            label: _currentIndex == 1 ? 'Home' : '',
+            label: _currentIndex == 0 ? 'Home' : '', // Show label only when selected
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.looks_4),
+            activeIcon: Icon(
+              Icons.looks_4,
+              color: Color.fromARGB(248, 255, 255, 255),
+            ),
+            label: _currentIndex == 1 ? 'Words' : '',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

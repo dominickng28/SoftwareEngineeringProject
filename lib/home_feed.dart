@@ -12,6 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'friend_service.dart';
 import 'notification_screen.dart';
 
+
+
 class MyFeed extends StatefulWidget {
   const MyFeed({super.key, required this.title});
   final String title;
@@ -21,6 +23,8 @@ class MyFeed extends StatefulWidget {
 }
 
 class _MyFeedTest extends State<MyFeed> {
+  // late AnimationController animationController;
+  // late Animation<double> animation;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   final UserData userData = UserData(FirebaseFirestore.instance);
@@ -29,9 +33,23 @@ class _MyFeedTest extends State<MyFeed> {
   @override
   void initState() {
     super.initState();
+    // animationController = AnimationController(
+    //   vsync: this, 
+    //   duration: Duration(milliseconds: 300)
+    //   );
+    //   animation = CurvedAnimation(
+    //   parent: animationController,
+    //   curve: Curves.easeInOut,
+    // );
     _checkIfFirstTime();
     fetchAllPostData();
   }
+  //  @override
+  // void dispose() {
+  //   animationController.dispose();
+  //   super.dispose();
+    
+  // }
 
   void _checkIfFirstTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -178,51 +196,72 @@ class _MyFeedTest extends State<MyFeed> {
     fetchAllPostData();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    _checkIfFirstTime();
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(251, 0, 0, 0),
-        leading: IconButton(
+@override
+Widget build(BuildContext context) {
+  final FriendService friendService = FriendService();
+  _checkIfFirstTime();
+  return Scaffold(
+    appBar: AppBar(
+      backgroundColor: Color.fromARGB(251, 0, 0, 0),
+      leading: IconButton(
+        icon: Icon(Icons.notifications, color: Colors.white),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NotificationsScreen(),
+            ),
+          );
+        },
+      ),
+      flexibleSpace: Padding(
+        padding: EdgeInsets.only(top: 60.0),
+        child: Center(
+          child: Image.asset(
+            'lib/assets/Live4youWhite.png',
+            height: 120,
+            width: 130,
+            fit: BoxFit.contain,
+          ),
+        ),
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.search, color: Colors.white,),
+          onPressed: _navigateToMySearch,
+        ),
+        SizedBox(width: 8), // Adjust the width as needed
+        StreamBuilder<String?>(
+          stream: friendService.userProfilePictureStream(UserData.userName),
+          builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+            ImageProvider imageProvider;
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              imageProvider = const AssetImage('lib/assets/default-user.jpg');
+            } else if (snapshot.hasError) {
+              imageProvider = const AssetImage('lib/assets/images/error.png');
+            } else {
+              String? profilePictureUrl = snapshot.data;
+              if (profilePictureUrl == null || profilePictureUrl.isEmpty) {
+                imageProvider = const AssetImage('lib/assets/default-user.jpg');
+              } else {
+                imageProvider = NetworkImage(profilePictureUrl);
+              }
+            }
 
-          icon: Icon(Icons.notifications, color: Colors.white), // Bell icon
-
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-
-                builder: (context) => NotificationsScreen(),
-
+            return GestureDetector(
+              onTap: _navigateToMyUserProfilePage, // Add this line
+              child: Container(
+                padding: EdgeInsets.only(right: 10.0), // Adjust the padding
+                child: CircleAvatar(
+                  radius: 16, // Adjust the radius as needed
+                  backgroundImage: imageProvider,
+                ),
               ),
             );
           },
         ),
-        flexibleSpace: Padding(
-
-          padding: EdgeInsets.only(
-              top: 60.0), // Adjust the top padding value to lower the image
-
-          child: Center(
-            child: Image.asset(
-                'lib/assets/Live4youWhite.png', // Replace 'lib/assets/Live4youWhite.png' with your image path
-                height: 120, // Adjust the height of the image
-                width: 130, // Adjust the width of the image
-                fit: BoxFit.contain),
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.white),
-            onPressed: _navigateToMySearch,
-          ),
-          IconButton(
-            icon: Icon(Icons.account_circle, color: Colors.white),
-            onPressed: _navigateToMyUserProfilePage,
-          ),
-        ],
-      ),
+      ],
+    ),
       backgroundColor: Color.fromARGB(248, 0, 0, 0),
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
@@ -354,7 +393,7 @@ class _PostCardState extends State<PostCard> {
                 style: TextStyle(
 
                   fontFamily: 'DMSans',
-                  fontSize: 23,
+                  fontSize: 27,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
@@ -365,7 +404,7 @@ class _PostCardState extends State<PostCard> {
                 style: TextStyle(
 
                   fontFamily: 'DMSans',
-                  fontSize: 14,
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
@@ -404,57 +443,55 @@ class _PostCardState extends State<PostCard> {
                 ),
               )),
           ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: Image.network(
-              widget.post.imageUrl,
-              fit: BoxFit.fill,
-            ),
-          ),
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(isLiked ? Icons.favorite : Icons.favorite_rounded,
-                    color: isLiked ? Colors.teal : Colors.blueGrey),
-                onPressed: () => likePost(context),
-              ),
-              Text(
-                (widget.post.likeCount).toString(),
-                style: TextStyle(
-                    fontSize: 12,
-                    color: isLiked ? Colors.teal : Colors.blueGrey,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'DMSans'),
-              ),
-              Spacer(),
-              Flexible(
-                child: Padding(
-                  padding: EdgeInsets.only(right: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        timeAgo(widget.post.date),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'DMSans',
-                        ),
-                      ),
-                      if (widget.post.username == UserData.userName)
-                        IconButton(
+  borderRadius: BorderRadius.circular(10.0),
+  child: Image.network(
+    widget.post.imageUrl,
+    fit: BoxFit.fill,
+  ),
+),
+Row(
+  children: [
+    IconButton(
+      icon: Icon(
+        isLiked ? Icons.favorite : Icons.favorite_rounded,
+        color: isLiked ? const Color.fromARGB(255, 255, 255, 255) : Colors.blueGrey,
+        size: 30.0,
+      ),
+      onPressed: () => likePost(context),
+    ),
+    SizedBox(width: 4.0),
+    Text(
+      (widget.post.likeCount).toString(),
+      style: TextStyle(
+        fontSize: 22,
+        color: isLiked ? const Color.fromARGB(255, 255, 255, 255) : const Color.fromARGB(255, 255, 255, 255),
+        fontWeight: FontWeight.bold,
+        fontFamily: 'DMSans',
+      ),
+    ),
+    Spacer(),
+    Text(
+      timeAgo(widget.post.date),
+      style: TextStyle(
+        fontSize: 14,
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'DMSans',
+      ),
+    ),
+    SizedBox(width: 8.0),
+    if (widget.post.username == UserData.userName)
+      IconButton(
+        icon: Icon(Icons.delete_forever),
+        color: const Color.fromARGB(255, 255, 255, 255),
+        onPressed: () => deletePost(context),
+      ),
+  ],
+),
 
-                          icon: Icon(Icons.delete_forever),
-                          color: Colors.blueGrey,
 
-                          onPressed: () => deletePost(context),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+
+
           Container(
               height: 2.0,
               width: screenWidth * cutOffValue,
