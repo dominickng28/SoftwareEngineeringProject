@@ -33,7 +33,7 @@ class CameraScreenState extends State<CameraScreen> {
   int _cameraIndex = 0;
   List<CameraDescription> _cameras = [];
   // List of options for the carousel
-  final List<String> options = ["Cook", "Biking", "Draw", "Run"];
+  final List<String> options = ["Cook", "Smile", "Draw", "Run"];
   String selectedOption = "Cook";
 
   @override

@@ -39,7 +39,7 @@ class _MyScreenState extends State<WordsScreen> {
   late DateTime _nextRefreshTime;
   late Duration durationUntilNextRefresh = const Duration();
 
-  List<String> words = ['Cook', 'Biking', 'Draw', 'Run']; // STORES WORDS
+  List<String> words = ['Cook', 'Smile', 'Draw', 'Run']; // STORES WORDS
   List<String> wordImages = [
     'Cooking.jpeg',
     'Biking.webp',
