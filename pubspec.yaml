@@ -111,6 +111,7 @@ flutter:
     - lib/assets/chris.jpg 
     - lib/assets/GoogleIcon.png
     - lib/assets/appleIcon.png
+    - lib/assets/Smileyo.avif
 
   #   - images/a_dot_ham.jpeg
 
