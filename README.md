@@ -41,7 +41,33 @@ If it passes then you know the navigation from the login screen is correct.
 * Kenneth Dearstine
 * Nate Smith
 
+## Test instructions:
 
+Using the flutter_test and mockito package. 
+Create a new dart file for your test case. 
+Mock the functionality of firebase via mockito that plugs into the componenet you are testing.
+Finally run your test using flutter test lib/yourtestscript
+
+## Build instructions:
+
+Before you begin, ensure you have met the following requirements:
+- You have installed the latest version of Flutter
+- You have a Windows/Linux/Mac machine.
+
+To install the live4you repo, follow these steps:
+
+1. Clone the repository
+```bash
+git clone https://github.com/yusuflkq/live4you.git
+
+2. Navigate to the project directory
+cd live4you
+
+3. Get Flutter packages
+flutter pub get
+
+4. Run the app
+flutter run
 
 Testing Friends List:
 
@@ -55,3 +81,8 @@ Step 6: Sign in to the first account
 Step 7: Accept the friend request from the second account
 Step 8: Go your profile page
 Step 9: Press the friends button underneath
+
+Testing google sign in:
+
+Step 1: open the test google login in script
+Step 2: in the terminal run flutter test lib/google_login_test.dart

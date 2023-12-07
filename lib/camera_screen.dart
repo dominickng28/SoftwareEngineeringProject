@@ -100,8 +100,6 @@ class CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-
       body: Stack(
         children: [
           FutureBuilder<void>(
@@ -232,26 +230,45 @@ class PreviewPostCardState extends State<PreviewPostCard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-  body: SingleChildScrollView(
-    child: Container(
-      color: const Color.fromARGB(248, 0, 0, 0),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 100.0, bottom: 300),
-        child: Column(
-          children: [
-            ListTile(
-              leading: const CircleAvatar(
-                backgroundImage: AssetImage(
-                  'lib/assets/default-user.jpg', // Replace with your placeholder image
-                ),
-              ),
-              title: Text(
-                UserData.userName, // Replace with the username
-                style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  fontSize: 23,
-                  color: Color.fromARGB(255, 255, 255, 255),
-                  fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Container(
+          color: const Color.fromARGB(248, 0, 0, 0),
+          child: Padding(
+            // Add Padding widget
+            padding: const EdgeInsets.only(top: 100.0, bottom: 300),
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const CircleAvatar(
+                    backgroundImage: AssetImage(
+                        'lib/assets/default-user.jpg'), // Replace with your placeholder image
+                  ),
+                  title: Text(
+                    UserData.userName, // Replace with the username
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      fontSize: 23,
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  trailing: Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Color.fromARGB(255, 255, 255, 255),
+                    ),
+                    child: Text(
+                      widget.selectedOption, // Display the selected option
+                      style: const TextStyle(
+                        fontFamily: 'DMSans',
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 0, 0, 0),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               trailing: Container(
@@ -269,35 +286,32 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                     color: Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
-              ),
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: Image.file(
-                File(widget.imagePath),
-                fit: BoxFit.fill,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0),
-              child: TextField(
-                style: const TextStyle(color: Colors.white),
-                controller: _captionController,
-                decoration: const InputDecoration(
-                  labelText: 'Caption',
-                  labelStyle: TextStyle(color: Colors.white),
-                  fillColor: Colors.white,
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white, width: 2.0),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Color.fromARGB(100, 255, 255, 255),
-                      width: 1.0,
+
+                Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: TextField(
+                    style: const TextStyle(color: Colors.white),
+                    controller: _captionController,
+                    decoration: const InputDecoration(
+                      labelText: 'Caption',
+                      labelStyle: TextStyle(color: Colors.white),
+                      fillColor: Colors.white,
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white, width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(100, 255, 255, 255),
+                            width: 1.0),
+                      ),
                     ),
                   ),
                 ),
-              ),
+                ElevatedButton(
+                  onPressed: _savePicture,
+                  child: const Icon(Icons.send),
+                ),
+              ],
             ),
             ElevatedButton(
               onPressed: _savePicture,
@@ -310,3 +324,4 @@ class PreviewPostCardState extends State<PreviewPostCard> {
   ),
 );
   }}
+
