@@ -146,6 +146,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.black,
         title: Text(
           title,
@@ -235,7 +236,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
             ),
             // Code for the Profile Banner
             Container(
-              color: const Color.fromARGB(248, 0, 0, 0),
+              color: const Color.fromARGB(255, 0, 0, 0),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
@@ -312,7 +313,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                       ),
                     ),
                     Container(
-                      color: const Color.fromARGB(248, 0, 0, 0),
+                      color: const Color.fromARGB(255, 0, 0, 0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[

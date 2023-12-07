@@ -5,6 +5,7 @@ import 'package:live4you/home_feed.dart'; // Import the home screen
 import 'package:live4you/profile_screen.dart'; // Import the profile screen
 import 'package:firebase_core/firebase_core.dart';
 import 'package:live4you/search_screen.dart';
+import 'package:live4you/user_data.dart';
 import 'package:live4you/words_screen.dart';
 import 'package:live4you/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -63,6 +64,21 @@ class MainScreenState extends State<MainScreen> {
     _currentIndex = widget.index;
   }
 
+  void refreshScreen(int index) {
+    setState(() {
+      _currentIndex = index;
+      widget.profile = UserData.userName;
+      if (_currentIndex == 0) {
+        _children[0] = MyFeed(title: 'Home Feed');
+      } else if (_currentIndex == 1) {
+        _children[1] = WordsScreen();
+      } else {
+        _children[2] = MyUserProfilePage(
+            title: 'UserProfile', profileUserName: widget.profile);
+      }
+    });
+  }
+
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -72,6 +88,7 @@ class MainScreenState extends State<MainScreen> {
         curve: Curves.easeInOut,
       );
     });
+    refreshScreen(index);
   }
 
   @override
@@ -101,12 +118,12 @@ class MainScreenState extends State<MainScreen> {
             .withOpacity(0.6), // Set unselected icon color with opacity
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.looks_4),
-            label: 'Words',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.looks_4),
+            label: 'Words',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

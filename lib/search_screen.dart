@@ -437,10 +437,11 @@ class _MySearchState extends State<MySearch> {
             fontSize: 24,
           ),
         ),
-        backgroundColor: const Color.fromARGB(251, 0, 0, 0),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
-      backgroundColor: const Color.fromARGB(248, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[

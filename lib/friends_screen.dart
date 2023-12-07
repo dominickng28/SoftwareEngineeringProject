@@ -39,14 +39,14 @@ class MyFriends extends StatelessWidget {
             Navigator.pop(context); // Go back to the previous screen
           },
         ),
-        backgroundColor: const Color.fromARGB(248, 0, 0, 0),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         flexibleSpace: const Padding(
           padding: EdgeInsets.only(
             top: 30.0,
           ),
         ),
       ),
-      backgroundColor: const Color.fromARGB(248, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       body: MyFriendsList(profileUsername: profileUsername),
     );
   }
@@ -148,7 +148,7 @@ class FriendBar extends StatelessWidget {
               ));
         },
         child: Container(
-          color: const Color.fromARGB(248, 0, 0, 0),
+          color: const Color.fromARGB(255, 0, 0, 0),
           child: Column(
             children: [
               ListTile(
@@ -192,7 +192,7 @@ class FriendBar extends StatelessWidget {
                   ),
                 ),
               ),
-              Container(height: 2.0, color: const Color.fromARGB(248, 0, 0, 0)),
+              Container(height: 2.0, color: const Color.fromARGB(255, 0, 0, 0)),
             ],
           ),
         ));

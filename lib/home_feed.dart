@@ -193,7 +193,7 @@ class _MyFeedTest extends State<MyFeed> {
     _checkIfFirstTime();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(251, 0, 0, 0),
+        backgroundColor: Color.fromARGB(255, 0, 0, 0),
         leading: IconButton(
           icon: Icon(Icons.notifications, color: Colors.white),
           onPressed: () {
@@ -206,7 +206,7 @@ class _MyFeedTest extends State<MyFeed> {
           },
         ),
         flexibleSpace: Padding(
-          padding: EdgeInsets.only(top: 60.0),
+          padding: EdgeInsets.only(top: 20.0),
           child: Center(
             child: Image.asset(
               'lib/assets/Live4youWhite.png',
@@ -257,7 +257,7 @@ class _MyFeedTest extends State<MyFeed> {
           ),
         ],
       ),
-      backgroundColor: Color.fromARGB(248, 0, 0, 0),
+      backgroundColor: Color.fromARGB(255, 0, 0, 0),
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
@@ -336,7 +336,7 @@ class PostCardState extends State<PostCard> {
     double screenWidth = MediaQuery.of(context).size.width;
     double cutOffValue = 0.95;
     return Container(
-      color: const Color.fromARGB(248, 0, 0, 0),
+      color: const Color.fromARGB(255, 0, 0, 0),
       child: Column(
         children: [
           ListTile(

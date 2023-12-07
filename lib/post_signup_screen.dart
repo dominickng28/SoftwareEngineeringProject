@@ -135,9 +135,9 @@ class PostSignUpScreenState extends State<PostSignUpScreen> {
             fontFamily: 'DMSans',
           ),
         ),
-        backgroundColor: const Color.fromARGB(251, 0, 0, 0),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       ),
-      backgroundColor: const Color.fromARGB(251, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(

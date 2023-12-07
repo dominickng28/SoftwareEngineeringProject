@@ -159,6 +159,7 @@ class _MyScreenState extends State<WordsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Tasks',
           style: TextStyle(
@@ -168,7 +169,7 @@ class _MyScreenState extends State<WordsScreen> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: const Color.fromARGB(251, 0, 0, 0),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         centerTitle: true,
         actions: [
           IconButton(
@@ -183,7 +184,7 @@ class _MyScreenState extends State<WordsScreen> {
       ),
 
       // SCREEN BACKGROUND, BEHIND BOXES
-      backgroundColor: const Color.fromARGB(248, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
 
       // WORD BOXES
 

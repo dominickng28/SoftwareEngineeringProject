@@ -124,9 +124,9 @@ class LoginScreenState extends State<LoginScreen> {
             fontFamily: 'DMSans',
           ),
         ),
-        backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       ),
-      backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       body: Builder(
         builder: (BuildContext context) {
           _scaffoldContext = context;
@@ -141,7 +141,7 @@ class LoginScreenState extends State<LoginScreen> {
                     Image.asset(
                       'lib/assets/Live4youWhite.png',
                       width: 325,
-                      height: 325,
+                      height: 225,
                     ),
                     const SizedBox(height: 20.0),
                     Container(
