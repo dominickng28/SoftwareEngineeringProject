@@ -36,7 +36,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  String profile;
+  MainScreen({super.key, required this.profile});
 
   @override
   MainScreenState createState() => MainScreenState();
@@ -44,7 +45,6 @@ class MainScreen extends StatefulWidget {
 
 class MainScreenState extends State<MainScreen> {
   int _currentIndex = 0; // Set initial index to 0 (Home Feed)
-
 
   late List<Widget> _children;
   late PageController _pageController;
@@ -57,9 +57,12 @@ class MainScreenState extends State<MainScreen> {
     _children = [
       const MyFeed(title: 'Home Feed'), // Home Feed tab on the left
       const WordsScreen(), // Words tab in the middle
-      const MyUserProfilePage(title: 'User Profile'), // Profile tab on the right
+      MyUserProfilePage(
+          title: 'User Profile',
+          profileUserName: widget.profile), // Profile tab on the right
     ];
   }
+
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -70,6 +73,7 @@ class MainScreenState extends State<MainScreen> {
       );
     });
   }
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -87,10 +91,13 @@ class MainScreenState extends State<MainScreen> {
             _currentIndex = index;
           });
         },
-        children: const [
+        children: [
           WordsScreen(), // Words tab on the left
           MyFeed(title: 'Home Feed'), // Home tab in the middle
-          MyUserProfilePage(title: 'User Profile'), // Profile tab on the right
+          MyUserProfilePage(
+            title: 'User Profile',
+            profileUserName: widget.profile,
+          ), // Profile tab on the right
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -98,10 +105,10 @@ class MainScreenState extends State<MainScreen> {
         onTap: onTabTapped,
         backgroundColor: Colors.black, // Set the bottom nav bar color to black
         selectedItemColor: Colors.white, // Set the selected icon color to white
-        unselectedItemColor: Colors.white.withOpacity(0.6), // Set unselected icon color with opacity
+        unselectedItemColor: Colors.white
+            .withOpacity(0.6), // Set unselected icon color with opacity
         items: const [
           BottomNavigationBarItem(
-
             icon: Icon(Icons.looks_4),
             label: 'Words',
           ),

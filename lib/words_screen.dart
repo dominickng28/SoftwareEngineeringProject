@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:live4you/user_data.dart';
 
 // import 'home_feed.dart';
 import 'search_screen.dart';
@@ -144,8 +145,9 @@ class _MyScreenState extends State<WordsScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const MyUserProfilePage(
+        builder: (context) => MyUserProfilePage(
           title: 'User Profile',
+          profileUserName: UserData.userName,
           // Add any necessary parameters for the profile screen
         ),
       ),
@@ -321,8 +323,7 @@ class _MyScreenState extends State<WordsScreen> {
         ] //RIGHT HERE
             ),
       ),
-
-      );
+    );
   }
 
   // CAMERA CODE

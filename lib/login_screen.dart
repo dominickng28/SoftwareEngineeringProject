@@ -63,7 +63,8 @@ class LoginScreenState extends State<LoginScreen> {
 
           UserData.userName = username!;
           Navigator.of(_scaffoldContext!).pushReplacement(
-            MaterialPageRoute(builder: (context) => const MainScreen()),
+            MaterialPageRoute(
+                builder: (context) => MainScreen(profile: UserData.userName)),
           );
         }
       } else {
@@ -91,7 +92,8 @@ class LoginScreenState extends State<LoginScreen> {
         UserData.userName = (await firestoreService
             .getUsernameFromEmail(_emailController.text))!;
         Navigator.of(_scaffoldContext!).pushReplacement(
-          MaterialPageRoute(builder: (context) => const MainScreen()),
+          MaterialPageRoute(
+              builder: (context) => MainScreen(profile: UserData.userName)),
         );
       } else {
         ScaffoldMessenger.of(_scaffoldContext!).showSnackBar(
@@ -271,7 +273,8 @@ class LoginScreenState extends State<LoginScreen> {
                         ElevatedButton(
                           key: Key("loginAppleButton"),
                           onPressed: () {
-                            print("Apple login functionality not implemented yet.");
+                            print(
+                                "Apple login functionality not implemented yet.");
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.black,
