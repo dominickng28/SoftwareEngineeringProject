@@ -270,13 +270,23 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                     ),
                   ),
                 ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.file(
-                    File(widget.imagePath),
-                    fit: BoxFit.fill,
+              ),
+              trailing: Container(
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color.fromARGB(255, 255, 255, 255),
+                ),
+                child: Text(
+                  widget.selectedOption, // Display the selected option
+                  style: const TextStyle(
+                    fontFamily: 'DMSans',
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
                   child: TextField(
@@ -303,13 +313,15 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                 ),
               ],
             ),
-          ),
+            ElevatedButton(
+              onPressed: _savePicture,
+              child: const Icon(Icons.send),
+            ),
+          ],
         ),
- New-friends-list
-
-        // Container(height: 300, color: Colors.black),
-
       ),
-    );
-  }
-}
+    ),
+  ),
+);
+  }}
+

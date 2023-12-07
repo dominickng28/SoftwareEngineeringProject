@@ -576,19 +576,19 @@ class _MySearchState extends State<MySearch> {
             ),
 
             //Generate Friend Request List
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                'Friend Requests',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  fontFamily: 'DNSans',
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            mySearch.buildFriendRequestsSection(),
+            // const Padding(
+            //   padding: EdgeInsets.symmetric(vertical: 8.0),
+            //   child: Text(
+            //     'Friend Requests',
+            //     style: TextStyle(
+            //       fontWeight: FontWeight.bold,
+            //       fontSize: 18,
+            //       fontFamily: 'DNSans',
+            //       color: Colors.white,
+            //     ),
+            //   ),
+            // ),
+            // mySearch.buildFriendRequestsSection(),
             //Recommended text
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 8.0),

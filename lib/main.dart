@@ -22,10 +22,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'LIVE4YOU',
       theme: ThemeData(
-
         colorScheme:
             ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 255, 255, 255)),
-
         useMaterial3: true,
       ),
       initialRoute: '/login',
@@ -45,7 +43,9 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen> {
-  int _currentIndex = 1; // Set initial index to 1 (Home)
+  int _currentIndex = 0; // Set initial index to 0 (Home Feed)
+
+
   late List<Widget> _children;
   late PageController _pageController;
 
@@ -55,8 +55,8 @@ class MainScreenState extends State<MainScreen> {
     _pageController = PageController(initialPage: _currentIndex);
 
     _children = [
-      const WordsScreen(), // Words tab on the left
-      const MyFeed(title: 'Home Feed'), // Home tab in the middle
+      const MyFeed(title: 'Home Feed'), // Home Feed tab on the left
+      const WordsScreen(), // Words tab in the middle
       const MyUserProfilePage(title: 'User Profile'), // Profile tab on the right
     ];
   }
@@ -101,6 +101,7 @@ class MainScreenState extends State<MainScreen> {
         unselectedItemColor: Colors.white.withOpacity(0.6), // Set unselected icon color with opacity
         items: const [
           BottomNavigationBarItem(
+
             icon: Icon(Icons.looks_4),
             label: 'Words',
           ),
