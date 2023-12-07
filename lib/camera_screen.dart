@@ -305,7 +305,10 @@ class PreviewPostCardState extends State<PreviewPostCard> {
             ),
           ),
         ),
+ New-friends-list
+
         // Container(height: 300, color: Colors.black),
+
       ),
     );
   }

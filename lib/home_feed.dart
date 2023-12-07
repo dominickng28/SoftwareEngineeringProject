@@ -114,7 +114,7 @@ class _MyFeedTest extends State<MyFeed> {
 
   void fetchAllPostData() async {
     // Fetch friends list
-    await userData.populateFriendsList();
+    await userData.populateFriendsList(UserData.userName);
     List<String>? friendList = UserData.friends;
 
     // Add the current user's username to the list
@@ -177,6 +177,7 @@ class _MyFeedTest extends State<MyFeed> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(251, 0, 0, 0),
         leading: IconButton(
+
         icon: const Icon(Icons.notifications, color: Colors.white), // Bell icon
         onPressed: () {
           Navigator.push(
@@ -231,6 +232,7 @@ class _MyFeedTest extends State<MyFeed> {
       ),
     );
   }
+
   void _navigateToCameraScreen(BuildContext context) async {
   final cameras = await availableCameras();
   final firstCamera = cameras.first;
@@ -247,6 +249,7 @@ class _MyFeedTest extends State<MyFeed> {
       fetchAllPostData(); // Refresh the feed if a new post was created
     }
   }
+
 }
 }
 
@@ -418,6 +421,8 @@ class PostCardState extends State<PostCard> {
                       ),
                       if (widget.post.username == UserData.userName)
                         IconButton(
+
+
                           icon: const Icon(Icons.delete_forever),
                           color: Colors.blueGrey,
                           onPressed: () => deletePost(context),
@@ -456,6 +461,7 @@ class PostCardState extends State<PostCard> {
                 ScaffoldMessenger.of(parentContext).showSnackBar(
                   const SnackBar(
                     content: Text('Post has been deleted'),
+
                   ),
                 );
               }

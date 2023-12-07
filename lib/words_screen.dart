@@ -280,6 +280,7 @@ class _MyScreenState extends State<WordsScreen> {
             ),
           ],
 
+
           const SizedBox(height: 5.0),
 
           // Scrollable Row of Rectangular Photos

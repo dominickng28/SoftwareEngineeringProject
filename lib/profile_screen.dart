@@ -85,7 +85,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
     // Accessing Firestore instance
     final firestoreInstance = FirebaseFirestore.instance;
     // get profile page owner user details
-    String profile = UserData.userName;
+    String? profile = username;
     if (username != null) {
       profile = username;
     }
@@ -93,13 +93,12 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
         await firestoreInstance.collection('users').doc(profile).get();
     if (userDocument.exists) {
       // Create a profile page owner instance from Firestore data
-      userProfile = User.fromFirestore(userDocument, profile);
+      userProfile = User.fromFirestore(userDocument, profile!);
       if (mounted) {
         setState(() {
           // Trigger a rebuild with the fetched user data
           isFriend = userProfile!.isFriend();
-          requestSent =
-              userProfile!.receivedRequests.contains(UserData.userName);
+          requestSent = userProfile!.receivedRequests.contains(username);
           userBio = userProfile!.userBio;
         });
       }
@@ -125,16 +124,12 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
     return allPostData;
   }
 
-  //void _navigateToMySearch() {
-  //Navigator.push(
-  //context,
-  //MaterialPageRoute(
-  //builder: (context) => MySearch(
-  //title: 'Search',
-  //),
-  //),
-  //);
-  //}
+  // void _navigateToMySearch() {
+  //   Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) => const MySearch(title: 'Search')));
+  // }
 
   void refreshProfile() {
     setState(() {
@@ -292,13 +287,14 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                                style: const TextStyle(
-                                  fontFamily: 'DMSans',
-                                  fontSize: 23,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                userProfile?.username ?? "Loading User"),
+                              userProfile?.username ?? "Loading User",
+                              style: const TextStyle(
+                                fontFamily: 'DMSans',
+                                fontSize: 23,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             const SizedBox(height: 10),
                             Text(
                               userBio ?? '',
@@ -325,8 +321,10 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const MyFriends(
+                                    builder: (context) => MyFriends(
                                           title: 'Friends',
+                                          profileUsername:
+                                              widget.profileUserName,
                                         )),
                               );
                             },
@@ -366,12 +364,10 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                             },
                           ),
                         ],
-                        
                       ),
                     ),
                   ],
                 ),
-                
               ),
             ),
 

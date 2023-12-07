@@ -7,9 +7,14 @@ class UserData {
 
   UserData(this.firestore); // Constructor
 
-  Future<void> populateFriendsList() async {
+  Future<void> populateFriendsList(profile) async {
     // Get the current user's username
-    String? username = UserData.userName;
+    String? username;
+    if (profile == null) {
+      username = UserData.userName;
+    } else {
+      username = profile;
+    }
 
     // Get the document reference for the current user
     DocumentReference<Map<String, dynamic>> userDoc =
