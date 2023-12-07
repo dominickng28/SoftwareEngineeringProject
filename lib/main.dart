@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:live4you/search_screen.dart';
 import 'package:live4you/words_screen.dart';
 import 'package:live4you/firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,20 +17,21 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key}); // Fix constructor definition
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'LIVE4YOU',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(144, 10, 231, 139)),
+
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 255, 255, 255)),
+
         useMaterial3: true,
       ),
       initialRoute: '/login',
       routes: {
-        '/login': (context) => const LoginScreen(),
-        '/signup': (context) => const SignUpScreen(),
+        '/login': (context) => LoginScreen(auth: FirebaseAuth.instance),
+        '/signup': (context) => SignUpScreen(),
       },
     );
   }
@@ -44,12 +46,13 @@ class MainScreen extends StatefulWidget {
 
 class MainScreenState extends State<MainScreen> {
   int _currentIndex = 1; // Set initial index to 1 (Home)
-
   late List<Widget> _children;
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: _currentIndex);
 
     _children = [
       const WordsScreen(), // Words tab on the left
@@ -57,47 +60,57 @@ class MainScreenState extends State<MainScreen> {
       const MyUserProfilePage(title: 'User Profile'), // Profile tab on the right
     ];
   }
-
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     });
+  }
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _children[_currentIndex],
+      backgroundColor: Colors.black, // Set the background color to black
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        children: const [
+          WordsScreen(), // Words tab on the left
+          MyFeed(title: 'Home Feed'), // Home tab in the middle
+          MyUserProfilePage(title: 'User Profile'), // Profile tab on the right
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: const Color.fromARGB(248, 255, 255, 255),
-        unselectedItemColor: const Color.fromARGB(248, 255, 255, 255),
-        onTap: onTabTapped,
         currentIndex: _currentIndex,
-        backgroundColor: Color.fromARGB(251, 0, 0, 0), // Set background color here
-        items: [
+        onTap: onTabTapped,
+        backgroundColor: Colors.black, // Set the bottom nav bar color to black
+        selectedItemColor: Colors.white, // Set the selected icon color to white
+        unselectedItemColor: Colors.white.withOpacity(0.6), // Set unselected icon color with opacity
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.looks_4),
-            activeIcon: Icon(
-              Icons.looks_4,
-              color: Color.fromARGB(248, 255, 255, 255),
-            ),
-            label: _currentIndex == 0 ? 'Words' : '', // Show label only when selected
+            label: 'Words',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            activeIcon: Icon(
-              Icons.home,
-              color: Color.fromARGB(248, 255, 255, 255),
-            ),
-            label: _currentIndex == 1 ? 'Home' : '',
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            activeIcon: Icon(
-              Icons.person,
-              color: Color.fromARGB(248, 255, 255, 255),
-            ),
-            label: _currentIndex == 2 ? 'Profile' : '',
+            label: 'Profile',
           ),
         ],
       ),

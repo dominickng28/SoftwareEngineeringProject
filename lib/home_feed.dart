@@ -19,8 +19,7 @@ class MyFeed extends StatefulWidget {
 }
 
 class _MyFeedTest extends State<MyFeed> {
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   final UserData userData = UserData(FirebaseFirestore.instance);
   List<Post> posts = [];
 
@@ -36,7 +35,7 @@ class _MyFeedTest extends State<MyFeed> {
     bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
     //print('isFirstTime: $isFirstTime');
     if (isFirstTime) {
-      // if (true) {
+    // if (true) {
 
       _showWelcomeDialog();
       prefs.setBool('isFirstTime', false);
@@ -52,7 +51,7 @@ class _MyFeedTest extends State<MyFeed> {
           // iconPadding: EdgeInsets.all(10.0),
           contentPadding: const EdgeInsets.all(5.0),
           // insetPadding: EdgeInsets.zero,
-          // iconPadding: EdgeInsets.zero,
+          // iconPadding: EdgeInsets.zero, 
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
             // borderRadius: BorderRadius.zero,
@@ -65,6 +64,7 @@ class _MyFeedTest extends State<MyFeed> {
               borderRadius: BorderRadius.circular(15.0),
               color: Colors.black, // Customize the background color
             ),
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -92,10 +92,9 @@ class _MyFeedTest extends State<MyFeed> {
                 const Text(
                   "Live4You is not just another social media app; it's a platform designed to inspire you to live an active and fulfilling life. Each week, we present you with four exciting words/activities. Your mission: turn these words into actions! 🚴‍♂️🏞️\n\nHere's how it works:\n1. Every Monday, discover four new words of the week.\n2. Embark on exciting activities that align with the weekly words. \n3. Capture the moments by sharing photos of your completed activites.\n4. Personalize your profile, connect with friends, and share your journey through your post.\n\nLet Live4You be your guide to a more vibrant and active lifestyle! 🌟",
                   style: TextStyle(
-                    fontSize: 18,
-                    fontFamily: 'DNSans',
-                    color: Colors.white,
-                  ),
+                    fontSize: 18, 
+                    fontFamily: 'DNSans', 
+                    color: Colors.white,),
                 ),
               ],
             ),
@@ -115,7 +114,7 @@ class _MyFeedTest extends State<MyFeed> {
 
   void fetchAllPostData() async {
     // Fetch friends list
-    await userData.populateFriendsList();
+    await userData.populateFriendsList(UserData.userName);
     List<String>? friendList = UserData.friends;
 
     // Add the current user's username to the list
@@ -178,26 +177,26 @@ class _MyFeedTest extends State<MyFeed> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(251, 0, 0, 0),
         leading: IconButton(
-          icon:
-              const Icon(Icons.notifications, color: Colors.white), // Bell icon
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const NotificationsScreen(),
-              ),
-            );
-          },
-        ),
+
+        icon: const Icon(Icons.notifications, color: Colors.white), // Bell icon
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const NotificationsScreen(),
+            ),
+          );
+        },
+      ),
         flexibleSpace: Padding(
           padding: const EdgeInsets.only(
-              top: 10.0), // Adjust the top padding value to lower the image
+              top: 60.0), // Adjust the top padding value to lower the image
           child: Center(
             child: Image.asset(
-                'lib/assets/Live4youWhite.png', // Replace 'lib/assets/Live4youWhite.png' with your image path
-                height: 120, // Adjust the height of the image
-                width: 130, // Adjust the width of the image
-                fit: BoxFit.contain),
+              'lib/assets/Live4youWhite.png', // Replace 'lib/assets/Live4youWhite.png' with your image path
+              height: 120, // Adjust the height of the image
+              width: 130, // Adjust the width of the image
+            ),
           ),
         ),
         actions: [
@@ -216,15 +215,15 @@ class _MyFeedTest extends State<MyFeed> {
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
         child: posts.isEmpty
-            ? const Center(
-                child: Text("No posts..."),
-              )
-            : ListView.builder(
-                itemCount: posts.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return PostCard(post: posts[index]);
-                },
-              ),
+          ? const Center(
+              child: Text("No posts..."),
+            )
+          : ListView.builder(
+              itemCount: posts.length,
+              itemBuilder: (BuildContext context, int index) {
+                return PostCard(post: posts[index]);
+              },
+            ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateToCameraScreen(context),
@@ -235,23 +234,25 @@ class _MyFeedTest extends State<MyFeed> {
   }
 
   void _navigateToCameraScreen(BuildContext context) async {
-    final cameras = await availableCameras();
-    final firstCamera = cameras.first;
+  final cameras = await availableCameras();
+  final firstCamera = cameras.first;
 
-    if (mounted) {
-      final didCreatePost = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CameraScreen(camera: firstCamera),
-        ),
-      );
+  if (mounted) {
+    final didCreatePost = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CameraScreen(camera: firstCamera),
+      ),
+    );
 
-      if (didCreatePost == true) {
-        fetchAllPostData(); // Refresh the feed if a new post was created
-      }
+    if (didCreatePost == true) {
+      fetchAllPostData(); // Refresh the feed if a new post was created
     }
   }
+
 }
+}
+
 
 class PostCard extends StatefulWidget {
   final Post post;
@@ -294,95 +295,92 @@ class PostCardState extends State<PostCard> {
       child: Column(
         children: [
           ListTile(
-              leading: StreamBuilder<String?>(
-                stream: friendService
-                    .userProfilePictureStream(widget.post.username),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String?> snapshot) {
-                  ImageProvider imageProvider;
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    // Use a placeholder image when the profile picture is loading
+            leading: StreamBuilder<String?>(
+              stream:
+                  friendService.userProfilePictureStream(widget.post.username),
+              builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                ImageProvider imageProvider;
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Use a placeholder image when the profile picture is loading
+                  imageProvider =
+                      const AssetImage('lib/assets/default-user.jpg');
+                } else if (snapshot.hasError) {
+                  imageProvider =
+                      const AssetImage('lib/assets/images/error.png');
+                } else {
+                  String? profilePictureUrl = snapshot.data;
+                  if (profilePictureUrl == null || profilePictureUrl.isEmpty) {
+                    // Use a default profile picture when there's no profile picture
                     imageProvider =
                         const AssetImage('lib/assets/default-user.jpg');
-                  } else if (snapshot.hasError) {
-                    imageProvider =
-                        const AssetImage('lib/assets/images/error.png');
                   } else {
-                    String? profilePictureUrl = snapshot.data;
-                    if (profilePictureUrl == null ||
-                        profilePictureUrl.isEmpty) {
-                      // Use a default profile picture when there's no profile picture
-                      imageProvider =
-                          const AssetImage('lib/assets/default-user.jpg');
-                    } else {
-                      // Use NetworkImage when loading an image from a URL
-                      imageProvider = NetworkImage(profilePictureUrl);
-                    }
+                    // Use NetworkImage when loading an image from a URL
+                    imageProvider = NetworkImage(profilePictureUrl);
                   }
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MyUserProfilePage(
-                            profileUserName: widget.post.username,
-                            title: '',
-                          ),
+                }
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyUserProfilePage(
+                          profileUserName: widget.post.username,
+                          title: '',
                         ),
-                      );
-                    },
-                    child: CircleAvatar(
-                      backgroundImage: imageProvider,
-                    ),
-                  );
-                },
-              ),
-              title: Text(
-                widget.post.username,
-                style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  fontSize: 23,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text(
-                widget.post.caption,
-                style: const TextStyle(
-                  fontFamily: 'DMSans',
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              trailing: Container(
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                child: Transform(
-                  transform:
-                      Matrix4.skewX(-0.05), // Adjust the skew factor as needed
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6), // Adjust the padding values
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      widget.post.word, // Placeholder for your word
-                      style: const TextStyle(
-                        fontFamily: 'DMSans',
-                        fontSize: 22, // Adjust the font size as needed
-                        fontWeight: FontWeight
-                            .w900, // Adjust the fontWeight for thicker letters
-                        fontStyle: FontStyle.italic,
-                        decoration: TextDecoration.underline,
-                        color: Colors.white,
                       ),
-                    ),
+                    );
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: imageProvider,
                   ),
-                ),
-              )),
+                );
+              },
+            ),
+            title: Text(
+              widget.post.username,
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                fontSize: 23,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Text(
+              widget.post.caption,
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            trailing: Container(
+  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+  child: Transform(
+    transform: Matrix4.skewX(-0.05), // Adjust the skew factor as needed
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), // Adjust the padding values
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        widget.post.word, // Placeholder for your word
+        style: const TextStyle(
+          fontFamily: 'DMSans',
+          fontSize: 22, // Adjust the font size as needed
+          fontWeight: FontWeight.w900, // Adjust the fontWeight for thicker letters
+          fontStyle: FontStyle.italic,
+          decoration: TextDecoration.underline,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  ),
+)
+
+
+          ),
           ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
             child: Image.network(
@@ -423,8 +421,10 @@ class PostCardState extends State<PostCard> {
                       ),
                       if (widget.post.username == UserData.userName)
                         IconButton(
+
+
                           icon: const Icon(Icons.delete_forever),
-                          color: const Color.fromARGB(255, 255, 255, 255),
+                          color: Colors.blueGrey,
                           onPressed: () => deletePost(context),
                         ),
                     ],
@@ -443,43 +443,44 @@ class PostCardState extends State<PostCard> {
   }
 
   Future<void> deletePost(BuildContext parentContext) async {
-    return showDialog(
-      context: parentContext,
-      builder: (context) {
-        return SimpleDialog(
-          title: const Text("Delete post?"),
-          children: <Widget>[
-            SimpleDialogOption(
-              onPressed: () async {
-                Navigator.pop(context);
-                await removeFromPostList();
-                FirebaseFirestore.instance
-                    .collection('posts')
-                    .doc(widget.post.getPostID())
-                    .delete();
-                if (mounted) {
-                  ScaffoldMessenger.of(parentContext).showSnackBar(
-                    const SnackBar(
-                      content: Text('Post has been deleted'),
-                    ),
-                  );
-                }
-                setState(() {});
-              },
-              child: const Text(
-                'Delete',
-                style: TextStyle(color: Colors.red),
-              ),
+  return showDialog(
+    context: parentContext,
+    builder: (context) {
+      return SimpleDialog(
+        title: const Text("Delete post?"),
+        children: <Widget>[
+          SimpleDialogOption(
+            onPressed: () async {
+              Navigator.pop(context);
+              await removeFromPostList();
+              FirebaseFirestore.instance
+                  .collection('posts')
+                  .doc(widget.post.getPostID())
+                  .delete();
+              if (mounted) {
+                ScaffoldMessenger.of(parentContext).showSnackBar(
+                  const SnackBar(
+                    content: Text('Post has been deleted'),
+
+                  ),
+                );
+              }
+              setState(() {});
+            },
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.red),
             ),
-            SimpleDialogOption(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            )
-          ],
-        );
-      },
-    );
-  }
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          )
+        ],
+      );
+    },
+  );
+}
 
   Future<void> removeFromPostList() async {
     final firestoreInstance = FirebaseFirestore.instance;
@@ -532,11 +533,22 @@ class PostCardState extends State<PostCard> {
       widget.post.likeCount = updatedLikes
           .length; // Update like count based on the length of the likes list
     });
-
+    if (widget.post.username != UserData.userName){
+    await createLikeNotification(context);
+    }
     // Set state to the change in likes
     setState(() {
       isLiked = widget.post.likes!.contains(user);
       isProcessing = false;
     });
+  }
+
+  Future<void>createLikeNotification(BuildContext parentContext ) async {
+    await FirebaseFirestore.instance.collection('notifications').add({
+    'recipient': UserData.userName,
+    'type': 'like',
+    'postId': widget.post.getPostID(), // Add the post ID to identify the post
+    'timestamp': DateTime.now(),
+  });
   }
 }

@@ -312,7 +312,7 @@ class _MySearchState extends State<MySearch> {
 
   void fetchMostLikedPostData() async {
     // Fetch friends list
-    await userData.populateFriendsList();
+    await userData.populateFriendsList(UserData.userName);
     List<String>? userAndFriendList = UserData.friends;
 
     // Add the current user's username to the list
@@ -437,10 +437,8 @@ class _MySearchState extends State<MySearch> {
           ),
         ),
         backgroundColor: const Color.fromARGB(251, 0, 0, 0),
-        iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
       ),
-
       backgroundColor: const Color.fromARGB(248, 0, 0, 0),
       body: SingleChildScrollView(
         child: Column(

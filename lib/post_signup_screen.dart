@@ -185,13 +185,17 @@ class PostSignUpScreenState extends State<PostSignUpScreen> {
                           ),
                           const SizedBox(height: 20.0),
                           // Display the username
-                          Text(
-                            UserData.userName,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 60,
-                                fontFamily: 'DMSans'),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              UserData.userName,
+                              style: const TextStyle(
+                                  overflow: TextOverflow.clip,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 60,
+                                  fontFamily: 'DMSans'),
+                            ),
                           ),
                         ],
                       );
