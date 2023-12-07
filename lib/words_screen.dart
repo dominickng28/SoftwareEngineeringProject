@@ -322,12 +322,9 @@ class _MyScreenState extends State<WordsScreen> {
           ),
         ] //RIGHT HERE
             ),
-          ],
-          ],
       ),
 
-      ),
-    );
+      );
   }
 
   // CAMERA CODE
