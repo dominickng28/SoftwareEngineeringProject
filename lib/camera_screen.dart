@@ -270,23 +270,6 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                     ),
                   ),
                 ),
-              ),
-              trailing: Container(
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Color.fromARGB(255, 255, 255, 255),
-                ),
-                child: Text(
-                  widget.selectedOption, // Display the selected option
-                  style: const TextStyle(
-                    fontFamily: 'DMSans',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 0, 0, 0),
-                  ),
-                ),
-
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
                   child: TextField(
@@ -310,18 +293,12 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                 ElevatedButton(
                   onPressed: _savePicture,
                   child: const Icon(Icons.send),
-                ),
+              ),
               ],
             ),
-            ElevatedButton(
-              onPressed: _savePicture,
-              child: const Icon(Icons.send),
-            ),
-          ],
+          )
         ),
       ),
-    ),
-  ),
-);
+    );
   }}
 
