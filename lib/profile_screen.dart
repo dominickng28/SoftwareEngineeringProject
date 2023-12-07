@@ -15,12 +15,12 @@ import 'friends_screen.dart';
 import 'edit_profile_page.dart';
 
 class MyUserProfilePage extends StatefulWidget {
-  final String? profileUserName;
+  final String profileUserName;
 
-  const MyUserProfilePage({
+  MyUserProfilePage({
     super.key,
     required this.title,
-    this.profileUserName,
+    required this.profileUserName,
   });
   final String title;
 

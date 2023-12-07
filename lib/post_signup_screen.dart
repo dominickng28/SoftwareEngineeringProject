@@ -66,7 +66,8 @@ class PostSignUpScreenState extends State<PostSignUpScreen> {
         const SnackBar(content: Text('Account Updated Successfully')),
       );
       Navigator.of(_scaffoldContext!).pushReplacement(
-        MaterialPageRoute(builder: (context) => const MainScreen()),
+        MaterialPageRoute(
+            builder: (context) => MainScreen(profile: UserData.userName)),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
