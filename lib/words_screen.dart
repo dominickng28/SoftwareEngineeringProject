@@ -44,7 +44,7 @@ class _MyScreenState extends State<WordsScreen> {
   List<String> words = ['Cook', 'Smile', 'Draw', 'Run']; // STORES WORDS
   List<String> wordImages = [
     'Cooking.jpeg',
-    'Biking.webp',
+    'Smileyo.avif',
     'Draw.jpeg',
     'Explore.jpeg',
   ];
