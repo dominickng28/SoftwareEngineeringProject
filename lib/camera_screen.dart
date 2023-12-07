@@ -24,11 +24,14 @@ class CameraScreen extends StatefulWidget {
 }
 
 class CameraScreenState extends State<CameraScreen> {
+  FlashMode _flashMode = FlashMode.off;
+
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   //final TextEditingController _captionController = TextEditingController();
   String? imagePath;
-
+  int _cameraIndex = 0;
+  List<CameraDescription> _cameras = [];
   // List of options for the carousel
   final List<String> options = ["Cook", "Biking", "Draw", "Run"];
   String selectedOption = "Cook";
@@ -41,6 +44,16 @@ class CameraScreenState extends State<CameraScreen> {
       ResolutionPreset.medium,
     );
     _initializeControllerFuture = _controller.initialize();
+  }
+
+  Future<void> _toggleFlash() async {
+    if (_flashMode == FlashMode.off) {
+      _flashMode = FlashMode.always;
+    } else {
+      _flashMode = FlashMode.off;
+    }
+    await _controller.setFlashMode(_flashMode);
+    setState(() {});
   }
 
   @override
@@ -100,55 +113,90 @@ class CameraScreenState extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          FutureBuilder<void>(
-            future: _initializeControllerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return CameraPreview(_controller);
-              } else {
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Transform.translate(
-                offset: const Offset(0, -250), // Move the carousel up
-                child: DefaultTextStyle(
-                  style: const TextStyle(
-                      fontSize: 30,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold), // Increase the font size
-                  child: PageView.builder(
-                    itemCount: options.length,
-                    onPageChanged: (int index) {
-                      setState(() {
-                        selectedOption = options[index];
-                      });
-                    },
-                    itemBuilder: (_, i) {
-                      return Center(child: Text(options[i]));
-                    },
+      body: FutureBuilder<void>(
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              _controller.value.isInitialized) {
+            // Check if the controller is initialized
+            final width = _controller.value.previewSize!.height;
+            final height = _controller.value.previewSize!.width;
+
+            return Stack(
+              children: [
+                Container(
+                  color: Colors.black,
+                  child: Center(
+                    child: AspectRatio(
+                      aspectRatio: 3 / 2,
+                      child: FittedBox(
+                        fit: BoxFit.cover,
+                        child: SizedBox(
+                          width: width,
+                          height: height,
+                          child: CameraPreview(_controller),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: FloatingActionButton(
-                onPressed: _takePicture,
-                child: const Icon(Icons.camera_alt),
-              ),
-            ),
-          ),
-        ],
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Transform.translate(
+                      offset: const Offset(0, -200), // Move the carousel up
+                      child: DefaultTextStyle(
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ), // Increase the font size
+                        child: PageView.builder(
+                          itemCount: options.length,
+                          onPageChanged: (int index) {
+                            setState(() {
+                              selectedOption = options[index];
+                            });
+                          },
+                          itemBuilder: (_, i) {
+                            return Center(child: Text(options[i]));
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ClipOval(
+                      child: FloatingActionButton(
+                        onPressed: _takePicture,
+                        child: const Icon(Icons.camera_alt),
+                      ),
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: FloatingActionButton(
+                      onPressed: _toggleFlash,
+                      child: Icon(_flashMode == FlashMode.off
+                          ? Icons.flash_off
+                          : Icons.flash_on),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            // The Future has not completed. Show a loading indicator
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
@@ -268,6 +316,13 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                         color: Color.fromARGB(255, 0, 0, 0),
                       ),
                     ),
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.file(
+                    File(widget.imagePath),
+                    fit: BoxFit.fill,
                   ),
                 ),
                 Padding(

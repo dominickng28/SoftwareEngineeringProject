@@ -275,7 +275,6 @@ Widget build(BuildContext context) {
       ),
     );
   }
-
   void _navigateToCameraScreen(BuildContext context) async {
   final cameras = await availableCameras();
   final firstCamera = cameras.first;
