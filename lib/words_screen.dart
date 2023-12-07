@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:live4you/main.dart';
 import 'package:live4you/user_data.dart';
 
 // import 'home_feed.dart';
@@ -145,11 +146,9 @@ class _MyScreenState extends State<WordsScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MyUserProfilePage(
-          title: 'User Profile',
-          profileUserName: UserData.userName,
-          // Add any necessary parameters for the profile screen
-        ),
+        builder: (context) => MainScreen(profile: UserData.userName, index: 0
+            // Add any necessary parameters for the profile screen
+            ),
       ),
     );
   }

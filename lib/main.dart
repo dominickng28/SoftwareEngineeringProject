@@ -37,23 +37,21 @@ class MyApp extends StatelessWidget {
 
 class MainScreen extends StatefulWidget {
   String profile;
-  MainScreen({super.key, required this.profile});
+  final int index;
+  MainScreen({super.key, required this.profile, required this.index});
 
   @override
   MainScreenState createState() => MainScreenState();
 }
 
 class MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0; // Set initial index to 0 (Home Feed)
-
   late List<Widget> _children;
   late PageController _pageController;
+  late int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: _currentIndex);
-
     _children = [
       const MyFeed(title: 'Home Feed'), // Home Feed tab on the left
       const WordsScreen(), // Words tab in the middle
@@ -61,6 +59,8 @@ class MainScreenState extends State<MainScreen> {
           title: 'User Profile',
           profileUserName: widget.profile), // Profile tab on the right
     ];
+    _pageController = PageController(initialPage: widget.index);
+    _currentIndex = widget.index;
   }
 
   void onTabTapped(int index) {
@@ -85,21 +85,13 @@ class MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: Colors.black, // Set the background color to black
       body: PageView(
-        controller: _pageController,
-        onPageChanged: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        children: [
-          WordsScreen(), // Words tab on the left
-          MyFeed(title: 'Home Feed'), // Home tab in the middle
-          MyUserProfilePage(
-            title: 'User Profile',
-            profileUserName: widget.profile,
-          ), // Profile tab on the right
-        ],
-      ),
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          children: _children),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: onTabTapped,

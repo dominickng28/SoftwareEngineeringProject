@@ -388,6 +388,8 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                       padding: const EdgeInsets.all(
                           8.0), // Add padding around the grid
                       child: GridView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,

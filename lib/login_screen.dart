@@ -64,7 +64,10 @@ class LoginScreenState extends State<LoginScreen> {
           UserData.userName = username!;
           Navigator.of(_scaffoldContext!).pushReplacement(
             MaterialPageRoute(
-                builder: (context) => MainScreen(profile: UserData.userName)),
+                builder: (context) => MainScreen(
+                      profile: UserData.userName,
+                      index: 0,
+                    )),
           );
         }
       } else {
@@ -93,7 +96,8 @@ class LoginScreenState extends State<LoginScreen> {
             .getUsernameFromEmail(_emailController.text))!;
         Navigator.of(_scaffoldContext!).pushReplacement(
           MaterialPageRoute(
-              builder: (context) => MainScreen(profile: UserData.userName)),
+              builder: (context) =>
+                  MainScreen(profile: UserData.userName, index: 0)),
         );
       } else {
         ScaffoldMessenger.of(_scaffoldContext!).showSnackBar(

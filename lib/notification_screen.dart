@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:live4you/main.dart';
 import 'friend_service.dart';
 import 'user_data.dart';
 import 'search_screen.dart';
@@ -18,9 +19,9 @@ class NotificationsScreenState extends State<NotificationsScreen> {
   final MySearch _mySearch = MySearch(title: "Search");
   int likesNotificationCount = 0;
   int friendRequestsNotificationCount = 0;
-  
+
   @override
-   Widget buildFriendRequestsSection() {
+  Widget buildFriendRequestsSection() {
     return StreamBuilder<List<String>>(
       stream: _friendService.receivedFriendRequestsStream(UserData.userName),
       builder: (context, snapshot) {
@@ -77,10 +78,8 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => MyUserProfilePage(
-                                  title: 'User Profile',
-                                  profileUserName: friendRequests[index],
-                                ),
+                                builder: (context) => MainScreen(
+                                    profile: friendRequests[index], index: 2),
                               ),
                             );
                           },
@@ -154,6 +153,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     getCountOfFriendList();

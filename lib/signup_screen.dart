@@ -77,7 +77,8 @@ class SignUpScreenState extends State<SignUpScreen> {
           UserData.userName = username!;
           Navigator.of(context!).pushReplacement(
             MaterialPageRoute(
-                builder: (context) => MainScreen(profile: UserData.userName)),
+                builder: (context) =>
+                    MainScreen(profile: UserData.userName, index: 0)),
           );
         }
       } else {

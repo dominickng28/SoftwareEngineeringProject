@@ -67,7 +67,8 @@ class PostSignUpScreenState extends State<PostSignUpScreen> {
       );
       Navigator.of(_scaffoldContext!).pushReplacement(
         MaterialPageRoute(
-            builder: (context) => MainScreen(profile: UserData.userName)),
+            builder: (context) =>
+                MainScreen(profile: UserData.userName, index: 0)),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

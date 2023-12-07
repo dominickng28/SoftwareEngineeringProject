@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:live4you/friend.dart';
 import 'package:live4you/friend_service.dart';
+import 'package:live4you/main.dart';
 import 'post.dart';
 import 'user.dart';
 import 'user_data.dart';
@@ -140,9 +141,9 @@ class FriendBar extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => MyUserProfilePage(
-                  profileUserName: friend.username,
-                  title: '',
+                builder: (context) => MainScreen(
+                  profile: friend.username,
+                  index: 2,
                 ),
               ));
         },

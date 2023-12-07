@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:live4you/main.dart';
 import 'post.dart';
 import 'user_data.dart';
 import 'camera_screen.dart';
@@ -173,9 +174,9 @@ class _MyFeedTest extends State<MyFeed> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MyUserProfilePage(
-          title: 'User Profile',
-          profileUserName: UserData.userName,
+        builder: (context) => MainScreen(
+          profile: UserData.userName,
+          index: 2,
           // Add any necessary parameters for the profile screen
         ),
       ),
@@ -369,9 +370,9 @@ class PostCardState extends State<PostCard> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MyUserProfilePage(
-                            profileUserName: widget.post.username,
-                            title: '',
+                          builder: (context) => MainScreen(
+                            profile: widget.post.username,
+                            index: 2,
                           ),
                         ),
                       );
