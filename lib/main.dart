@@ -5,6 +5,7 @@ import 'package:live4you/home_feed.dart'; // Import the home screen
 import 'package:live4you/profile_screen.dart'; // Import the profile screen
 import 'package:firebase_core/firebase_core.dart';
 import 'package:live4you/search_screen.dart';
+import 'package:live4you/user_data.dart';
 import 'package:live4you/words_screen.dart';
 import 'package:live4you/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -37,23 +38,21 @@ class MyApp extends StatelessWidget {
 
 class MainScreen extends StatefulWidget {
   String profile;
-  MainScreen({super.key, required this.profile});
+  final int index;
+  MainScreen({super.key, required this.profile, required this.index});
 
   @override
   MainScreenState createState() => MainScreenState();
 }
 
 class MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0; // Set initial index to 0 (Home Feed)
-
   late List<Widget> _children;
   late PageController _pageController;
+  late int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: _currentIndex);
-
     _children = [
       const MyFeed(title: 'Home Feed'), // Home Feed tab on the left
       const WordsScreen(), // Words tab in the middle
@@ -61,6 +60,23 @@ class MainScreenState extends State<MainScreen> {
           title: 'User Profile',
           profileUserName: widget.profile), // Profile tab on the right
     ];
+    _pageController = PageController(initialPage: widget.index);
+    _currentIndex = widget.index;
+  }
+
+  void refreshScreen(int index) {
+    setState(() {
+      _currentIndex = index;
+      widget.profile = UserData.userName;
+      if (_currentIndex == 0) {
+        _children[0] = MyFeed(title: 'Home Feed');
+      } else if (_currentIndex == 1) {
+        _children[1] = WordsScreen();
+      } else {
+        _children[2] = MyUserProfilePage(
+            title: 'UserProfile', profileUserName: widget.profile);
+      }
+    });
   }
 
   void onTabTapped(int index) {
@@ -72,6 +88,7 @@ class MainScreenState extends State<MainScreen> {
         curve: Curves.easeInOut,
       );
     });
+    refreshScreen(index);
   }
 
   @override
@@ -85,21 +102,13 @@ class MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: Colors.black, // Set the background color to black
       body: PageView(
-        controller: _pageController,
-        onPageChanged: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        children: [
-          WordsScreen(), // Words tab on the left
-          MyFeed(title: 'Home Feed'), // Home tab in the middle
-          MyUserProfilePage(
-            title: 'User Profile',
-            profileUserName: widget.profile,
-          ), // Profile tab on the right
-        ],
-      ),
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          children: _children),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: onTabTapped,
@@ -109,12 +118,12 @@ class MainScreenState extends State<MainScreen> {
             .withOpacity(0.6), // Set unselected icon color with opacity
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.looks_4),
-            label: 'Words',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.looks_4),
+            label: 'Words',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

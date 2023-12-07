@@ -67,7 +67,8 @@ class PostSignUpScreenState extends State<PostSignUpScreen> {
       );
       Navigator.of(_scaffoldContext!).pushReplacement(
         MaterialPageRoute(
-            builder: (context) => MainScreen(profile: UserData.userName)),
+            builder: (context) =>
+                MainScreen(profile: UserData.userName, index: 0)),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -134,9 +135,9 @@ class PostSignUpScreenState extends State<PostSignUpScreen> {
             fontFamily: 'DMSans',
           ),
         ),
-        backgroundColor: const Color.fromARGB(251, 0, 0, 0),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       ),
-      backgroundColor: const Color.fromARGB(251, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(

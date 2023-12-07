@@ -64,7 +64,10 @@ class LoginScreenState extends State<LoginScreen> {
           UserData.userName = username!;
           Navigator.of(_scaffoldContext!).pushReplacement(
             MaterialPageRoute(
-                builder: (context) => MainScreen(profile: UserData.userName)),
+                builder: (context) => MainScreen(
+                      profile: UserData.userName,
+                      index: 0,
+                    )),
           );
         }
       } else {
@@ -93,7 +96,8 @@ class LoginScreenState extends State<LoginScreen> {
             .getUsernameFromEmail(_emailController.text))!;
         Navigator.of(_scaffoldContext!).pushReplacement(
           MaterialPageRoute(
-              builder: (context) => MainScreen(profile: UserData.userName)),
+              builder: (context) =>
+                  MainScreen(profile: UserData.userName, index: 0)),
         );
       } else {
         ScaffoldMessenger.of(_scaffoldContext!).showSnackBar(
@@ -120,9 +124,9 @@ class LoginScreenState extends State<LoginScreen> {
             fontFamily: 'DMSans',
           ),
         ),
-        backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       ),
-      backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       body: Builder(
         builder: (BuildContext context) {
           _scaffoldContext = context;
@@ -137,7 +141,7 @@ class LoginScreenState extends State<LoginScreen> {
                     Image.asset(
                       'lib/assets/Live4youWhite.png',
                       width: 325,
-                      height: 325,
+                      height: 225,
                     ),
                     const SizedBox(height: 20.0),
                     Container(

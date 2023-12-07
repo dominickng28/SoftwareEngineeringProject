@@ -77,7 +77,8 @@ class SignUpScreenState extends State<SignUpScreen> {
           UserData.userName = username!;
           Navigator.of(context!).pushReplacement(
             MaterialPageRoute(
-                builder: (context) => MainScreen(profile: UserData.userName)),
+                builder: (context) =>
+                    MainScreen(profile: UserData.userName, index: 0)),
           );
         }
       } else {
@@ -174,9 +175,9 @@ class SignUpScreenState extends State<SignUpScreen> {
               fontFamily: 'DNSans' // Set font size to a larger value
               ),
         ),
-        backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       ),
-      backgroundColor: const Color.fromARGB(251, 17, 18, 18),
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -187,9 +188,9 @@ class SignUpScreenState extends State<SignUpScreen> {
                 Image.asset(
                   'lib/assets/Live4youWhite.png',
                   width: 300, // Adjust the width as needed
-                  height: 250, // Adjust the height as needed
+                  height: 200, // Adjust the height as needed
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 0.0),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(

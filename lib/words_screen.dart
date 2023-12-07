@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:live4you/main.dart';
 import 'package:live4you/user_data.dart';
 
 // import 'home_feed.dart';
@@ -145,11 +146,9 @@ class _MyScreenState extends State<WordsScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MyUserProfilePage(
-          title: 'User Profile',
-          profileUserName: UserData.userName,
-          // Add any necessary parameters for the profile screen
-        ),
+        builder: (context) => MainScreen(profile: UserData.userName, index: 0
+            // Add any necessary parameters for the profile screen
+            ),
       ),
     );
   }
@@ -160,6 +159,7 @@ class _MyScreenState extends State<WordsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           'Tasks',
           style: TextStyle(
@@ -169,7 +169,7 @@ class _MyScreenState extends State<WordsScreen> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: const Color.fromARGB(251, 0, 0, 0),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         centerTitle: true,
         actions: [
           IconButton(
@@ -184,7 +184,7 @@ class _MyScreenState extends State<WordsScreen> {
       ),
 
       // SCREEN BACKGROUND, BEHIND BOXES
-      backgroundColor: const Color.fromARGB(248, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
 
       // WORD BOXES
 

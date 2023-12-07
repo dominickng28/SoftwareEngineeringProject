@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:live4you/friend.dart';
 import 'package:live4you/friend_service.dart';
+import 'package:live4you/main.dart';
 import 'post.dart';
 import 'user.dart';
 import 'user_data.dart';
@@ -38,14 +39,14 @@ class MyFriends extends StatelessWidget {
             Navigator.pop(context); // Go back to the previous screen
           },
         ),
-        backgroundColor: const Color.fromARGB(248, 0, 0, 0),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         flexibleSpace: const Padding(
           padding: EdgeInsets.only(
             top: 30.0,
           ),
         ),
       ),
-      backgroundColor: const Color.fromARGB(248, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       body: MyFriendsList(profileUsername: profileUsername),
     );
   }
@@ -140,14 +141,14 @@ class FriendBar extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => MyUserProfilePage(
-                  profileUserName: friend.username,
-                  title: '',
+                builder: (context) => MainScreen(
+                  profile: friend.username,
+                  index: 2,
                 ),
               ));
         },
         child: Container(
-          color: const Color.fromARGB(248, 0, 0, 0),
+          color: const Color.fromARGB(255, 0, 0, 0),
           child: Column(
             children: [
               ListTile(
@@ -191,7 +192,7 @@ class FriendBar extends StatelessWidget {
                   ),
                 ),
               ),
-              Container(height: 2.0, color: const Color.fromARGB(248, 0, 0, 0)),
+              Container(height: 2.0, color: const Color.fromARGB(255, 0, 0, 0)),
             ],
           ),
         ));
