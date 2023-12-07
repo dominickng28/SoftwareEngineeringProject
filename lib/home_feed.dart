@@ -1,9 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'post.dart';
-import 'user.dart';
 import 'user_data.dart';
 import 'camera_screen.dart';
 import 'search_screen.dart';
@@ -11,6 +9,8 @@ import 'profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'friend_service.dart';
 import 'notification_screen.dart';
+
+
 
 class MyFeed extends StatefulWidget {
   const MyFeed({super.key, required this.title});
@@ -21,24 +21,37 @@ class MyFeed extends StatefulWidget {
 }
 
 class _MyFeedTest extends State<MyFeed> {
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   final UserData userData = UserData(FirebaseFirestore.instance);
   List<Post> posts = [];
 
   @override
   void initState() {
     super.initState();
+    // animationController = AnimationController(
+    //   vsync: this, 
+    //   duration: Duration(milliseconds: 300)
+    //   );
+    //   animation = CurvedAnimation(
+    //   parent: animationController,
+    //   curve: Curves.easeInOut,
+    // );
     _checkIfFirstTime();
     fetchAllPostData();
   }
+  //  @override
+  // void dispose() {
+  //   animationController.dispose();
+  //   super.dispose();
+    
+  // }
 
   void _checkIfFirstTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
-    print('isFirstTime: $isFirstTime');
+    //print('isFirstTime: $isFirstTime');
     if (isFirstTime) {
-      // if (true) {
+    // if (true) {
 
       _showWelcomeDialog();
       prefs.setBool('isFirstTime', false);
@@ -52,34 +65,35 @@ class _MyFeedTest extends State<MyFeed> {
         return AlertDialog(
           backgroundColor: Colors.white,
           // iconPadding: EdgeInsets.all(10.0),
-          contentPadding: EdgeInsets.all(5.0),
+          contentPadding: const EdgeInsets.all(5.0),
           // insetPadding: EdgeInsets.zero,
-          // iconPadding: EdgeInsets.zero,
+          // iconPadding: EdgeInsets.zero, 
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
             // borderRadius: BorderRadius.zero,
           ),
 
           content: Container(
-            padding: EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(20.0),
             decoration: BoxDecoration(
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(15.0),
               color: Colors.black, // Customize the background color
             ),
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                   children: [
-                    // Image.asset(
-                    //   'Live4youLine.png',
-                    //   height: 5,
-                    //   width: 5,
-                    // ),
-                    SizedBox(width: 10),
-                    Text(
+                    Image.asset(
+                      'Live4youLine.png',
+                      height: 50,
+                      width: 50,
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
                       'Welcome to Live4You!',
                       style: TextStyle(
                         fontSize: 18,
@@ -90,26 +104,20 @@ class _MyFeedTest extends State<MyFeed> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
-                Text(
+                const SizedBox(height: 10),
+                const Text(
                   "Live4You is not just another social media app; it's a platform designed to inspire you to live an active and fulfilling life. Each week, we present you with four exciting words/activities. Your mission: turn these words into actions! 🚴‍♂️🏞️\n\nHere's how it works:\n1. Every Monday, discover four new words of the week.\n2. Embark on exciting activities that align with the weekly words. \n3. Capture the moments by sharing photos of your completed activites.\n4. Personalize your profile, connect with friends, and share your journey through your post.\n\nLet Live4You be your guide to a more vibrant and active lifestyle! 🌟",
                   style: TextStyle(
-                    fontSize: 18,
-                    fontFamily: 'DNSans',
-                    color: Colors.white,
-                  ),
+                    fontSize: 18, 
+                    fontFamily: 'DNSans', 
+                    color: Colors.white,),
                 ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll(Colors.black),
-              ),
-              child: Text(
-                'Explore',
-              ),
+              child: const Text('Explore'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -122,7 +130,7 @@ class _MyFeedTest extends State<MyFeed> {
 
   void fetchAllPostData() async {
     // Fetch friends list
-    await userData.populateFriendsList();
+    await userData.populateFriendsList(UserData.userName);
     List<String>? friendList = UserData.friends;
 
     // Add the current user's username to the list
@@ -166,7 +174,7 @@ class _MyFeedTest extends State<MyFeed> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MyUserProfilePage(
+        builder: (context) => const MyUserProfilePage(
           title: 'User Profile',
           // Add any necessary parameters for the profile screen
         ),
@@ -178,93 +186,126 @@ class _MyFeedTest extends State<MyFeed> {
     fetchAllPostData();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    _checkIfFirstTime();
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(251, 0, 0, 0),
-        leading: IconButton(
-          icon: Icon(Icons.notifications, color: Colors.white), // Bell icon
+@override
+Widget build(BuildContext context) {
+  final FriendService friendService = FriendService();
+  _checkIfFirstTime();
+  return Scaffold(
+    appBar: AppBar(
+      backgroundColor: Color.fromARGB(251, 0, 0, 0),
+      leading: IconButton(
+        icon: Icon(Icons.notifications, color: Colors.white),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
 
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NotificationsScreen(),
+              builder: (context) => NotificationsScreen(),
+            ),
+          );
+        },
+      ),
+      flexibleSpace: Padding(
+        padding: EdgeInsets.only(top: 60.0),
+        child: Center(
+          child: Image.asset(
+            'lib/assets/Live4youWhite.png',
+            height: 120,
+            width: 130,
+            fit: BoxFit.contain,
+          ),
+        ),
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.search, color: Colors.white,),
+          onPressed: _navigateToMySearch,
+        ),
+        SizedBox(width: 8), // Adjust the width as needed
+        StreamBuilder<String?>(
+          stream: friendService.userProfilePictureStream(UserData.userName),
+          builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+            ImageProvider imageProvider;
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              imageProvider = const AssetImage('lib/assets/default-user.jpg');
+            } else if (snapshot.hasError) {
+              imageProvider = const AssetImage('lib/assets/images/error.png');
+            } else {
+              String? profilePictureUrl = snapshot.data;
+              if (profilePictureUrl == null || profilePictureUrl.isEmpty) {
+                imageProvider = const AssetImage('lib/assets/default-user.jpg');
+              } else {
+                imageProvider = NetworkImage(profilePictureUrl);
+              }
+            }
+
+            return GestureDetector(
+              onTap: _navigateToMyUserProfilePage, // Add this line
+              child: Container(
+                padding: EdgeInsets.only(right: 10.0), // Adjust the padding
+                child: CircleAvatar(
+                  radius: 16, // Adjust the radius as needed
+                  backgroundImage: imageProvider,
+                ),
               ),
             );
           },
         ),
-        flexibleSpace: Padding(
-          padding: EdgeInsets.only(
-              top: 60.0), // Adjust the top padding value to lower the image
-
-          child: Center(
-            child: Image.asset(
-                'lib/assets/Live4youWhite.png', // Replace 'lib/assets/Live4youWhite.png' with your image path
-                height: 120, // Adjust the height of the image
-                width: 130, // Adjust the width of the image
-                fit: BoxFit.contain),
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.white),
-            onPressed: _navigateToMySearch,
-          ),
-          IconButton(
-            icon: Icon(Icons.account_circle, color: Colors.white),
-            onPressed: _navigateToMyUserProfilePage,
-          ),
-        ],
-      ),
+      ],
+    ),
       backgroundColor: Color.fromARGB(248, 0, 0, 0),
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
         child: posts.isEmpty
-            ? Center(
-                child: Text("No posts..."),
-              )
-            : ListView.builder(
-                itemCount: posts.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return PostCard(post: posts[index]);
-                },
-              ),
+          ? const Center(
+              child: Text("No posts..."),
+            )
+          : ListView.builder(
+              itemCount: posts.length,
+              itemBuilder: (BuildContext context, int index) {
+                return PostCard(post: posts[index]);
+              },
+            ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final cameras = await availableCameras();
-          final firstCamera = cameras.first;
-
-          final didCreatePost = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CameraScreen(camera: firstCamera),
-            ),
-          );
-
-          fetchAllPostData(); // Refresh the feed when MyFeed is displayed
-        },
+        onPressed: () => _navigateToCameraScreen(context),
         tooltip: 'Camera',
         child: const Icon(Icons.camera_alt),
       ),
     );
   }
+  void _navigateToCameraScreen(BuildContext context) async {
+  final cameras = await availableCameras();
+  final firstCamera = cameras.first;
+
+  if (mounted) {
+    final didCreatePost = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CameraScreen(camera: firstCamera),
+      ),
+    );
+
+    if (didCreatePost == true) {
+      fetchAllPostData(); // Refresh the feed if a new post was created
+    }
+  }
+
 }
+}
+
 
 class PostCard extends StatefulWidget {
   final Post post;
 
-  PostCard({required this.post});
+  const PostCard({required this.post, super.key});
 
   @override
-  _PostCardState createState() => _PostCardState();
+  PostCardState createState() => PostCardState();
 }
 
-class _PostCardState extends State<PostCard> {
+class PostCardState extends State<PostCard> {
   final FriendService friendService = FriendService();
 
   bool isLiked = false; // Track whether the post is liked
@@ -289,199 +330,195 @@ class _PostCardState extends State<PostCard> {
     //checking which post is made by the user
     isLiked = widget.post.likes?.contains(UserData.userName) ?? false;
 
-    bool isPoster = widget.post.username == UserData.userName;
     double screenWidth = MediaQuery.of(context).size.width;
     double cutOffValue = 0.95;
     return Container(
-      color: Color.fromARGB(248, 0, 0, 0),
+      color: const Color.fromARGB(248, 0, 0, 0),
       child: Column(
         children: [
           ListTile(
-              leading: StreamBuilder<String?>(
-                stream: friendService
-                    .userProfilePictureStream(widget.post.username),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String?> snapshot) {
-                  ImageProvider imageProvider;
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    // Use a placeholder image when the profile picture is loading
+            leading: StreamBuilder<String?>(
+              stream:
+                  friendService.userProfilePictureStream(widget.post.username),
+              builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                ImageProvider imageProvider;
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Use a placeholder image when the profile picture is loading
+                  imageProvider =
+                      const AssetImage('lib/assets/default-user.jpg');
+                } else if (snapshot.hasError) {
+                  imageProvider =
+                      const AssetImage('lib/assets/images/error.png');
+                } else {
+                  String? profilePictureUrl = snapshot.data;
+                  if (profilePictureUrl == null || profilePictureUrl.isEmpty) {
+                    // Use a default profile picture when there's no profile picture
                     imageProvider =
                         const AssetImage('lib/assets/default-user.jpg');
-                  } else if (snapshot.hasError) {
-                    imageProvider =
-                        const AssetImage('lib/assets/images/error.png');
                   } else {
-                    String? profilePictureUrl = snapshot.data;
-                    if (profilePictureUrl == null ||
-                        profilePictureUrl.isEmpty) {
-                      // Use a default profile picture when there's no profile picture
-                      imageProvider =
-                          const AssetImage('lib/assets/default-user.jpg');
-                    } else {
-                      // Use NetworkImage when loading an image from a URL
-                      imageProvider = NetworkImage(profilePictureUrl);
-                    }
+                    // Use NetworkImage when loading an image from a URL
+                    imageProvider = NetworkImage(profilePictureUrl);
                   }
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MyUserProfilePage(
-                            profileUserName: widget.post.username,
-                            title: '',
-                          ),
+                }
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyUserProfilePage(
+                          profileUserName: widget.post.username,
+                          title: '',
                         ),
-                      );
-                    },
-                    child: CircleAvatar(
-                      backgroundImage: imageProvider,
-                    ),
-                  );
-                },
-              ),
-              title: Text(
-                widget.post.username,
-                style: TextStyle(
-                  fontFamily: 'DMSans',
-                  fontSize: 23,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text(
-                widget.post.caption,
-                style: TextStyle(
-                  fontFamily: 'DMSans',
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              trailing: Container(
-                child: Transform(
-                  transform:
-                      Matrix4.skewX(-0.05), // Adjust the skew factor as needed
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6), // Adjust the padding values
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      widget.post.word, // Placeholder for your word
 
-                      style: TextStyle(
-                        fontFamily: 'DMSans',
-                        fontSize: 22, // Adjust the font size as needed
-                        fontWeight: FontWeight
-                            .w900, // Adjust the fontWeight for thicker letters
-                        fontStyle: FontStyle.italic,
-                        decoration: TextDecoration.underline,
-                        color: Colors.white,
                       ),
-                    ),
+                    );
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: imageProvider,
                   ),
-                ),
-              )),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: Image.network(
-              widget.post.imageUrl,
-              fit: BoxFit.fill,
+                );
+              },
             ),
+            title: Text(
+              widget.post.username,
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                fontSize: 23,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Text(
+              widget.post.caption,
+              style: const TextStyle(
+                fontFamily: 'DMSans',
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            trailing: Container(
+  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+  child: Transform(
+    transform: Matrix4.skewX(-0.05), // Adjust the skew factor as needed
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6), // Adjust the padding values
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        widget.post.word, // Placeholder for your word
+        style: const TextStyle(
+          fontFamily: 'DMSans',
+          fontSize: 22, // Adjust the font size as needed
+          fontWeight: FontWeight.w900, // Adjust the fontWeight for thicker letters
+          fontStyle: FontStyle.italic,
+          decoration: TextDecoration.underline,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  ),
+)
+
+
           ),
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(isLiked ? Icons.favorite : Icons.favorite_rounded,
-                    color: isLiked ? Colors.teal : Colors.blueGrey),
-                onPressed: () => likePost(context),
-              ),
-              Text(
-                (widget.post.likeCount).toString(),
-                style: TextStyle(
-                    fontSize: 12,
-                    color: isLiked ? Colors.teal : Colors.blueGrey,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'DMSans'),
-              ),
-              Spacer(),
-              Flexible(
-                child: Padding(
-                  padding: EdgeInsets.only(right: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        timeAgo(widget.post.date),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'DMSans',
-                        ),
-                      ),
-                      if (widget.post.username == UserData.userName)
-                        IconButton(
-                          icon: Icon(Icons.delete_forever),
-                          color: Colors.blueGrey,
-                          onPressed: () => deletePost(context),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+          ClipRRect(
+  borderRadius: BorderRadius.circular(10.0),
+  child: Image.network(
+    widget.post.imageUrl,
+    fit: BoxFit.fill,
+  ),
+),
+Row(
+  children: [
+    IconButton(
+      icon: Icon(
+        isLiked ? Icons.favorite : Icons.favorite_rounded,
+        color: isLiked ? const Color.fromARGB(255, 255, 255, 255) : Colors.blueGrey,
+        size: 30.0,
+      ),
+      onPressed: () => likePost(context),
+    ),
+    SizedBox(width: 4.0),
+    Text(
+      (widget.post.likeCount).toString(),
+      style: TextStyle(
+        fontSize: 22,
+        color: isLiked ? const Color.fromARGB(255, 255, 255, 255) : const Color.fromARGB(255, 255, 255, 255),
+        fontWeight: FontWeight.bold,
+        fontFamily: 'DMSans',
+      ),
+    ),
+    Spacer(),
+    Text(
+      timeAgo(widget.post.date),
+      style: TextStyle(
+        fontSize: 14,
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+        fontFamily: 'DMSans',
+      ),
+    ),
+    SizedBox(width: 8.0),
+    if (widget.post.username == UserData.userName)
+      IconButton(
+        icon: Icon(Icons.delete_forever),
+        color: const Color.fromARGB(255, 255, 255, 255),
+        onPressed: () => deletePost(context),
+      ),
+  ],
+),
+
           Container(
               height: 2.0,
               width: screenWidth * cutOffValue,
-              color: Color.fromARGB(248, 35, 36, 44)),
+              color: const Color.fromARGB(248, 35, 36, 44)),
         ],
       ),
     );
   }
 
   Future<void> deletePost(BuildContext parentContext) async {
-    return showDialog(
-        context: parentContext,
-        builder: (conext) {
-          return SimpleDialog(
-            title: Text("Delete post?"),
-            children: <Widget>[
-              SimpleDialogOption(
-                onPressed: () async {
-                  //removes post from Firebase and user postList
-                  Navigator.pop(conext);
-                  await removeFromPostList();
-                  FirebaseFirestore.instance
-                      .collection('posts')
-                      .doc(widget.post.getPostID())
-                      .delete();
-                  if (mounted) {
-                    setState(() {});
-                  }
-
-                  ScaffoldMessenger.of(parentContext).showSnackBar(SnackBar(
+  return showDialog(
+    context: parentContext,
+    builder: (context) {
+      return SimpleDialog(
+        title: const Text("Delete post?"),
+        children: <Widget>[
+          SimpleDialogOption(
+            onPressed: () async {
+              Navigator.pop(context);
+              await removeFromPostList();
+              FirebaseFirestore.instance
+                  .collection('posts')
+                  .doc(widget.post.getPostID())
+                  .delete();
+              if (mounted) {
+                ScaffoldMessenger.of(parentContext).showSnackBar(
+                  const SnackBar(
                     content: Text('Post has been deleted'),
-                  ));
-                },
-                child: Text(
-                  'Delete',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-              SimpleDialogOption(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
-              )
-            ],
-          );
-        });
-  }
+
+                  ),
+                );
+              }
+              setState(() {});
+            },
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          )
+        ],
+      );
+    },
+  );
+}
 
   Future<void> removeFromPostList() async {
     final firestoreInstance = FirebaseFirestore.instance;
@@ -534,11 +571,22 @@ class _PostCardState extends State<PostCard> {
       widget.post.likeCount = updatedLikes
           .length; // Update like count based on the length of the likes list
     });
-
+    if (widget.post.username != UserData.userName){
+    await createLikeNotification(context);
+    }
     // Set state to the change in likes
     setState(() {
       isLiked = widget.post.likes!.contains(user);
       isProcessing = false;
     });
+  }
+
+  Future<void>createLikeNotification(BuildContext parentContext ) async {
+    await FirebaseFirestore.instance.collection('notifications').add({
+    'recipient': UserData.userName,
+    'type': 'like',
+    'postId': widget.post.getPostID(), // Add the post ID to identify the post
+    'timestamp': DateTime.now(),
+  });
   }
 }

@@ -348,12 +348,12 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                 ElevatedButton(
                   onPressed: _savePicture,
                   child: const Icon(Icons.send),
-                ),
+              ),
               ],
             ),
-          ),
+          )
         ),
       ),
     );
-  }
-}
+  }}
+
