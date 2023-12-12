@@ -10,7 +10,7 @@ import 'package:live4you/user_data.dart';
 
 // import 'home_feed.dart';
 import 'search_screen.dart';
-import 'profile_screen.dart';
+//import 'profile_screen.dart';
 import 'camera_screen.dart';
 
 void main() {
@@ -73,7 +73,7 @@ class _MyScreenState extends State<WordsScreen> {
         });
       }
     } catch (e) {
-      print("Error getting camera: $e");
+      //print("Error getting camera: $e");
     }
   }
 

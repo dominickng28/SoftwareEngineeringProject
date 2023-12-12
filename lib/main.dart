@@ -37,28 +37,31 @@ class MyApp extends StatelessWidget {
 }
 
 class MainScreen extends StatefulWidget {
-  String profile;
+  final String profile;
   final int index;
-  MainScreen({super.key, required this.profile, required this.index});
+  const MainScreen({super.key, required this.profile, required this.index});
 
   @override
   MainScreenState createState() => MainScreenState();
+  
 }
 
 class MainScreenState extends State<MainScreen> {
   late List<Widget> _children;
   late PageController _pageController;
   late int _currentIndex = 0;
+  late String _currentProfile;
 
   @override
   void initState() {
     super.initState();
+    _currentProfile = widget.profile;
     _children = [
       const MyFeed(title: 'Home Feed'), // Home Feed tab on the left
       const WordsScreen(), // Words tab in the middle
       MyUserProfilePage(
           title: 'User Profile',
-          profileUserName: widget.profile), // Profile tab on the right
+          profileUserName: _currentProfile), // Profile tab on the right
     ];
     _pageController = PageController(initialPage: widget.index);
     _currentIndex = widget.index;
@@ -67,14 +70,14 @@ class MainScreenState extends State<MainScreen> {
   void refreshScreen(int index) {
     setState(() {
       _currentIndex = index;
-      widget.profile = UserData.userName;
+      _currentProfile = UserData.userName; // Assuming UserData.userName is updated somewhere
       if (_currentIndex == 0) {
         _children[0] = const MyFeed(title: 'Home Feed');
       } else if (_currentIndex == 1) {
         _children[1] = const WordsScreen();
       } else {
         _children[2] = MyUserProfilePage(
-            title: 'UserProfile', profileUserName: widget.profile);
+            title: 'UserProfile', profileUserName: _currentProfile);
       }
     });
   }
@@ -89,12 +92,6 @@ class MainScreenState extends State<MainScreen> {
       );
     });
     refreshScreen(index);
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
   }
 
   @override

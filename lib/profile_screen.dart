@@ -170,7 +170,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
               child: Column(
                 children: <Widget>[
                   Visibility(
-                    visible: widget.profileUserName != null &&
+                    visible: //widget.profileUserName != null &&
                         widget.profileUserName != UserData.userName,
                     child: IconButton(
                       onPressed: () {
@@ -210,7 +210,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                         backgroundColor:
                             MaterialStateProperty.resolveWith<Color>(
                           (Set<MaterialState> states) {
-                            if (widget.profileUserName != null &&
+                            if (//widget.profileUserName != null &&
                                 widget.profileUserName != UserData.userName) {
                               if (userProfile?.receivedRequests
                                       .contains(UserData.userName) ==
@@ -244,7 +244,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                   children: <Widget>[
                     GestureDetector(
                       onTap: () {
-                        if (widget.profileUserName == null ||
+                        if (//widget.profileUserName == null ||
                             widget.profileUserName == UserData.userName) {
                           Navigator.push(
                             context,
@@ -341,9 +341,9 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                           ),
                           const SizedBox(width: 8.0),
                           FutureBuilder<int>(
-                            future: widget.profileUserName != null
-                                ? fetchFollowerCount(widget.profileUserName!)
-                                : fetchFollowerCount(UserData.userName),
+                            future: //widget.profileUserName != null
+                                /*?*/ fetchFollowerCount(widget.profileUserName),
+                                //: fetchFollowerCount(UserData.userName),
                             builder: (BuildContext context,
                                 AsyncSnapshot<int> snapshot) {
                               if (snapshot.connectionState ==
