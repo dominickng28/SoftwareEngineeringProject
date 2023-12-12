@@ -4,7 +4,7 @@ import 'package:live4you/signup_screen.dart';
 import 'package:live4you/home_feed.dart'; // Import the home screen
 import 'package:live4you/profile_screen.dart'; // Import the profile screen
 import 'package:firebase_core/firebase_core.dart';
-import 'package:live4you/search_screen.dart';
+//import 'package:live4you/search_screen.dart';
 import 'package:live4you/user_data.dart';
 import 'package:live4you/words_screen.dart';
 import 'package:live4you/firebase_options.dart';
@@ -24,13 +24,13 @@ class MyApp extends StatelessWidget {
       title: 'LIVE4YOU',
       theme: ThemeData(
         colorScheme:
-            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 255, 255, 255)),
+            ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 255, 255, 255)),
         useMaterial3: true,
       ),
       initialRoute: '/login',
       routes: {
         '/login': (context) => LoginScreen(auth: FirebaseAuth.instance),
-        '/signup': (context) => SignUpScreen(),
+        '/signup': (context) => const SignUpScreen(),
       },
     );
   }
@@ -69,9 +69,9 @@ class MainScreenState extends State<MainScreen> {
       _currentIndex = index;
       widget.profile = UserData.userName;
       if (_currentIndex == 0) {
-        _children[0] = MyFeed(title: 'Home Feed');
+        _children[0] = const MyFeed(title: 'Home Feed');
       } else if (_currentIndex == 1) {
-        _children[1] = WordsScreen();
+        _children[1] = const WordsScreen();
       } else {
         _children[2] = MyUserProfilePage(
             title: 'UserProfile', profileUserName: widget.profile);

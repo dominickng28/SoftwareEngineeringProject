@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:live4you/main.dart';
-import 'profile_screen.dart';
+//import 'profile_screen.dart';
 import 'friend_service.dart';
 import 'user_data.dart';
 import 'post.dart';
@@ -439,7 +439,7 @@ class _MySearchState extends State<MySearch> {
         ),
         backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       body: SingleChildScrollView(

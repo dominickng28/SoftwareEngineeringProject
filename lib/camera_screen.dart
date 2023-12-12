@@ -3,7 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+//import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:live4you/user_data.dart';
 //import 'package:path/path.dart' show join;
@@ -30,8 +30,8 @@ class CameraScreenState extends State<CameraScreen> {
   late Future<void> _initializeControllerFuture;
   //final TextEditingController _captionController = TextEditingController();
   String? imagePath;
-  int _cameraIndex = 0;
-  List<CameraDescription> _cameras = [];
+  //int _cameraIndex = 0;
+  //List<CameraDescription> _cameras = [];
   // List of options for the carousel
   final List<String> options = ["Cook", "Smile", "Draw", "Run"];
   String selectedOption = "Cook";
@@ -147,7 +147,7 @@ class CameraScreenState extends State<CameraScreen> {
                     child: Transform.translate(
                       offset: const Offset(0, -200), // Move the carousel up
                       child: DefaultTextStyle(
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
                         ), // Increase the font size
@@ -305,7 +305,7 @@ class PreviewPostCardState extends State<PreviewPostCard> {
                           vertical: 4, horizontal: 8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color.fromARGB(255, 255, 255, 255),
+                        color: const Color.fromARGB(255, 255, 255, 255),
                       ),
                       child: Text(
                         widget.selectedOption, // Display the selected option

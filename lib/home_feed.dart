@@ -6,7 +6,7 @@ import 'post.dart';
 import 'user_data.dart';
 import 'camera_screen.dart';
 import 'search_screen.dart';
-import 'profile_screen.dart';
+//import 'profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'friend_service.dart';
 import 'notification_screen.dart';
@@ -193,20 +193,20 @@ class _MyFeedTest extends State<MyFeed> {
     _checkIfFirstTime();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 0, 0, 0),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         leading: IconButton(
-          icon: Icon(Icons.notifications, color: Colors.white),
+          icon: const Icon(Icons.notifications, color: Colors.white),
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NotificationsScreen(),
+                builder: (context) => const NotificationsScreen(),
               ),
             );
           },
         ),
         flexibleSpace: Padding(
-          padding: EdgeInsets.only(top: 20.0),
+          padding: const EdgeInsets.only(top: 20.0),
           child: Center(
             child: Image.asset(
               'lib/assets/Live4youWhite.png',
@@ -224,7 +224,7 @@ class _MyFeedTest extends State<MyFeed> {
             ),
             onPressed: _navigateToMySearch,
           ),
-          SizedBox(width: 8), // Adjust the width as needed
+          const SizedBox(width: 8), // Adjust the width as needed
           StreamBuilder<String?>(
             stream: friendService.userProfilePictureStream(UserData.userName),
             builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
@@ -246,7 +246,7 @@ class _MyFeedTest extends State<MyFeed> {
               return GestureDetector(
                 onTap: _navigateToMyUserProfilePage, // Add this line
                 child: Container(
-                  padding: EdgeInsets.only(right: 10.0), // Adjust the padding
+                  padding: const EdgeInsets.only(right: 10.0), // Adjust the padding
                   child: CircleAvatar(
                     radius: 16, // Adjust the radius as needed
                     backgroundImage: imageProvider,
@@ -257,7 +257,7 @@ class _MyFeedTest extends State<MyFeed> {
           ),
         ],
       ),
-      backgroundColor: Color.fromARGB(255, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: _handleRefresh,
@@ -448,7 +448,7 @@ class PostCardState extends State<PostCard> {
                 ),
                 onPressed: () => likePost(context),
               ),
-              SizedBox(width: 4.0),
+              const SizedBox(width: 4.0),
               Text(
                 (widget.post.likeCount).toString(),
                 style: TextStyle(
@@ -460,20 +460,20 @@ class PostCardState extends State<PostCard> {
                   fontFamily: 'DMSans',
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Text(
                 timeAgo(widget.post.date),
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'DMSans',
                 ),
               ),
-              SizedBox(width: 8.0),
+              const SizedBox(width: 8.0),
               if (widget.post.username == UserData.userName)
                 IconButton(
-                  icon: Icon(Icons.delete_forever),
+                  icon: const Icon(Icons.delete_forever),
                   color: const Color.fromARGB(255, 255, 255, 255),
                   onPressed: () => deletePost(context),
                 ),
@@ -578,22 +578,11 @@ class PostCardState extends State<PostCard> {
       widget.post.likeCount = updatedLikes
           .length; // Update like count based on the length of the likes list
     });
-    if (widget.post.username != UserData.userName) {
-      await createLikeNotification(context);
-    }
+
     // Set state to the change in likes
     setState(() {
       isLiked = widget.post.likes!.contains(user);
       isProcessing = false;
-    });
-  }
-
-  Future<void> createLikeNotification(BuildContext parentContext) async {
-    await FirebaseFirestore.instance.collection('notifications').add({
-      'recipient': UserData.userName,
-      'type': 'like',
-      'postId': widget.post.getPostID(), // Add the post ID to identify the post
-      'timestamp': DateTime.now(),
     });
   }
 }

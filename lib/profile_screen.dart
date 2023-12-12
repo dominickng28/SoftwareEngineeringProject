@@ -17,7 +17,7 @@ import 'edit_profile_page.dart';
 class MyUserProfilePage extends StatefulWidget {
   final String profileUserName;
 
-  MyUserProfilePage({
+  const MyUserProfilePage({
     super.key,
     required this.title,
     required this.profileUserName,
@@ -141,7 +141,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
   @override
   Widget build(BuildContext context) {
     // Display a default title if the profileUserName is null
-    String title = widget.profileUserName ?? 'Profile';
+    String title = widget.profileUserName /*?? 'Profile'*/;
     _scaffoldContext = context;
 
     return Scaffold(
@@ -390,7 +390,7 @@ class _MyUserProfilePageState extends State<MyUserProfilePage> {
                           8.0), // Add padding around the grid
                       child: GridView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,

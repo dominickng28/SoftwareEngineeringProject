@@ -1,18 +1,18 @@
-import 'package:camera/camera.dart';
+//import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+//import 'package:firebase_storage/firebase_storage.dart';
 import 'package:live4you/friend.dart';
 import 'package:live4you/friend_service.dart';
 import 'package:live4you/main.dart';
-import 'post.dart';
-import 'user.dart';
+//import 'post.dart';
+//import 'user.dart';
 import 'user_data.dart';
-import 'camera_screen.dart';
-import 'package:live4you/profile_screen.dart';
+//import 'camera_screen.dart';
+//import 'package:live4you/profile_screen.dart';
 
 class MyFriends extends StatelessWidget {
-  MyFriends({super.key, required this.title, this.profileUsername});
+  const MyFriends({super.key, required this.title, this.profileUsername});
 
   final String title;
   final String? profileUsername;
@@ -57,12 +57,12 @@ class MyFriendsList extends StatefulWidget {
   const MyFriendsList({super.key, required this.profileUsername});
 
   @override
-  _MyFriendsListState createState() => _MyFriendsListState();
+  MyFriendsListState createState() => MyFriendsListState();
 }
 
-class _MyFriendsListState extends State<MyFriendsList> {
+class MyFriendsListState extends State<MyFriendsList> {
   final UserData userData = UserData(FirebaseFirestore.instance);
-  final FriendService _friendService = FriendService();
+  //final FriendService _friendService = FriendService();
   List<Friend> friendsList = [];
   bool isLoading = true;
 
@@ -95,7 +95,7 @@ class _MyFriendsListState extends State<MyFriendsList> {
         isLoading = false;
       });
     } catch (error) {
-      print('Error fetching friends: $error');
+      //print('Error fetching friends: $error');
       setState(() {
         isLoading = false;
       });
