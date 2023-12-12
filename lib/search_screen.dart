@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:live4you/main.dart';
-import 'profile_screen.dart';
+//import 'profile_screen.dart';
 import 'friend_service.dart';
 import 'user_data.dart';
 import 'post.dart';
@@ -162,14 +162,17 @@ class _MySearchState extends State<MySearch> {
       StreamController<List<String>>();
   // posts list for "the rest of the world" portion
   List<Post> posts = [];
+   BuildContext? _scaffoldContext;
 
   @override
   void initState() {
     super.initState();
     fetchMostLikedPostData();
+    _scaffoldContext = context;
   }
 
   Widget buildFriendRequestsSection() {
+  
     return StreamBuilder<List<String>>(
       stream: _friendService.receivedFriendRequestsStream(UserData.userName),
       builder: (context, snapshot) {
@@ -407,19 +410,26 @@ class _MySearchState extends State<MySearch> {
   }
 
   Future<void> _searchByUsername(String username) async {
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(username)
-        .get();
+    if (username.isNotEmpty) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(username)
+          .get();
 
-    if (userDoc.exists) {
-      List<String> usernames = [username];
-      _usernameStream.add(usernames);
+      if (userDoc.exists) {
+        List<String> usernames = [username];
+        _usernameStream.add(usernames);
+      } else {
+        ScaffoldMessenger.of(_scaffoldContext!).showSnackBar(
+          SnackBar(
+            content: Text('No user found with the username $username'),
+          ),
+        );
+      }
     } else {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('No user found with the username $username'),
+      ScaffoldMessenger.of(_scaffoldContext!).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a username'),
         ),
       );
     }
@@ -439,7 +449,7 @@ class _MySearchState extends State<MySearch> {
         ),
         backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const  IconThemeData(color: Colors.white),
       ),
       backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       body: SingleChildScrollView(

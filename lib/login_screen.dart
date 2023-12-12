@@ -12,7 +12,7 @@ class LoginScreen extends StatefulWidget {
   final FirebaseAuth auth;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  LoginScreen({Key? key, required this.auth}) : super(key: key);
+  LoginScreen({super.key, required this.auth});
 
   @override
   LoginScreenState createState() => LoginScreenState();
@@ -153,7 +153,7 @@ class LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: TextFormField(
-                        key: Key('emailField'),
+                        key: const Key('emailField'),
                         controller: _emailController,
                         style: const TextStyle(
                           color: Colors.white,
@@ -183,7 +183,7 @@ class LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: TextFormField(
-                        key: Key('passwordField'),
+                        key: const Key('passwordField'),
                         controller: _passwordController,
                         style: const TextStyle(
                           color: Colors.white,
@@ -206,26 +206,26 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 12.0),
                     ElevatedButton(
-                      key: Key("loginButton"),
+                      key: const Key("loginButton"),
                       onPressed: _login,
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.black,
-                        onPrimary: Colors.white,
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.all(16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(
+                          side: const BorderSide(
                             color: Colors.white,
                             width: 1,
                           ),
                         ),
                       ),
-                      child: Row(
+                      child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.login, color: Colors.white),
-                          const SizedBox(width: 8),
-                          const Text(
+                          Icon(Icons.login, color: Colors.white),
+                          SizedBox(width: 8),
+                          Text(
                             "Login",
                             style: TextStyle(
                               fontSize: 16,
@@ -240,15 +240,15 @@ class LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ElevatedButton(
-                          key: Key("loginGoogleButton"),
+                          key: const Key("loginGoogleButton"),
                           onPressed: _loginWithGoogle,
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.black,
-                            onPrimary: Colors.white,
+                            backgroundColor: Colors.black,
+                            foregroundColor: Colors.white,
                             padding: const EdgeInsets.all(16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
-                              side: BorderSide(
+                              side: const BorderSide(
                                 color: Colors.white,
                                 width: 1,
                               ),
@@ -275,18 +275,18 @@ class LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(width: 16),
                         ElevatedButton(
-                          key: Key("loginAppleButton"),
+                          key: const Key("loginAppleButton"),
                           onPressed: () {
-                            print(
-                                "Apple login functionality not implemented yet.");
+                            //print(
+                              //  "Apple login functionality not implemented yet.");
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.black,
-                            onPrimary: Colors.white,
+                            backgroundColor: Colors.black,
+                            foregroundColor: Colors.white,
                             padding: const EdgeInsets.all(16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
-                              side: BorderSide(
+                              side: const BorderSide(
                                 color: Colors.white,
                                 width: 1,
                               ),
@@ -319,7 +319,7 @@ class LoginScreenState extends State<LoginScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SignUpScreen(),
+                            builder: (context) => const SignUpScreen(),
                           ),
                         );
                       },

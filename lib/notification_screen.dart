@@ -4,7 +4,7 @@ import 'friend_service.dart';
 import 'user_data.dart';
 import 'search_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'profile_screen.dart';
+//import 'profile_screen.dart';
 import 'dart:async';
 
 class NotificationsScreen extends StatefulWidget {
@@ -20,7 +20,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
   int likesNotificationCount = 0;
   int friendRequestsNotificationCount = 0;
 
-  @override
+  //@override
   Widget buildFriendRequestsSection() {
     return StreamBuilder<List<String>>(
       stream: _friendService.receivedFriendRequestsStream(UserData.userName),

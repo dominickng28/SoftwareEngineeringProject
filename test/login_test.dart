@@ -4,9 +4,9 @@
 // import 'package:live4you/login_screen.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:live4you/firestore_service.dart';
-// import 'main.dart';
-// import 'firebase_init_for_testing.dart';
-// // import 'package:firebase_core/firebase_core.dart';
+// import '../lib/main.dart';
+// import '../lib/firebase_init_for_testing.dart';
+// import 'package:firebase_core/firebase_core.dart';
 
 // class FirebaseAuthWrapper {
 //   final FirebaseAuth _auth;
@@ -77,9 +77,9 @@
 //         home: LoginScreen(auth: mockAuth),
 //       ));
 
-//       await tester.enterText(find.byKey(Key('emailField')), 'email@test.com');
-//       await tester.enterText(find.byKey(Key('passwordField')), 'password');
-//       await tester.tap(find.byKey(Key('loginButton')));
+//       await tester.enterText(find.byKey(const Key('emailField')), 'email@test.com');
+//       await tester.enterText(find.byKey(const Key('passwordField')), 'password');
+//       await tester.tap(find.byKey(const Key('loginButton')));
 
 //       await tester.pumpAndSettle();
 
